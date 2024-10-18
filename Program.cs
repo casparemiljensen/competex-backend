@@ -1,6 +1,9 @@
-using competex_backend.Controllers;
-using competex_backend.DataAccess.Interfaces;
-using competex_backend.DataAccess.MockDataAccess;
+using competex_backend.API.Controllers;
+using competex_backend.DAL.Repositories.MockDataAccess;
+using competex_backend.DAL.Interfaces;
+using competex_backend;
+using competex_backend.BLL.Services;
+using competex_backend.BLL.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +14,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 builder.Services.AddSingleton<IMemberRepository, MockMemberRepository>();
 
+builder.Services.AddSingleton<IMemberService, MemberService>();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 var app = builder.Build();
 

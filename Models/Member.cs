@@ -3,8 +3,8 @@
 {
     public class Member
     {
-        public Guid MemberId { get; private set; }
-        public string Name { get; private set; }
+        public Guid MemberId { get; set; }
+        public string Name { get; set; }
 
         public Member(string name)
         {

@@ -1,6 +1,6 @@
-﻿namespace competex_backend.Enum
+﻿namespace competex_backend.Models
 {
-    public enum Status
+    public enum MatchStatus
     {
         pending,
         active,

@@ -1,4 +1,4 @@
-﻿using competex_backend.Enum;
+﻿using competex_backend.Models;
 
 namespace competex_backend.Models
 {
@@ -7,7 +7,7 @@ namespace competex_backend.Models
         public int MatchId { get; set; }
         public int RoundId { get; set; }
         public List<Participant> Participants { get; set; }
-        public Status Status { get; set; }
+        public MatchStatus Status { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public int FieldId { get; set; }

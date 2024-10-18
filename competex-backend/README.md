@@ -65,6 +65,24 @@ Use your models(e.g., Member) to represent the domain entities of your applicati
 
 ---
 
+---
+
+# Github
+
+You must push to develop.
+When doing so, the following action will run.
+`.github/workflows/dotnet-build-and-run-tests.yml`
+
+It build the .net solution and runs the tests located in: 
+´./competex-backend-tests´
+
+the `main` branch is branc-protected. Only pull requests from the `develop` branch is allowed.
+When performing a pull request to main, the following action, which check the upstream branch runs:
+`.github/workflows/main-pull-request-protection.yml`
+
+---
+
+
 
 # Patterns used and their contributions
 - Layered Architecture: Separates the application into distinct layers (API, BLL, DAL, Models).

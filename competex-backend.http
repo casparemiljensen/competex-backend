@@ -1,0 +1,6 @@
+@competex_backend_HostAddress = http://localhost:5228
+
+GET {{competex_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

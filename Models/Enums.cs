@@ -7,4 +7,14 @@
         cancelled,
         concluded
     }
+
+    public enum SurfaceType
+    {
+        unknown,
+        natural_grass,
+        artificial_turf,
+        clay,
+        dirt,
+        turf
+    }
 }

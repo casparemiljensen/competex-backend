@@ -28,7 +28,7 @@ When we communicate via the api, the api controllers use contract based-models i
 
 ---
 
-## BLL
+## BLL (Business Logic Layer)
 The Business Logic Layer is responsible for all the domain specific logic.
 
 ### Interfaces
@@ -45,7 +45,7 @@ Where MemberDTO is the destination type and member is the source object (consist
 
 ---
 
-## DAL
+## DAL (Data Access Layer)
 The data access layer handles communication with external data providers such as SQL databases.
 We have chosen to implement Postgres as the database.
 
@@ -64,6 +64,22 @@ The repositories is specific queries for entities, such as MemberRepository - wh
 Use your models(e.g., Member) to represent the domain entities of your application.
 
 ---
+
+# Github
+
+You must push to develop.
+When doing so, the following action will run.
+`.github/workflows/dotnet-build-and-run-tests.yml`
+
+It build the .net solution and runs the tests located in: 
+´./competex-backend-tests´
+
+the `main` branch is branc-protected. Only pull requests from the `develop` branch is allowed.
+When performing a pull request to main, the following action, which check the upstream branch runs:
+`.github/workflows/main-pull-request-protection.yml`
+
+---
+
 
 
 # Patterns used and their contributions

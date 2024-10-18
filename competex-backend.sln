@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "competex-backend", "competex-backend.csproj", "{F1D46CE9-F9D5-4213-8DFF-F7EEC94DE4EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "competex-backend", "competex-backend.csproj", "{F1D46CE9-F9D5-4213-8DFF-F7EEC94DE4EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "competex-backend-tests", "..\competex-backend-tests\competex-backend-tests.csproj", "{BDFBCD96-F36D-43E3-93D1-CEFAD241D364}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F1D46CE9-F9D5-4213-8DFF-F7EEC94DE4EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1D46CE9-F9D5-4213-8DFF-F7EEC94DE4EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1D46CE9-F9D5-4213-8DFF-F7EEC94DE4EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDFBCD96-F36D-43E3-93D1-CEFAD241D364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDFBCD96-F36D-43E3-93D1-CEFAD241D364}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDFBCD96-F36D-43E3-93D1-CEFAD241D364}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDFBCD96-F36D-43E3-93D1-CEFAD241D364}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

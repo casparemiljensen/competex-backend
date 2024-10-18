@@ -28,7 +28,7 @@ When we communicate via the api, the api controllers use contract based-models i
 
 ---
 
-## BLL
+## BLL (Business Logic Layer)
 The Business Logic Layer is responsible for all the domain specific logic.
 
 ### Interfaces
@@ -45,7 +45,7 @@ Where MemberDTO is the destination type and member is the source object (consist
 
 ---
 
-## DAL
+## DAL (Data Access Layer)
 The data access layer handles communication with external data providers such as SQL databases.
 We have chosen to implement Postgres as the database.
 
@@ -62,8 +62,6 @@ The repositories is specific queries for entities, such as MemberRepository - wh
 
 ## Models
 Use your models(e.g., Member) to represent the domain entities of your application.
-
----
 
 ---
 

@@ -3,6 +3,7 @@ using competex_backend.DAL.Interfaces;
 using AutoMapper.Execution;
 using Member = competex_backend.Models.Member;
 using System.Numerics;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
@@ -12,12 +13,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
         public MockMemberRepository()
         {
-            _members = new List<Member>
-            {
-                new Member("Caspar", "Emil Jensen", new Guid("bec52019-b429-47bc-987e-47d13224d75e")) { Birthday = new DateTime(1990, 1, 1), Email = "Caspar@uni.com", Phone = "12345890", Permissions = "Admin" },
-                new Member("Thomas", "Ilum Andersen", new Guid("cd4d665d-cd71-4aaa-9799-9f9c973ce19e")) { Birthday = new DateTime(1985, 5, 23), Email = "Ilum@uni.com", Phone = "98763210", Permissions = "User" },
-                new Member("Thomas", "Dam Nykjær", new Guid("c7a53ea7-950a-4c8f-83c8-6262f2ec1571")) { Birthday = new DateTime(1995, 10, 10), Email = "Dam@uni.com", Phone = "55555555", Permissions = "Judge" }
-            };
+            _members = new List<Member>();
         }
 
         public void AddMember(Member member)
@@ -59,5 +55,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         {
             return _members;
         }
+
+
     }
 }

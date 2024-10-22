@@ -3,19 +3,14 @@ using competex_backend.Models;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
-    public class MockClubRepository
+    public class MockClubRepository : IClubRepository
     {
         private List<Club> _clubs;
 
         public MockClubRepository()
         {
             // Initialize with some mock data
-            _clubs = new List<Club>
-        {
-            new Club("Kaninernes Klub Hjørring", "Kaninhop") { Organizers = new List<Member> { new Member("Ane", "Svendsen"), new Member("Irma", "Johnson") }, Users = new List<Member> { new Member("Svend", "Åge"), new Member("Johnny", "Madsen") } },
-            new Club("Aabybro kaninhop", "Kaninhop") { Organizers = new List<Member> { new Member("Jørgen", "Larsen"), new Member("Kasper", "Kronjuvel") }, Users = new List<Member> { new Member("Lars", "Lægaard"), new Member("Camilla", "Frydensten") } },
-            new Club("Aalborg kaninforening", "Kaninhop") { Organizers = new List<Member> { new Member("Lotte", "Svenstrup"), new Member("Bo", "Gade") }, Users = new List<Member> { new Member("Villy", "Søvnig"), new Member("Jeppe", "Kofod") } },
-        };
+            _clubs = new List<Club>();
         }
 
         // Get all clubs
@@ -46,7 +41,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 existingClub.Name = club.Name;
                 existingClub.AssociatedSport = club.AssociatedSport;
                 existingClub.Organizers = club.Organizers;
-                existingClub.Users = club.Users;
+                existingClub.ClubMembers = club.ClubMembers;
             }
         }
 

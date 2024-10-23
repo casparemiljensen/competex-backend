@@ -2,6 +2,7 @@
 using competex_backend.API.DTOs;
 using competex_backend.BLL.Interfaces;
 using competex_backend.DAL.Interfaces;
+using competex_backend.Models;
 
 namespace competex_backend.BLL.Services
 {

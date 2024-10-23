@@ -5,14 +5,29 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 {
     internal class PostgresMemberRepository : IMemberRepository
     {
+        public void AddMember(Member member)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteMember(Guid memberId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Member GetMemberById(Guid memberId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateMember(Member member)
+        {
+            throw new NotImplementedException();
+        }
+
         List<Member> IMemberRepository.GetMembers()
         {
-            return new List<Member>
-            {
-                new Member("John Doe"),
-                new Member("Jane Doe"),
-                new Member("Alice Doe")
-            };
+            throw new NotImplementedException();
         }
     }
 }

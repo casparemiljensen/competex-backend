@@ -4,12 +4,29 @@
     public class Member
     {
         public Guid MemberId { get; set; }
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
 
-        public Member(string name)
+        public DateTime Birthday { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string Permissions { get; set; } //Set to correct type when we figure out how to handle permissions
+        // public ICollection<ClubMember> ClubMembers { get; set; } = new List<ClubMember>();
+
+
+        // No club implementation yet. 
+
+        public Member(string firstName, string lastName)
         {
             MemberId = Guid.NewGuid();
-            Name = name;
+            FirstName = firstName;
+            LastName = lastName;
+        }
+
+        public Member(string firstName, string lastName, Guid memberId)
+            : this(firstName, lastName)
+        {
+            MemberId = memberId;
         }
 
     }

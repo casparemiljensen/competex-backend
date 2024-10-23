@@ -14,9 +14,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IMemberRepository, MockMemberRepository>();
+builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
+builder.Services.AddScoped<IClubRepository, MockClubRepository>();
+builder.Services.AddScoped<IClubMemberRepository, MockClubMemberRepository>();
 
-builder.Services.AddSingleton<IMemberService, MemberService>();
+// Register MockDatabaseManager as a singleton
+builder.Services.AddSingleton<IDatabaseManager, MockDatabaseManager>();
+
+builder.Services.AddScoped<IMemberService, MemberService>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 

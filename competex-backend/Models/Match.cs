@@ -2,7 +2,7 @@
 
 namespace competex_backend.Models
 {
-    internal class Match
+    public class Match
     {
         public int MatchId { get; set; }
         public int RoundId { get; set; }

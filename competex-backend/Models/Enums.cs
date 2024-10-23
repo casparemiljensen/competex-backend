@@ -24,6 +24,30 @@
         organizer
     }
 
+    public enum EntityType
+    {
+        rabbit,
+        horse
+    }
 
+    public enum EntityLevel
+    {
+        intermediate,
+        beginner,
+        advanced
+    }
 
+    public enum PenaltyType
+    {
+        time,
+        distance,
+        points
+    }
+
+    public enum ScoreType
+    {
+        time,
+        set,
+        number
+    }
 }

@@ -21,7 +21,7 @@ builder.Services.AddScoped<IClubMemberRepository, MockClubMemberRepository>();
 // Register MockDatabaseManager as a singleton
 builder.Services.AddSingleton<IDatabaseManager, MockDatabaseManager>();
 
-builder.Services.AddSingleton<IMemberService, MemberService>();
+builder.Services.AddScoped<IMemberService, MemberService>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 

@@ -40,8 +40,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 existingClub.Name = club.Name;
                 existingClub.AssociatedSport = club.AssociatedSport;
-                existingClub.Organizers = club.Organizers;
-                existingClub.ClubMembers = club.ClubMembers;
+                //existingClub.Organizers = club.Organizers;
+                //existingClub.ClubMembers = club.ClubMembers;
             }
         }
 

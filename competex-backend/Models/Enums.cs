@@ -18,6 +18,12 @@
         turf
     }
 
+    public enum ClubMemberRole
+    {
+        standard,
+        organizer
+    }
+
     public enum EntityType
     {
         rabbit,

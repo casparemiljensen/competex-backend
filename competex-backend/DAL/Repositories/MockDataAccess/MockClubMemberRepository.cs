@@ -9,36 +9,39 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 {
     public class MockClubMemberRepository : IClubMemberRepository
     {
-        private List<ClubMember> _clubMembers;
-        private readonly List<Club> _clubs;
-        private readonly List<Member> _members;
+        private readonly IClubRepository _clubRepository;
+        private readonly IMemberRepository _memberRepository;
+        private readonly IDatabaseManager _db;
 
-        public MockClubMemberRepository(List<Club> clubs, List<Member> members)
+
+        public MockClubMemberRepository(IDatabaseManager db, IClubRepository clubRepo, IMemberRepository memberRepo)
         {
-            _clubs = clubs;
-            _members = members;
-            _clubMembers = new List<ClubMember>();
+            _clubRepository = clubRepo;
+            _memberRepository = memberRepo;
+            _db = db;
         }
 
 
-        public void AddMemberToClub(Guid memberId, Guid clubId) // Maybe it makes more sense to just take the Guids here.
+        public void AddMemberToClub(Guid memberId, Guid clubId, ClubMemberRole role) // Maybe it makes more sense to just take the Guids here.
         {
 
-            var club = _clubs.FirstOrDefault(c => c.ClubId == clubId);
-            var member = _members.FirstOrDefault(m => m.MemberId == memberId);
+            var club = _clubRepository.GetClubById(clubId);
+            var member = _memberRepository.GetMemberById(memberId);
 
             if (club != null && member != null) //Check that member and club exists
             {
-                var existingClubMember = _clubMembers.FirstOrDefault(cm => cm.ClubId == clubId && cm.MemberId == memberId);
+                var existingClubMember = _db.ClubMembers.FirstOrDefault(cm => cm.ClubId == clubId && cm.MemberId == memberId);
                 if (existingClubMember == null) //Only add member to club, if member does not already exist in the club
                 {
                     var clubMember = new ClubMember
                     {
                         ClubId = clubId,
+                        Club = club,
                         MemberId = memberId,
+                        Member = member,
                         JoinDate = DateTime.UtcNow,
                     };
-                    _clubMembers.Add(clubMember);
+                    _db.ClubMembers.Add(clubMember);
                 }
                 else
                 {
@@ -47,19 +50,35 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 }
             }
         }
+        public void DeleteMemberFromClub(Guid memberId, Guid clubId)
+        {
+            var clubMemberToRemove = _db.ClubMembers
+            .FirstOrDefault(cm => cm.ClubId == clubId && cm.MemberId == memberId);
+
+            if (clubMemberToRemove != null)
+            {
+                _db.ClubMembers.Remove(clubMemberToRemove); // Remove the club-member relationship
+            }
+            else
+            {
+                throw new Exception("Club membership does not exist"); // Optional: Handle this case as needed
+            }
+        }
 
         public List<Club> GetClubsOfMember(Guid memberId)
         {
-            return _clubMembers
+            return _db.ClubMembers
                 .Where(clubmember => clubmember.MemberId == memberId) // Filter on member Id
                 .Select(clubmember => clubmember.Club).ToList(); // Select only list of "Club" attributes to return
         }
 
         public List<Member> GetMembersOfClub(Guid clubId)
         {
-            return _clubMembers
+            return _db.ClubMembers
                 .Where(clubmember => clubmember.ClubId == clubId) // Filter on member Id
                 .Select(clubmember => clubmember.Member).ToList(); // Select only list of "Club" attributes to return
         }
+
     }
+    
 }

@@ -7,7 +7,7 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
-    internal class MockMemberRepository : IMemberRepository
+    public class MockMemberRepository : IMemberRepository
     {
         private List<Member> _members;
 

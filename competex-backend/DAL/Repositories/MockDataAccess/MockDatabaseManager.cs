@@ -1,14 +1,16 @@
-﻿using competex_backend.Models;
+﻿using competex_backend.DAL.Interfaces;
+using competex_backend.Models;
 using System.Xml.Linq;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
-    public class MockDatabase
+    public class MockDatabaseManager : IDatabaseManager
     {
         public List<Club> Clubs { get; set; } = new List<Club>();
         public List<Member> Members { get; set; } = new List<Member>();
         public List<ClubMember> ClubMembers { get; set; } = new List<ClubMember>();
 
+        
         private void SeedData()
         {
             // Mock data
@@ -31,15 +33,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var clubMember4 = new ClubMember { ClubId = club2.ClubId, MemberId = member4.MemberId, JoinDate = new DateTime(2001, 8, 31) };
             var clubMember5 = new ClubMember { ClubId = club2.ClubId, MemberId = member5.MemberId, JoinDate = DateTime.UtcNow};
 
-            Clubs.AddRange(new[] { club1, club2 });
-            Members.AddRange(new[] { member1, member2 });
-            ClubMembers.AddRange(new[] { clubMember1, clubMember2 });
-
-            club1.ClubMembers.Add(clubMember1);
-            club2.ClubMembers.Add(clubMember2);
-
-            member1.ClubMembers.Add(clubMember1);
-            member2.ClubMembers.Add(clubMember2);
+            Clubs.AddRange(new[] { club1, club2, club3, club4, club5 });
+            Members.AddRange(new[] { member1, member2, member3, member4, member5 });
+            ClubMembers.AddRange(new[] { clubMember1, clubMember2, clubMember3, clubMember4, clubMember5});
         }
     }
 }

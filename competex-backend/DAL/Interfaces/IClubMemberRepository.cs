@@ -5,7 +5,8 @@ namespace competex_backend.DAL.Interfaces
 {
     public interface IClubMemberRepository
     {
-        void AddMemberToClub(Guid memberId, Guid clubId);
+        public void AddMemberToClub(Guid memberId, Guid clubId, ClubMemberRole role);
+        public void DeleteMemberFromClub(Guid memberId, Guid clubId);
         public List<Member> GetMembersOfClub(Guid clubId);
         public List<Club> GetClubsOfMember(Guid memberId);
     }

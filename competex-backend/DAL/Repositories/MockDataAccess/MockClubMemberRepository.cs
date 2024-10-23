@@ -78,6 +78,34 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 .Where(clubmember => clubmember.ClubId == clubId) // Filter on member Id
                 .Select(clubmember => clubmember.Member).ToList(); // Select only list of "Club" attributes to return
         }
+        public void UpdateClubMember(ClubMember clubMember)
+        {
+            // Find the existing club member in the list
+            var existingClubMember = _db.ClubMembers.FirstOrDefault(cm => cm.ClubId == clubMember.ClubId && cm.MemberId == clubMember.MemberId);
+
+            if (existingClubMember != null)
+            {
+                // Update properties as needed
+                existingClubMember.JoinDate = clubMember.JoinDate; // Update JoinDate or any other properties that might be relevant
+                existingClubMember.Role = clubMember.Role.GetValueOrDefault(ClubMemberRole.standard); // Set role - standard if no role is set beforehand
+            }
+            else
+            {
+                // Throw an exception if the club member does not exist
+                throw new Exception("Club member not found");
+            }
+        }
+        public ClubMember? GetClubMemberFromId(Guid clubMemberId)
+        {
+            return _db.ClubMembers.FirstOrDefault(cm => cm.ClubMemberId == clubMemberId); //may return null
+        }
+
+
+
+        public void CreateEvent()
+        {
+            throw new NotImplementedException();
+        }
 
     }
     

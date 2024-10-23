@@ -9,37 +9,37 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 {
     public class MockMemberRepository : IMemberRepository
     {
-        private List<Member> _members;
+        private readonly IDatabaseManager _db;
 
-        public MockMemberRepository()
+        public MockMemberRepository(IDatabaseManager db)
         {
-            _members = new List<Member>();
+            _db = db;
         }
 
         public void AddMember(Member member)
         {
             member.MemberId = Guid.NewGuid();  // Generate a new Guid for new members
-            _members.Add(member);
+            _db.Members.Add(member);
         }
 
 
         public void DeleteMember(Guid memberId)
         {
-            var memberToRemove = _members.FirstOrDefault(m => m.MemberId == memberId);
+            var memberToRemove = _db.Members.FirstOrDefault(m => m.MemberId == memberId);
             if (memberToRemove != null)
             {
-                _members.Remove(memberToRemove);
+                _db.Members.Remove(memberToRemove);
             }
         }
 
         public Member GetMemberById(Guid memberId)
         {
-            return _members.FirstOrDefault(m => m.MemberId == memberId) ?? throw new Exception("No member found");
+            return _db.Members.FirstOrDefault(m => m.MemberId == memberId) ?? throw new Exception("No member found");
         }
 
         public void UpdateMember(Member member)
         {
-            var existingMember = _members.FirstOrDefault(m => m.MemberId == member.MemberId);
+            var existingMember = _db.Members.FirstOrDefault(m => m.MemberId == member.MemberId);
             if (existingMember != null)
             {
                 existingMember.FirstName = member.FirstName;
@@ -53,7 +53,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
         List<Member> IMemberRepository.GetMembers()
         {
-            return _members;
+            return _db.Members;
         }
 
 

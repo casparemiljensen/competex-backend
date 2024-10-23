@@ -14,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
 builder.Services.AddScoped<IClubRepository, MockClubRepository>();
 builder.Services.AddScoped<IClubMemberRepository, MockClubMemberRepository>();

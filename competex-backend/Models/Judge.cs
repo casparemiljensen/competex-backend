@@ -1,6 +1,6 @@
 ﻿namespace competex_backend.Models
 {
-    internal class Judge
+    public class Judge
     {
         public int JudgeId { get; set; }
         public string Name { get; set; } = string.Empty;

@@ -1,8 +1,8 @@
-﻿using competex_backend.BLL.Interfaces;
-using competex_backend.DAL.Interfaces;
-using competex_backend.DAL.Repositories;
-using competex_backend.Models;
+﻿using competex_backend.API.DTOs;
+using competex_backend.API.Interfaces;
+using competex_backend.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,7 +10,7 @@ namespace competex_backend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MembersController : ControllerBase
+    public class MembersController : ControllerBase, IMemberAPI
     {
         private IMemberService _memberService;
 
@@ -19,31 +19,64 @@ namespace competex_backend.API.Controllers
             _memberService = memberService;
         }
 
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return _memberService.GetMembers().Select(m => $"{ m.FirstName } {m.LastName}");
-        }
+        // When merged with Ilums changes.
+        // change to async Task<IActionResult> GetById(Guid id)
+        // Add await
 
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult GetById(Guid id)
         {
-            return "value";
+            var obj = _memberService.GetById(id);
+
+            if(obj != null)
+            {
+                return Ok(obj);
+            }
+            return BadRequest("An error occured");
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var obj = _memberService.GetAll().Select(m => $"{m.FirstName} {m.LastName}");
+            if(obj != null)
+            {
+                return Ok(obj);
+            }
+            return BadRequest("An error occured");
         }
 
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Create(MemberDTO obj)
         {
+            var res = _memberService.Create(obj);
+            if (res)
+            {
+                return Ok();
+            }
+            return BadRequest("An error occured");
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Update(MemberDTO obj)
         {
+            var res = _memberService.Update(obj);
+            if (res)
+            {
+                return Ok();
+            }
+            return BadRequest("An error occured");
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(Guid id)
         {
+            var res = _memberService.Remove(id);
+            if (res)
+            {
+                return Ok();
+            }
+            return BadRequest("An error occured");
         }
     }
 }

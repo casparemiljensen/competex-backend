@@ -12,46 +12,53 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             _db = db;
         }
 
-        // Get all clubs
-        public List<Club> GetClubs()
-        {
-            return _db.Clubs;
-        }
-
-        // Get club by ID
-        public Club? GetClubById(Guid clubId)
+        public Club? GetById(Guid clubId)
         {
             return _db.Clubs.FirstOrDefault(c => c.ClubId == clubId);
         }
 
-        // Add a new club
-        public void AddClub(Club club)
+        public IEnumerable<Club> GetAll()
+        {
+            return _db.Clubs;
+        }
+
+        public Guid Insert(Club club)
         {
             club.ClubId = Guid.NewGuid();  // Generate a new Guid for new clubs
             _db.Clubs.Add(club);
+            // TODO: Figure out where to implement Guid creation.
+            return club.ClubId;
         }
 
-        // Update an existing club
-        public void UpdateClub(Club club)
+        public bool Update(Club club)
         {
             var existingClub = _db.Clubs.FirstOrDefault(c => c.ClubId == club.ClubId);
             if (existingClub != null)
             {
                 existingClub.Name = club.Name;
                 existingClub.AssociatedSport = club.AssociatedSport;
+                return true;
                 //existingClub.Organizers = club.Organizers;
                 //existingClub.ClubMembers = club.ClubMembers;
             }
+            return false;
         }
 
-        // Delete a club
-        public void DeleteClub(Guid clubId)
+        public bool Delete(Guid clubId)
         {
             var clubToRemove = _db.Clubs.FirstOrDefault(c => c.ClubId == clubId);
             if (clubToRemove != null)
             {
                 _db.Clubs.Remove(clubToRemove);
+                return true;
             }
+            return false;
+        }
+
+        public List<Club> GetClubByName(string name)
+        {
+            var clubs = _db.Clubs.Where(c => c.Name == name).ToList();
+            return clubs;
         }
     }
 }

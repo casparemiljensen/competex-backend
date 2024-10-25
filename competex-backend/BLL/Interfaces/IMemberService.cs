@@ -2,8 +2,7 @@
 
 namespace competex_backend.BLL.Interfaces
 {
-    public interface IMemberService
+    public interface IMemberService : IGenericService<MemberDTO>
     {
-        IEnumerable<MemberDTO> GetMembers();
     }
 }

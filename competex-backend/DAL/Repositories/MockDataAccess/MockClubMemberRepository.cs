@@ -2,7 +2,6 @@
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 using System.Data;
-using static System.Reflection.Metadata.BlobBuilder;
 using Member = competex_backend.Models.Member;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
@@ -21,12 +20,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             _db = db;
         }
 
-
         public void AddMemberToClub(Guid memberId, Guid clubId, ClubMemberRole role) // Maybe it makes more sense to just take the Guids here.
         {
 
-            var club = _clubRepository.GetClubById(clubId);
-            var member = _memberRepository.GetMemberById(memberId);
+            var club = _clubRepository.GetById(clubId);
+            var member = _memberRepository.GetById(memberId);
 
             if (club != null && member != null) //Check that member and club exists
             {
@@ -108,5 +106,5 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         }
 
     }
-    
+
 }

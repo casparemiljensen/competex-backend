@@ -2,12 +2,8 @@
 
 namespace competex_backend.DAL.Interfaces
 {
-    public interface IClubRepository
+    public interface IClubRepository : IGenericRepository<Club>
     {
-        List<Club> GetClubs();
-        Club? GetClubById(Guid clubId);
-        void AddClub(Club club);
-        void UpdateClub(Club club);
-        void DeleteClub(Guid clubId);
+        List<Club> GetClubByName(string name);
     }
 }

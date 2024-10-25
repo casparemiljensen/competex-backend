@@ -12,29 +12,50 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             _db = db;
         }
 
-        List<Member> IMemberRepository.GetMembers()
+        public Member? GetById(Guid id)
+        {
+            return _db.Members.FirstOrDefault(m => m.MemberId == id) ?? throw new Exception("No member found");
+        }
+
+
+        public IEnumerable<Member> GetAll()
         {
             return _db.Members;
         }
 
-        public bool AddMember(Member member)
+        public Guid Insert(Member obj)
         {
-            member.MemberId = Guid.NewGuid();  // Generate a new Guid for new members
+            obj.MemberId = Guid.NewGuid();  // Generate a new Guid for new members
             try
             {
-                _db.Members.Add(member);
-                return true;
+                _db.Members.Add(obj);
+                return obj.MemberId;
             }
             catch (Exception)
             {
-                return false;
+                return Guid.Empty;
             }
         }
 
-
-        public bool DeleteMember(Guid memberId)
+        public bool Update(Member obj)
         {
-            var memberToRemove = _db.Members.FirstOrDefault(m => m.MemberId == memberId);
+            var existingMember = _db.Members.FirstOrDefault(m => m.MemberId == obj.MemberId);
+            if (existingMember != null)
+            {
+                existingMember.FirstName = obj.FirstName;
+                existingMember.LastName = obj.LastName;
+                existingMember.Birthday = obj.Birthday;
+                existingMember.Email = obj.Email;
+                existingMember.Phone = obj.Phone;
+                existingMember.Permissions = obj.Permissions;
+                return false;
+            }
+            return false;
+        }
+
+        public bool Delete(Guid id)
+        {
+            var memberToRemove = _db.Members.FirstOrDefault(m => m.MemberId == id);
             if (memberToRemove != null)
             {
                 try
@@ -46,28 +67,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 {
                     throw new Exception("Could not delete member", ex);
                 }
-            }
-            return false;
-        }
-
-
-        public Member GetMemberById(Guid memberId)
-        {
-            return _db.Members.FirstOrDefault(m => m.MemberId == memberId) ?? throw new Exception("No member found");
-        }
-
-        public bool UpdateMember(Member member)
-        {
-            var existingMember = _db.Members.FirstOrDefault(m => m.MemberId == member.MemberId);
-            if (existingMember != null)
-            {
-                existingMember.FirstName = member.FirstName;
-                existingMember.LastName = member.LastName;
-                existingMember.Birthday = member.Birthday;
-                existingMember.Email = member.Email;
-                existingMember.Phone = member.Phone;
-                existingMember.Permissions = member.Permissions;
-                return false;
             }
             return false;
         }

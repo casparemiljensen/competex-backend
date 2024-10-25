@@ -17,17 +17,17 @@ namespace competex_backend.BLL.Services
             _mapper = mapper;
         }
 
-        public bool AddMember(MemberDTO memberDto)
+        public MemberDTO? GetById(Guid id)
         {
-            // Map MemberDto to Member
-            var member = _mapper.Map<Member>(memberDto);
-            _memberRepository.AddMember(member);
-            return true;
+            var member = _memberRepository.GetById(id);
+            if (member == null)
+                return null;
+            return _mapper.Map<MemberDTO>(member);
         }
 
-        public IEnumerable<MemberDTO> GetMembers()
+        public IEnumerable<MemberDTO> GetAll()
         {
-            var members = _memberRepository.GetMembers();
+            var members = _memberRepository.GetAll();
             // Map Member to MemberDto
             var memberDtos = new List<MemberDTO>();
             foreach (var member in members)
@@ -37,6 +37,22 @@ namespace competex_backend.BLL.Services
             return memberDtos; // Return the list of DTOs
         }
 
-        
+        public bool Create(MemberDTO obj)
+        {
+            // Map MemberDto to Member
+            var member = _mapper.Map<Member>(obj);
+            _memberRepository.Insert(member);
+            return true;
+        }
+
+        public bool Update(MemberDTO obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

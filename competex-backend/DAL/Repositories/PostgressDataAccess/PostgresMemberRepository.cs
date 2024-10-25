@@ -5,27 +5,27 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 {
     internal class PostgresMemberRepository : IMemberRepository
     {
-        public Member GetMemberById(Guid memberId)
+        public bool Delete(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        bool IMemberRepository.AddMember(Member member)
+        public IEnumerable<Member> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        bool IMemberRepository.DeleteMember(Guid memberId)
+        public Member? GetById(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        List<Member> IMemberRepository.GetMembers()
+        public Guid Insert(Member obj)
         {
             throw new NotImplementedException();
         }
 
-        bool IMemberRepository.UpdateMember(Member member)
+        public bool Update(Member obj)
         {
             throw new NotImplementedException();
         }

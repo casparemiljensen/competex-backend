@@ -10,7 +10,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Member> Members { get; set; } = new List<Member>();
         public List<ClubMember> ClubMembers { get; set; } = new List<ClubMember>();
 
-        
+        public MockDatabaseManager()
+        {
+            SeedData();
+        }
+
         private void SeedData()
         {
             // Mock data

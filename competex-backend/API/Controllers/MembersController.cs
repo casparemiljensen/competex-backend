@@ -22,7 +22,7 @@ namespace competex_backend.API.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return _memberService.GetMembers().Select(m => m.Name);
+            return _memberService.GetMembers().Select(m => $"{ m.FirstName } {m.LastName}");
         }
 
         [HttpGet("{id}")]

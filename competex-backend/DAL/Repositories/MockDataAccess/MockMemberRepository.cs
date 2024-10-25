@@ -1,9 +1,5 @@
-﻿using competex_backend.Models;
-using competex_backend.DAL.Interfaces;
-using AutoMapper.Execution;
+﻿using competex_backend.DAL.Interfaces;
 using Member = competex_backend.Models.Member;
-using System.Numerics;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
@@ -16,10 +12,18 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             _db = db;
         }
 
-        public void AddMember(Member member)
+        public bool AddMember(Member member)
         {
             member.MemberId = Guid.NewGuid();  // Generate a new Guid for new members
-            _db.Members.Add(member);
+            try
+            {
+                _db.Members.Add(member);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
 
@@ -28,9 +32,17 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var memberToRemove = _db.Members.FirstOrDefault(m => m.MemberId == memberId);
             if (memberToRemove != null)
             {
-                _db.Members.Remove(memberToRemove);
+                try
+                {
+                    _db.Members.Remove(memberToRemove);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Could not delete member", ex);
+                }
             }
         }
+
 
         public Member GetMemberById(Guid memberId)
         {

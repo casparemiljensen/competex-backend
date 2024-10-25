@@ -11,13 +11,13 @@ namespace competex_backend.DAL.Interfaces
         Member GetMemberById(Guid memberId);
 
         // Add a new member
-        void AddMember(Member member);
+        bool AddMember(Member member);
 
         // Update an existing member
-        void UpdateMember(Member member);
+        bool UpdateMember(Member member);
 
         // Delete a member by ID
-        void DeleteMember(Guid memberId);
+        bool DeleteMember(Guid memberId);
 
     }
 }

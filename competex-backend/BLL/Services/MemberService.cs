@@ -17,6 +17,13 @@ namespace competex_backend.BLL.Services
             _mapper = mapper;
         }
 
+        public bool AddMember(MemberDTO memberDto)
+        {
+            // Map MemberDto to Member
+            var member = _mapper.Map<Member>(memberDto);
+            _memberRepository.AddMember(member);
+            return true;
+        }
 
         public IEnumerable<MemberDTO> GetMembers()
         {
@@ -29,5 +36,7 @@ namespace competex_backend.BLL.Services
             }
             return memberDtos; // Return the list of DTOs
         }
+
+        
     }
 }

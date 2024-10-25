@@ -1,5 +1,4 @@
 ﻿using competex_backend.Models;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace competex_backend.DAL.Interfaces
 {

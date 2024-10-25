@@ -12,6 +12,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             _db = db;
         }
 
+        List<Member> IMemberRepository.GetMembers()
+        {
+            return _db.Members;
+        }
+
         public bool AddMember(Member member)
         {
             member.MemberId = Guid.NewGuid();  // Generate a new Guid for new members
@@ -27,7 +32,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         }
 
 
-        public void DeleteMember(Guid memberId)
+        public bool DeleteMember(Guid memberId)
         {
             var memberToRemove = _db.Members.FirstOrDefault(m => m.MemberId == memberId);
             if (memberToRemove != null)
@@ -35,12 +40,14 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 try
                 {
                     _db.Members.Remove(memberToRemove);
+                    return true;
                 }
                 catch (Exception ex)
                 {
                     throw new Exception("Could not delete member", ex);
                 }
             }
+            return false;
         }
 
 
@@ -49,7 +56,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             return _db.Members.FirstOrDefault(m => m.MemberId == memberId) ?? throw new Exception("No member found");
         }
 
-        public void UpdateMember(Member member)
+        public bool UpdateMember(Member member)
         {
             var existingMember = _db.Members.FirstOrDefault(m => m.MemberId == member.MemberId);
             if (existingMember != null)
@@ -60,14 +67,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 existingMember.Email = member.Email;
                 existingMember.Phone = member.Phone;
                 existingMember.Permissions = member.Permissions;
+                return false;
             }
+            return false;
         }
-
-        List<Member> IMemberRepository.GetMembers()
-        {
-            return _db.Members;
-        }
-
-
     }
 }

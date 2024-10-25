@@ -11,8 +11,8 @@ jobs:
     steps:
       - name: Check branch
         run: |
-          if [[ ${GITHUB_HEAD_REF} != develop ]]; 
+          if [[ "${GITHUB_BASE_REF}" == "main" && "${GITHUB_HEAD_REF}" != "develop" ]]; 
           then
-            echo "Error: Pull request must come from 'develop' branch"
+            echo "Error: Pull request must come from 'develop' branch when targeting 'main'"
             exit 1
           fi

@@ -12,17 +12,27 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             _db = db;
         }
 
-        List<Member> IMemberRepository.GetMembers()
+        // Retrieve all members asynchronously
+        public Task<List<Member>> GetMembersAsync()
         {
-            return _db.Members;
+            return Task.FromResult(_db.Members);
         }
 
-        public bool AddMember(Member member)
+        // Retrieve a specific member by ID asynchronously
+        public Task<Member?> GetMemberByIdAsync(Guid memberId)
+        {
+            var member = _db.Members.FirstOrDefault(m => m.MemberId == memberId);
+            return Task.FromResult(member);
+        }
+
+        // Add a new member asynchronously
+        public async Task<bool> AddMemberAsync(Member member)
         {
             member.MemberId = Guid.NewGuid();  // Generate a new Guid for new members
             try
             {
                 _db.Members.Add(member);
+                await Task.CompletedTask; // Simulate async work
                 return true;
             }
             catch (Exception)
@@ -31,8 +41,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             }
         }
 
-
-        public bool DeleteMember(Guid memberId)
+        // Delete a member by ID asynchronously
+        public async Task<bool> DeleteMemberAsync(Guid memberId)
         {
             var memberToRemove = _db.Members.FirstOrDefault(m => m.MemberId == memberId);
             if (memberToRemove != null)
@@ -40,6 +50,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 try
                 {
                     _db.Members.Remove(memberToRemove);
+                    await Task.CompletedTask; // Simulate async work
                     return true;
                 }
                 catch (Exception ex)
@@ -50,13 +61,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             return false;
         }
 
-
-        public Member GetMemberById(Guid memberId)
-        {
-            return _db.Members.FirstOrDefault(m => m.MemberId == memberId) ?? throw new Exception("No member found");
-        }
-
-        public bool UpdateMember(Member member)
+        // Update an existing member asynchronously
+        public async Task<bool> UpdateMemberAsync(Member member)
         {
             var existingMember = _db.Members.FirstOrDefault(m => m.MemberId == member.MemberId);
             if (existingMember != null)
@@ -67,7 +73,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 existingMember.Email = member.Email;
                 existingMember.Phone = member.Phone;
                 existingMember.Permissions = member.Permissions;
-                return false;
+                await Task.CompletedTask; // Simulate async work
+                return true;
             }
             return false;
         }

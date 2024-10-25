@@ -13,26 +13,28 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         }
 
         // Get all clubs
-        public List<Club> GetClubs()
+        public async Task<List<Club>> GetClubsAsync()
         {
-            return _db.Clubs;
+            return await Task.FromResult(_db.Clubs);
         }
 
         // Get club by ID
-        public Club? GetClubById(Guid clubId)
+        public async Task<Club?> GetClubByIdAsync(Guid clubId)
         {
-            return _db.Clubs.FirstOrDefault(c => c.ClubId == clubId);
+            var club = _db.Clubs.FirstOrDefault(c => c.ClubId == clubId);
+            return await Task.FromResult(club);
         }
 
         // Add a new club
-        public void AddClub(Club club)
+        public async Task AddClubAsync(Club club)
         {
             club.ClubId = Guid.NewGuid();  // Generate a new Guid for new clubs
             _db.Clubs.Add(club);
+            await Task.CompletedTask;
         }
 
         // Update an existing club
-        public void UpdateClub(Club club)
+        public async Task UpdateClubAsync(Club club)
         {
             var existingClub = _db.Clubs.FirstOrDefault(c => c.ClubId == club.ClubId);
             if (existingClub != null)
@@ -42,16 +44,18 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 //existingClub.Organizers = club.Organizers;
                 //existingClub.ClubMembers = club.ClubMembers;
             }
+            await Task.CompletedTask;
         }
 
         // Delete a club
-        public void DeleteClub(Guid clubId)
+        public async Task DeleteClubAsync(Guid clubId)
         {
             var clubToRemove = _db.Clubs.FirstOrDefault(c => c.ClubId == clubId);
             if (clubToRemove != null)
             {
                 _db.Clubs.Remove(clubToRemove);
             }
+            await Task.CompletedTask;
         }
     }
 }

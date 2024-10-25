@@ -21,16 +21,16 @@ namespace competex_backend.BLL.Services
         {
             // Map MemberDto to Member
             var member = _mapper.Map<Member>(memberDto);
-            _memberRepository.AddMember(member);
+            _memberRepository.AddMemberAsync(member);
             return true;
         }
 
         public IEnumerable<MemberDTO> GetMembers()
         {
-            var members = _memberRepository.GetMembers();
+            var members = _memberRepository.GetMembersAsync();
             // Map Member to MemberDto
             var memberDtos = new List<MemberDTO>();
-            foreach (var member in members)
+            foreach (var member in members.Result)
             {
                 memberDtos.Add(_mapper.Map<MemberDTO>(member));
             }

@@ -4,10 +4,10 @@ namespace competex_backend.DAL.Interfaces
 {
     public interface IClubRepository
     {
-        List<Club> GetClubs();
-        Club? GetClubById(Guid clubId);
-        void AddClub(Club club);
-        void UpdateClub(Club club);
-        void DeleteClub(Guid clubId);
+        Task<List<Club>> GetClubsAsync();
+        Task<Club?> GetClubByIdAsync(Guid clubId);
+        Task AddClubAsync(Club club);
+        Task UpdateClubAsync(Club club);
+        Task DeleteClubAsync(Guid clubId);
     }
 }

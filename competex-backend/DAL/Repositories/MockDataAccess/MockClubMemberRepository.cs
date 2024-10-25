@@ -22,16 +22,15 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         }
 
 
-        public void AddMemberToClub(Guid memberId, Guid clubId, ClubMemberRole role) // Maybe it makes more sense to just take the Guids here.
+        public async Task AddMemberToClubAsync(Guid memberId, Guid clubId, ClubMemberRole role)
         {
+            var club = await _clubRepository.GetClubByIdAsync(clubId);
+            var member = await _memberRepository.GetMemberByIdAsync(memberId);
 
-            var club = _clubRepository.GetClubById(clubId);
-            var member = _memberRepository.GetMemberById(memberId);
-
-            if (club != null && member != null) //Check that member and club exists
+            if (club != null && member != null) // Check that member and club exist
             {
                 var existingClubMember = _db.ClubMembers.FirstOrDefault(cm => cm.ClubId == clubId && cm.MemberId == memberId);
-                if (existingClubMember == null) //Only add member to club, if member does not already exist in the club
+                if (existingClubMember == null) // Only add member to club if not already in club
                 {
                     var clubMember = new ClubMember
                     {
@@ -40,24 +39,27 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                         MemberId = memberId,
                         Member = member,
                         JoinDate = DateTime.UtcNow,
+                        Role = role
                     };
                     _db.ClubMembers.Add(clubMember);
                 }
                 else
                 {
                     throw new Exception("Club membership already exists");
-                    //existingClubMember.Role = role; // Update role if already exists
                 }
             }
         }
-        public void DeleteMemberFromClub(Guid memberId, Guid clubId)
+
+        // Remove a member from a club asynchronously
+        public async Task DeleteMemberFromClubAsync(Guid memberId, Guid clubId)
         {
             var clubMemberToRemove = _db.ClubMembers
-            .FirstOrDefault(cm => cm.ClubId == clubId && cm.MemberId == memberId);
+                .FirstOrDefault(cm => cm.ClubId == clubId && cm.MemberId == memberId);
 
             if (clubMemberToRemove != null)
             {
                 _db.ClubMembers.Remove(clubMemberToRemove); // Remove the club-member relationship
+                await Task.CompletedTask;
             }
             else
             {
@@ -65,44 +67,55 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             }
         }
 
-        public List<Club> GetClubsOfMember(Guid memberId)
+        // Get all clubs of a member asynchronously
+        public async Task<List<Club>> GetClubsOfMemberAsync(Guid memberId)
         {
-            return _db.ClubMembers
-                .Where(clubmember => clubmember.MemberId == memberId) // Filter on member Id
-                .Select(clubmember => clubmember.Club).ToList(); // Select only list of "Club" attributes to return
+            var clubs = _db.ClubMembers
+                .Where(clubMember => clubMember.MemberId == memberId)
+                .Select(clubMember => clubMember.Club)
+                .ToList();
+
+            return await Task.FromResult(clubs);
         }
 
-        public List<Member> GetMembersOfClub(Guid clubId)
+        // Get all members of a club asynchronously
+        public async Task<List<Member>> GetMembersOfClubAsync(Guid clubId)
         {
-            return _db.ClubMembers
-                .Where(clubmember => clubmember.ClubId == clubId) // Filter on member Id
-                .Select(clubmember => clubmember.Member).ToList(); // Select only list of "Club" attributes to return
+            var members = _db.ClubMembers
+                .Where(clubMember => clubMember.ClubId == clubId)
+                .Select(clubMember => clubMember.Member)
+                .ToList();
+
+            return await Task.FromResult(members);
         }
-        public void UpdateClubMember(ClubMember clubMember)
+
+        // Update a club member asynchronously
+        public async Task UpdateClubMemberAsync(ClubMember clubMember)
         {
-            // Find the existing club member in the list
-            var existingClubMember = _db.ClubMembers.FirstOrDefault(cm => cm.ClubId == clubMember.ClubId && cm.MemberId == clubMember.MemberId);
+            var existingClubMember = _db.ClubMembers
+                .FirstOrDefault(cm => cm.ClubId == clubMember.ClubId && cm.MemberId == clubMember.MemberId);
 
             if (existingClubMember != null)
             {
                 // Update properties as needed
-                existingClubMember.JoinDate = clubMember.JoinDate; // Update JoinDate or any other properties that might be relevant
-                existingClubMember.Role = clubMember.Role.GetValueOrDefault(ClubMemberRole.standard); // Set role - standard if no role is set beforehand
+                existingClubMember.JoinDate = clubMember.JoinDate;
+                existingClubMember.Role = clubMember.Role.GetValueOrDefault(ClubMemberRole.standard);
+                await Task.CompletedTask;
             }
             else
             {
-                // Throw an exception if the club member does not exist
                 throw new Exception("Club member not found");
             }
         }
-        public ClubMember? GetClubMemberFromId(Guid clubMemberId)
+
+        // Get a club member by ID asynchronously
+        public async Task<ClubMember?> GetClubMemberFromIdAsync(Guid clubMemberId)
         {
-            return _db.ClubMembers.FirstOrDefault(cm => cm.ClubMemberId == clubMemberId); //may return null
+            var clubMember = _db.ClubMembers.FirstOrDefault(cm => cm.ClubMemberId == clubMemberId);
+            return await Task.FromResult(clubMember);
         }
 
-
-
-        public void CreateEvent()
+        public Task CreateEventAsync()
         {
             throw new NotImplementedException();
         }

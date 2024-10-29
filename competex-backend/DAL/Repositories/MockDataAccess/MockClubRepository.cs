@@ -5,54 +5,85 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 {
     public class MockClubRepository : IClubRepository
     {
-        private List<Club> _clubs;
+        private readonly IDatabaseManager _db;
 
-        public MockClubRepository()
+        public MockClubRepository(IDatabaseManager db)
         {
-            // Initialize with some mock data
-            _clubs = new List<Club>();
-        }
-
-        // Get all clubs
-        public List<Club> GetClubs()
-        {
-            return _clubs;
+            _db = db;
         }
 
         // Get club by ID
-        public Club GetClubById(Guid clubId)
+        public async Task<Club?> GetByIdAsync(Guid clubId)
         {
-            return _clubs.FirstOrDefault(c => c.ClubId == clubId);
+            var club = _db.Clubs.FirstOrDefault(c => c.ClubId == clubId);
+            return await Task.FromResult(club);
         }
+
+        // Get all clubs
+        public async Task<IEnumerable<Club>> GetAllAsync()
+        {
+            return await Task.FromResult(_db.Clubs);
+        }
+
 
         // Add a new club
-        public void AddClub(Club club)
+        public async Task<Guid> InsertAsync(Club obj)
         {
-            club.ClubId = Guid.NewGuid();  // Generate a new Guid for new clubs
-            _clubs.Add(club);
+            obj.ClubId = Guid.NewGuid();  // Generate a new Guid for new clubs
+            try
+            {
+                _db.Clubs.Add(obj);
+                await Task.CompletedTask;
+                return obj.ClubId;
+            }
+            catch (Exception)
+            {
+                return Guid.Empty;
+            }
+            
         }
 
+
         // Update an existing club
-        public void UpdateClub(Club club)
+        public async Task<bool> UpdateAsync(Club obj)
         {
-            var existingClub = _clubs.FirstOrDefault(c => c.ClubId == club.ClubId);
+            var existingClub = _db.Clubs.FirstOrDefault(c => c.ClubId == obj.ClubId);
             if (existingClub != null)
             {
-                existingClub.Name = club.Name;
-                existingClub.AssociatedSport = club.AssociatedSport;
+                existingClub.Name = obj.Name;
+                existingClub.AssociatedSport = obj.AssociatedSport;
+                await Task.CompletedTask; // Simulate async work
+                return true;
                 //existingClub.Organizers = club.Organizers;
                 //existingClub.ClubMembers = club.ClubMembers;
             }
+            return false;
         }
 
         // Delete a club
-        public void DeleteClub(Guid clubId)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            var clubToRemove = _clubs.FirstOrDefault(c => c.ClubId == clubId);
+            var clubToRemove = _db.Clubs.FirstOrDefault(c => c.ClubId == id);    
             if (clubToRemove != null)
             {
-                _clubs.Remove(clubToRemove);
+                try
+                {
+                    _db.Clubs.Remove(clubToRemove);
+                    await Task.CompletedTask; // Simulate async work
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Could not delete club", ex);
+                }
             }
+            return false;
+        }
+
+        public IEnumerable<Club> GetClubByName(string name)
+        {
+            var clubs = _db.Clubs.Where(c => c.Name == name).ToList();
+            return clubs;
         }
     }
 }

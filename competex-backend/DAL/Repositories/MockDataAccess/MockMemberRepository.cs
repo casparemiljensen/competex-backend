@@ -1,61 +1,86 @@
-﻿using competex_backend.Models;
-using competex_backend.DAL.Interfaces;
-using AutoMapper.Execution;
+﻿using competex_backend.DAL.Interfaces;
 using Member = competex_backend.Models.Member;
-using System.Numerics;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
     public class MockMemberRepository : IMemberRepository
     {
-        private List<Member> _members;
+        private readonly IDatabaseManager _db;
 
-        public MockMemberRepository()
+        public MockMemberRepository(IDatabaseManager db)
         {
-            _members = new List<Member>();
+            _db = db;
         }
 
-        public void AddMember(Member member)
+        // Retrieve a specific member by ID asynchronously
+        public Task<Member?> GetByIdAsync(Guid Id)
         {
-            member.MemberId = Guid.NewGuid();  // Generate a new Guid for new members
-            _members.Add(member);
+            var member = _db.Members.FirstOrDefault(m => m.MemberId == Id);
+            return Task.FromResult(member);
+        }
+
+        // Retrieve all members asynchronously
+        public Task<IEnumerable<Member>> GetAllAsync()
+        {
+            return Task.FromResult<IEnumerable<Member>>(_db.Members.AsEnumerable());
         }
 
 
-        public void DeleteMember(Guid memberId)
+
+        // Add a new member asynchronously
+        public async Task<Guid> InsertAsync(Member obj)
         {
-            var memberToRemove = _members.FirstOrDefault(m => m.MemberId == memberId);
-            if (memberToRemove != null)
+            obj.MemberId = Guid.NewGuid();  // Generate a new Guid for new members
+            try
             {
-                _members.Remove(memberToRemove);
+                _db.Members.Add(obj);
+                await Task.CompletedTask; // Simulate async work
+                return obj.MemberId;
+            }
+            catch (Exception)
+            {
+                return Guid.Empty;
             }
         }
 
-        public Member GetMemberById(Guid memberId)
-        {
-            return _members.FirstOrDefault(m => m.MemberId == memberId) ?? throw new Exception("No member found");
-        }
 
-        public void UpdateMember(Member member)
+        // Update an existing member asynchronously
+        public async Task<bool> UpdateAsync(Member obj)
         {
-            var existingMember = _members.FirstOrDefault(m => m.MemberId == member.MemberId);
+            var existingMember = _db.Members.FirstOrDefault(m => m.MemberId == obj.MemberId);
             if (existingMember != null)
             {
-                existingMember.FirstName = member.FirstName;
-                existingMember.LastName = member.LastName;
-                existingMember.Birthday = member.Birthday;
-                existingMember.Email = member.Email;
-                existingMember.Phone = member.Phone;
-                existingMember.Permissions = member.Permissions;
+                existingMember.FirstName = obj.FirstName;
+                existingMember.LastName = obj.LastName;
+                existingMember.Birthday = obj.Birthday;
+                existingMember.Email = obj.Email;
+                existingMember.Phone = obj.Phone;
+                existingMember.Permissions = obj.Permissions;
+                await Task.CompletedTask; // Simulate async work
+                return true;
             }
+            return false;
         }
 
-        List<Member> IMemberRepository.GetMembers()
+
+        // Delete a member by ID asynchronously
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            return _members;
+            var memberToRemove = _db.Members.FirstOrDefault(m => m.MemberId == id);
+            if (memberToRemove != null)
+            {
+                try
+                {
+                    _db.Members.Remove(memberToRemove);
+                    await Task.CompletedTask; // Simulate async work
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Could not delete member", ex);
+                }
+            }
+            return false;
         }
-
-
     }
 }

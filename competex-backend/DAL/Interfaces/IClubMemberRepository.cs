@@ -5,9 +5,13 @@ namespace competex_backend.DAL.Interfaces
 {
     public interface IClubMemberRepository
     {
-        public void AddMemberToClub(Guid memberId, Guid clubId, ClubMemberRole role);
-        public void DeleteMemberFromClub(Guid memberId, Guid clubId);
-        public List<Member> GetMembersOfClub(Guid clubId);
-        public List<Club> GetClubsOfMember(Guid memberId);
+        Task AddMemberToClubAsync(Guid memberId, Guid clubId, ClubMemberRole role);
+        Task UpdateClubMemberAsync(ClubMember clubmember);
+        Task DeleteMemberFromClubAsync(Guid clubId, Guid memberId); // Could also use ClubMemberId if available when removing a member from a club
+
+        Task<ClubMember?> GetClubMemberFromIdAsync(Guid clubMemberId);
+        Task<List<Member>> GetMembersOfClubAsync(Guid clubId);
+        Task<List<Club>> GetClubsOfMemberAsync(Guid memberId);
+        Task CreateEventAsync();
     }
 }

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
 using competex_backend.API.DTOs;
 using competex_backend.BLL.Interfaces;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
+using Member = competex_backend.Models.Member;
 
 namespace competex_backend.BLL.Services
 {
@@ -19,7 +21,7 @@ namespace competex_backend.BLL.Services
 
         public MemberDTO? GetById(Guid id)
         {
-            var member = _memberRepository.GetById(id);
+            var member = _memberRepository.GetByIdAsync(id).Result;
             if (member == null)
                 return null;
             return _mapper.Map<MemberDTO>(member);
@@ -27,7 +29,7 @@ namespace competex_backend.BLL.Services
 
         public IEnumerable<MemberDTO> GetAll()
         {
-            var members = _memberRepository.GetAll();
+            var members = _memberRepository.GetAllAsync().Result;
             // Map Member to MemberDto
             var memberDtos = new List<MemberDTO>();
             foreach (var member in members)
@@ -41,18 +43,21 @@ namespace competex_backend.BLL.Services
         {
             // Map MemberDto to Member
             var member = _mapper.Map<Member>(obj);
-            _memberRepository.Insert(member);
+            _memberRepository.InsertAsync(member);
             return true;
         }
 
         public bool Update(MemberDTO obj)
         {
-            throw new NotImplementedException();
+            var member = _mapper.Map<Member>(obj);
+            _memberRepository.UpdateAsync(member);
+            return true;
         }
 
         public bool Remove(Guid id)
         {
-            throw new NotImplementedException();
+            _memberRepository.DeleteAsync(id);
+            return true;
         }
     }
 }

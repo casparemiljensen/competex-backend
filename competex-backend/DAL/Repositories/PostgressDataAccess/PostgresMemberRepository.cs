@@ -5,27 +5,30 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 {
     internal class PostgresMemberRepository : IMemberRepository
     {
-        public bool Delete(Guid id)
+
+
+        public Task<Member?> GetByIdAsync(Guid memberId)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Member> GetAll()
+        public Task<IEnumerable<Member>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Member? GetById(Guid id)
+
+        public Task<Guid> InsertAsync(Member member)
         {
             throw new NotImplementedException();
         }
 
-        public Guid Insert(Member obj)
+        public Task<bool> UpdateAsync(Member member)
         {
             throw new NotImplementedException();
         }
 
-        public bool Update(Member obj)
+        public Task<bool> DeleteAsync(Guid memberId)
         {
             throw new NotImplementedException();
         }

@@ -10,6 +10,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Member> Members { get; set; } = new();
         public List<ClubMember> ClubMembers { get; set; } = new();
         public List<Entity> Entities { get; set; } = new();
+        public List<Field> Fields { get; set; } = new();
 
         public MockDatabaseManager()
         {
@@ -90,6 +91,47 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             };
 
             Entities.AddRange(new[] { entity1, entity2, entity3, entity4, entity5 });
+            #endregion
+
+
+
+            #region fields
+            var field1 = new Field("Bane 1", new Guid("1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"))
+            {
+                Location = "Hal 1",
+                Capacity = 100,
+                Surface = SurfaceType.NaturalGrass
+            };
+
+            var field2 = new Field("Bane 2", new Guid("2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e"))
+            {
+                Location = "Hal 2",
+                Capacity = 80,
+                Surface = SurfaceType.ArtificialTurf
+            };
+
+            var field3 = new Field("Bane 3", new Guid("3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f"))
+            {
+                Location = "Hal 3",
+                Capacity = 120,
+                Surface = SurfaceType.Clay
+            };
+
+            var field4 = new Field("Bane 4", new Guid("4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9g"))
+            {
+                Location = "Hal 4",
+                Capacity = 60,
+                Surface = SurfaceType.Dirt
+            };
+
+            var field5 = new Field("Bane 5", new Guid("5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9g0h"))
+            {
+                Location = "Hal 5",
+                Capacity = 90,
+                Surface = SurfaceType.Turf
+            };
+
+            Fields.AddRange(new[] { field1, field2, field3, field4, field5 });
             #endregion
         }
     }

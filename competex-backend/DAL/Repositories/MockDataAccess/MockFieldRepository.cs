@@ -3,22 +3,21 @@ using competex_backend.Models;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
-    public class MockEntityRepository : IEntityRepository
+    public class MockFieldRepository : IFieldRepository
     {
         private readonly IDatabaseManager _db;
-
-        public MockEntityRepository(IDatabaseManager db)
+        public MockFieldRepository(IDatabaseManager db)
         {
             _db = db;
         }
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var recordToRemove = _db.Entities.FirstOrDefault(c => c.EntityId == id);
+            var recordToRemove = _db.Fields.FirstOrDefault(c => c.FieldId == id);
             if (recordToRemove != null)
             {
                 try
                 {
-                    _db.Entities.Remove(recordToRemove);
+                    _db.Fields.Remove(recordToRemove);
                     await Task.CompletedTask; // Simulate async work
                     return true;
                 }
@@ -30,25 +29,25 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             return false;
         }
 
-        public async Task<IEnumerable<Entity>> GetAllAsync()
+        public async Task<IEnumerable<Field>> GetAllAsync()
         {
-            return await Task.FromResult(_db.Entities);
+            return await Task.FromResult(_db.Fields);
         }
 
-        public async Task<Entity?> GetByIdAsync(Guid id)
+        public async Task<Field?> GetByIdAsync(Guid id)
         {
-            var record = _db.Entities.FirstOrDefault(c => c.EntityId== id);
+            var record = _db.Fields.FirstOrDefault(c => c.FieldId == id);
             return await Task.FromResult(record);
         }
 
-        public async Task<Guid> InsertAsync(Entity obj)
+        public async Task<Guid> InsertAsync(Field obj)
         {
-            obj.EntityId = Guid.NewGuid();  // Generate a new Guid 
+            obj.FieldId = Guid.NewGuid();  // Generate a new Guid 
             try
             {
-                _db.Entities.Add(obj);
+                _db.Fields.Add(obj);
                 await Task.CompletedTask;
-                return obj.EntityId;
+                return obj.FieldId;
             }
             catch (Exception)
             {
@@ -56,9 +55,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             }
         }
 
-        public async Task<bool> UpdateAsync(Entity obj)
+        public async Task<bool> UpdateAsync(Field obj)
         {
-            var existingRecord = _db.Entities.FirstOrDefault(c => c.EntityId == obj.EntityId);
+            var existingRecord = _db.Fields.FirstOrDefault(c => c.FieldId == obj.FieldId);
             if (existingRecord != null)
             {
                 existingRecord = obj; // Set existing record to new record

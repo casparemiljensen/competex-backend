@@ -8,5 +8,6 @@ namespace competex_backend.DAL.Interfaces
         List<Member> Members { get; set; }
         List<ClubMember> ClubMembers { get; set; }
         List<Entity> Entities { get; set; }
+        List<Field> Fields { get; set; }
     }
 }

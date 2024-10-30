@@ -117,14 +117,14 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Surface = SurfaceType.Clay
             };
 
-            var field4 = new Field("Bane 4", new Guid("4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9g"))
+            var field4 = new Field("Bane 4", new Guid("4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9c"))
             {
                 Location = "Hal 4",
                 Capacity = 60,
                 Surface = SurfaceType.Dirt
             };
 
-            var field5 = new Field("Bane 5", new Guid("5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9g0h"))
+            var field5 = new Field("Bane 5", new Guid("5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9d0b"))
             {
                 Location = "Hal 5",
                 Capacity = 90,

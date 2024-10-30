@@ -13,77 +13,90 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         }
 
         // Get club by ID
-        public async Task<Club?> GetByIdAsync(Guid clubId)
+        public async Task<ResultT<Club>> GetByIdAsync(Guid clubId)
         {
-            var club = _db.Clubs.FirstOrDefault(c => c.ClubId == clubId);
-            return await Task.FromResult(club);
+            var club = await Task.Run(() => _db.Clubs.FirstOrDefault(c => c.ClubId == clubId));
+            return club is not null
+                ? ResultT<Club>.Success(club)
+                : ResultT<Club>.Failure(Error.NotFound("Club not found.", $"Club with ID {clubId} does not exist."));
+            //return await Task.FromResult(club);
         }
 
         // Get all clubs
-        public async Task<IEnumerable<Club>> GetAllAsync()
+        public async Task<ResultT<IEnumerable<Club>>> GetAllAsync()
         {
-            return await Task.FromResult(_db.Clubs);
+            var clubs = await Task.Run(() => _db.Clubs.ToList());
+            return ResultT<IEnumerable<Club>>.Success(clubs);
         }
 
 
         // Add a new club
-        public async Task<Guid> InsertAsync(Club obj)
+        public async Task<ResultT<Guid>> InsertAsync(Club obj)
         {
             obj.ClubId = Guid.NewGuid();  // Generate a new Guid for new clubs
             try
             {
-                _db.Clubs.Add(obj);
-                await Task.CompletedTask;
-                return obj.ClubId;
+                await Task.Run(() => _db.Clubs.Add(obj)); // Simulate async work
+                return ResultT<Guid>.Success(obj.ClubId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Guid.Empty;
+                return ResultT<Guid>.Failure(Error.Failure("InsertionError", $"Failed to insert club: {ex.Message}"));
             }
-            
         }
 
 
         // Update an existing club
-        public async Task<bool> UpdateAsync(Club obj)
+        public async Task<Result> UpdateAsync(Club obj)
         {
-            var existingClub = _db.Clubs.FirstOrDefault(c => c.ClubId == obj.ClubId);
-            if (existingClub != null)
+            int index = await Task.Run(() => _db.Clubs.FindIndex(m => m.ClubId == obj.ClubId));
+            if (index == -1)
             {
-                existingClub.Name = obj.Name;
-                existingClub.AssociatedSport = obj.AssociatedSport;
-                await Task.CompletedTask; // Simulate async work
-                return true;
-                //existingClub.Organizers = club.Organizers;
-                //existingClub.ClubMembers = club.ClubMembers;
+                return Result.Failure(Error.NotFound("ClubNotFound", $"Club with ID {obj.ClubId} does not exist."));
             }
-            return false;
+
+            try
+            {
+                await Task.Run(() =>
+                {
+                    _db.Clubs[index] = obj; // Replace the object directly
+                }); // Simulate async work
+
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(Error.Failure("UpdateError", $"Failed to update club: {ex.Message}"));
+            }
         }
 
         // Delete a club
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<Result> DeleteAsync(Guid id)
         {
-            var clubToRemove = _db.Clubs.FirstOrDefault(c => c.ClubId == id);    
-            if (clubToRemove != null)
+            var clubToRemove = await Task.Run(() => _db.Clubs.FirstOrDefault(c => c.ClubId == id));
+            if (clubToRemove is null)
             {
-                try
-                {
-                    _db.Clubs.Remove(clubToRemove);
-                    await Task.CompletedTask; // Simulate async work
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Could not delete club", ex);
-                }
+                return Result.Failure(Error.NotFound("ClubNotFound", $"Club with ID {id} does not exist."));
             }
-            return false;
+
+            try
+            {
+                await Task.Run(() => _db.Clubs.Remove(clubToRemove)); // Simulate async work
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(Error.Failure("DeletionError", $"Could not delete club: {ex.Message}"));
+            }
         }
 
-        public IEnumerable<Club> GetClubByName(string name)
+        public async Task<ResultT<IEnumerable<Club>>> GetClubsByNameAsync(string name)
         {
-            var clubs = _db.Clubs.Where(c => c.Name == name).ToList();
-            return clubs;
+            // Simulate an asynchronous operation
+            var clubs = await Task.Run(() => _db.Clubs.Where(c => c.Name == name).ToList());
+
+            // Return the results wrapped in ResultT
+            return ResultT<IEnumerable<Club>>.Success(clubs);
         }
     }
 }

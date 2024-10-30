@@ -13,74 +13,81 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         }
 
         // Retrieve a specific member by ID asynchronously
-        public Task<Member?> GetByIdAsync(Guid Id)
+        public async Task<ResultT<Member>> GetByIdAsync(Guid id)
         {
-            var member = _db.Members.FirstOrDefault(m => m.MemberId == Id);
-            return Task.FromResult(member);
+            var member = await Task.Run(() => _db.Members.FirstOrDefault(m => m.MemberId == id));
+            return member is not null
+                ? ResultT<Member>.Success(member)
+                : ResultT<Member>.Failure(Error.NotFound("Member not found.", $"Member with ID {id} does not exist."));
         }
 
         // Retrieve all members asynchronously
-        public Task<IEnumerable<Member>> GetAllAsync()
+        public async Task<ResultT<IEnumerable<Member>>> GetAllAsync()
         {
-            return Task.FromResult<IEnumerable<Member>>(_db.Members.AsEnumerable());
+            var members = await Task.Run(() => _db.Members.AsEnumerable());
+            return ResultT<IEnumerable<Member>>.Success(members);
         }
 
 
-
         // Add a new member asynchronously
-        public async Task<Guid> InsertAsync(Member obj)
+        public async Task<ResultT<Guid>> InsertAsync(Member obj)
         {
             obj.MemberId = Guid.NewGuid();  // Generate a new Guid for new members
             try
             {
-                _db.Members.Add(obj);
-                await Task.CompletedTask; // Simulate async work
-                return obj.MemberId;
+                await Task.Run(() => _db.Members.Add(obj)); // Simulate async work
+                return ResultT<Guid>.Success(obj.MemberId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Guid.Empty;
+                return ResultT<Guid>.Failure(Error.Failure("InsertionError", $"Failed to insert member: {ex.Message}"));
             }
         }
 
 
         // Update an existing member asynchronously
-        public async Task<bool> UpdateAsync(Member obj)
+        public async Task<Result> UpdateAsync(Member obj)
         {
-            var existingMember = _db.Members.FirstOrDefault(m => m.MemberId == obj.MemberId);
-            if (existingMember != null)
+            int index = await Task.Run(() => _db.Members.FindIndex(m => m.MemberId == obj.MemberId));
+            if (index == -1)
             {
-                existingMember.FirstName = obj.FirstName;
-                existingMember.LastName = obj.LastName;
-                existingMember.Birthday = obj.Birthday;
-                existingMember.Email = obj.Email;
-                existingMember.Phone = obj.Phone;
-                existingMember.Permissions = obj.Permissions;
-                await Task.CompletedTask; // Simulate async work
-                return true;
+                return Result.Failure(Error.NotFound("MemberNotFound", $"Member with ID {obj.MemberId} does not exist."));
             }
-            return false;
+
+            try
+            {
+                await Task.Run(() =>
+                {
+                    _db.Members[index] = obj; // Replace the object directly
+                }); // Simulate async work
+
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(Error.Failure("UpdateError", $"Failed to update member: {ex.Message}"));
+            }
         }
 
 
         // Delete a member by ID asynchronously
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<Result> DeleteAsync(Guid id)
         {
-            var memberToRemove = _db.Members.FirstOrDefault(m => m.MemberId == id);
-            if (memberToRemove != null)
+            var memberToRemove = await Task.Run(() => _db.Members.FirstOrDefault(m => m.MemberId == id));
+            if (memberToRemove is null)
             {
-                try
-                {
-                    _db.Members.Remove(memberToRemove);
-                    await Task.CompletedTask; // Simulate async work
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Could not delete member", ex);
-                }
+                return Result.Failure(Error.NotFound("MemberNotFound", $"Member with ID {id} does not exist."));
             }
-            return false;
+
+            try
+            {
+                await Task.Run(() => _db.Members.Remove(memberToRemove)); // Simulate async work
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(Error.Failure("DeletionError", $"Could not delete member: {ex.Message}"));
+            }
         }
     }
 }

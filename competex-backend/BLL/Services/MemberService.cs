@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.Execution;
+using Common.ResultPattern;
 using competex_backend.API.DTOs;
 using competex_backend.BLL.Interfaces;
 using competex_backend.DAL.Interfaces;
@@ -19,45 +20,53 @@ namespace competex_backend.BLL.Services
             _mapper = mapper;
         }
 
-        public MemberDTO? GetById(Guid id)
+        public async Task<ResultT<MemberDTO>> GetByIdAsync(Guid id)
         {
-            var member = _memberRepository.GetByIdAsync(id).Result;
-            if (member == null)
-                return null;
-            return _mapper.Map<MemberDTO>(member);
-        }
-
-        public IEnumerable<MemberDTO> GetAll()
-        {
-            var members = _memberRepository.GetAllAsync().Result;
-            // Map Member to MemberDto
-            var memberDtos = new List<MemberDTO>();
-            foreach (var member in members)
+            var result = await _memberRepository.GetByIdAsync(id);
+            if (result.IsSuccess && result.Value != null)
             {
-                memberDtos.Add(_mapper.Map<MemberDTO>(member));
+                return ResultT<MemberDTO>.Success(_mapper.Map<MemberDTO>(result.Value));
             }
-            return memberDtos; // Return the list of DTOs
+            return ResultT<MemberDTO>.Failure(result.Error ?? Error.Failure("UnknownError", "An unknown error occurred."));
         }
 
-        public bool Create(MemberDTO obj)
+        public async Task<ResultT<IEnumerable<MemberDTO>>> GetAllAsync()
         {
-            // Map MemberDto to Member
+            var result = await _memberRepository.GetAllAsync();
+            var memberDtos = result.Value.Select(m => _mapper.Map<MemberDTO>(m)).ToList();
+            return ResultT<IEnumerable<MemberDTO>>.Success(memberDtos);
+        }
+
+        public async Task<ResultT<Guid>> CreateAsync(MemberDTO obj)
+        {
             var member = _mapper.Map<Member>(obj);
-            _memberRepository.InsertAsync(member);
-            return true;
+            var result = await _memberRepository.InsertAsync(member);
+            if (result.IsSuccess)
+            {
+                return ResultT<Guid>.Success(result.Value);
+            }
+            return ResultT<Guid>.Failure(result.Error ?? Error.Validation("CreationFailed", "Failed to create member."));
         }
 
-        public bool Update(MemberDTO obj)
+        public async Task<Result> UpdateAsync(MemberDTO obj)
         {
             var member = _mapper.Map<Member>(obj);
-            _memberRepository.UpdateAsync(member);
-            return true;
+            var result = await _memberRepository.UpdateAsync(member);
+            if (result.IsSuccess)
+            {
+                return Result.Success();
+            }
+            return Result.Failure(result.Error ?? Error.Validation("UpdateFailed", "Failed to update member."));
         }
 
-        public bool Remove(Guid id)
+        public async Task<Result> RemoveAsync(Guid id)
         {
-            _memberRepository.DeleteAsync(id);
-            return true;
+            var result = await _memberRepository.DeleteAsync(id);
+            if (result.IsSuccess)
+            {
+                return Result.Success();
+            }
+            return Result.Failure(result.Error ?? Error.Validation("DeletionFailed", "Failed to delete member."));
         }
     }
 }

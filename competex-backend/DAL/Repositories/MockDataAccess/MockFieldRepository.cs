@@ -3,7 +3,7 @@ using competex_backend.Models;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
-    public class MockFieldRepository : IFieldRepository
+    public class MockFieldRepository //: IFieldRepository
     {
         private readonly IDatabaseManager _db;
         public MockFieldRepository(IDatabaseManager db)

@@ -1,13 +1,14 @@
-﻿using System.Net;
+﻿using Common.ResultPattern;
+using System.Net;
 
 namespace competex_backend.BLL.Interfaces
 {
     public interface IGenericService<T> where T : class
     {
-        T? GetById(Guid id);
-        IEnumerable<T> GetAll();
-        bool Create(T obj);
-        bool Update(T obj);
-        bool Remove(Guid id);
+        Task<ResultT<T>> GetByIdAsync(Guid id);
+        Task<ResultT<IEnumerable<T>>> GetAllAsync();
+        Task<ResultT<Guid>> CreateAsync(T obj);
+        Task<Result> UpdateAsync(T obj);
+        Task<Result> RemoveAsync(Guid id);
     }
 }

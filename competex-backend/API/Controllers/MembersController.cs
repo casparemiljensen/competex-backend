@@ -58,6 +58,7 @@ namespace competex_backend.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(MemberDTO obj)
         {
+            // TODO: Something is wrong here
             var res = await _memberService.UpdateAsync(obj);
             if (res)
             {
@@ -77,13 +78,24 @@ namespace competex_backend.API.Controllers
             return BadRequest("An error occured");
         }
 
-        [HttpGet("/another")]
+        [HttpGet("GetNumber")]
         public IActionResult GetNumber()
         {
             var res = _memberService.CheckNumber();
             if (res)
             {
                 return Ok();
+            }
+            return BadRequest("An error occured");
+        }
+
+        [HttpGet("GetByName")]
+        public IActionResult GetByName(string firstName)
+        {
+            var res = _memberService.GetByName(firstName);
+            if (res != null)
+            {
+                return Ok(res);
             }
             return BadRequest("An error occured");
         }

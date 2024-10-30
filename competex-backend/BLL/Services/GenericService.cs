@@ -50,8 +50,6 @@ namespace competex_backend.BLL.Services
         {
             return await _repository.DeleteAsync(id);
         }
-
-
     }
 
 }

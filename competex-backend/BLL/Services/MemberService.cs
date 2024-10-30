@@ -31,6 +31,14 @@ namespace competex_backend.BLL.Services
             return true;
         }
 
+        public MemberDTO GetByName(string firstName)
+        {
+            var member = _memberRepository.GetByFirstNameAsync(firstName).Result;
+            if (member == null)
+                return null;
+            return _mapper.Map<MemberDTO>(member);
+        }
+
         //public MemberDTO? GetById(Guid id)
         //{
         //    var member = _memberRepository.GetByIdAsync(id).Result;

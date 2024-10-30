@@ -1,9 +1,9 @@
 ﻿namespace competex_backend.Models
 
 {
-    public class Member
+    public class Member : IIdentifiable
     {
-        public Guid MemberId { get; set; }
+        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
@@ -18,15 +18,15 @@
 
         public Member(string firstName, string lastName)
         {
-            MemberId = Guid.NewGuid();
+            Id = Guid.NewGuid();
             FirstName = firstName;
             LastName = lastName;
         }
 
-        public Member(string firstName, string lastName, Guid memberId)
+        public Member(string firstName, string lastName, Guid id)
             : this(firstName, lastName)
         {
-            MemberId = memberId;
+            Id = id;
         }
 
     }

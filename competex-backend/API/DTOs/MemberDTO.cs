@@ -1,9 +1,13 @@
-﻿namespace competex_backend.API.DTOs
+﻿using System.Text.Json.Serialization;
+
+namespace competex_backend.API.DTOs
 {
     //@APIModel
     public class MemberDTO
     {
-        public Guid MemberId { get; set; }
+        //TODO: Figure out how to handle this.. We do not want it for create or update, but for get.
+        //[JsonIgnore]
+        public Guid Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
 

@@ -32,5 +32,10 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
         {
             throw new NotImplementedException();
         }
+
+        public Task<Member?> GetByFirstNameAsync(string firstName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -3,7 +3,7 @@
     public abstract class Score
     {
 
-        public int ScoreId { get; set; }
+        public Guid ScoreId { get; set; }
         public Match? Match { get; set; }
         public Participant? Participant { get; set; }
         public ScoreType ScoreType { get; set; }
@@ -23,7 +23,7 @@
     public class TimeScore : Score
     {
         public TimeSpan Time { get; set; }
-        public TimeScore(TimeSpan time) : base(ScoreType.time)
+        public TimeScore(TimeSpan time) : base(ScoreType.Time)
         {
             Time = time;
         }
@@ -40,7 +40,7 @@
             public int SetsWon { get; set; }
 
             // Constructor
-            public SetScore(int setsWon) : base(ScoreType.set)
+            public SetScore(int setsWon) : base(ScoreType.Set)
             {
                 this.SetsWon = setsWon;
             }
@@ -53,12 +53,10 @@
             }
         }
 
-
-
         public class PointScore : Score
         {
             public int Points { get; set; }
-            public PointScore(int points) : base(ScoreType.number)
+            public PointScore(int points) : base(ScoreType.Number)
             {
                 Points = points;
             }

@@ -10,7 +10,7 @@ namespace competex_backend.Models
         public Guid MemberId { get; set; }
         public Member Member { get; set; } = null!;
         public DateTime JoinDate { get; set; }
-        public ClubMemberRole? Role { get; set; } = ClubMemberRole.standard;
+        public ClubMemberRole? Role { get; set; } = ClubMemberRole.Standard;
 
     }
 }

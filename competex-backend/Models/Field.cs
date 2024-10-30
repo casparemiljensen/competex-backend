@@ -2,10 +2,10 @@
 {
     public class Field
     {
-        public int FieldId { get; set; }
+        public Guid FieldId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public int Capacity { get; set; }
-        public SurfaceType? Surface { get; set; } = SurfaceType.unknown;
+        public SurfaceType? Surface { get; set; } = SurfaceType.Unknown;
     }
 }

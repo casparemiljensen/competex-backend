@@ -2,52 +2,52 @@
 {
     public enum MatchStatus
     {
-        pending,
-        active,
-        cancelled,
-        concluded
+        Pending,
+        Active,
+        Cancelled,
+        Concluded
     }
 
     public enum SurfaceType
     {
-        unknown,
-        natural_grass,
-        artificial_turf,
-        clay,
-        dirt,
-        turf
+        Unknown,
+        NaturalGrass,
+        ArtificialTurf,
+        Clay,
+        Dirt,
+        Turf
     }
 
     public enum ClubMemberRole
     {
-        standard,
-        organizer
+        Standard,
+        Organizer
     }
 
     public enum EntityType
     {
-        rabbit,
-        horse
+        Rabbit,
+        Horse
     }
 
     public enum EntityLevel
     {
-        intermediate,
-        beginner,
-        advanced
+        Intermediate,
+        Beginner,
+        Advanced
     }
 
     public enum PenaltyType
     {
-        time,
-        distance,
-        points
+        Time,
+        Distance,
+        Points
     }
 
     public enum ScoreType
     {
-        time,
-        set,
-        number
+        Time,
+        Set,
+        Number
     }
 }

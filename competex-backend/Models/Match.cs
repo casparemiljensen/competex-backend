@@ -4,10 +4,10 @@ namespace competex_backend.Models
 {
     public class Match
     {
-        public int MatchId { get; set; }
-        public int RoundId { get; set; }
+        public Guid MatchId { get; set; }
+        public Guid RoundId { get; set; }
         public List<Participant>? Participants { get; set; }
-        public MatchStatus Status { get; set; } = MatchStatus.pending;
+        public MatchStatus Status { get; set; } = MatchStatus.Pending;
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public Field? Field { get; set; }

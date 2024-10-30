@@ -98,7 +98,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 // Update properties as needed
                 existingClubMember.JoinDate = clubMember.JoinDate;
-                existingClubMember.Role = clubMember.Role.GetValueOrDefault(ClubMemberRole.standard);
+                existingClubMember.Role = clubMember.Role.GetValueOrDefault(ClubMemberRole.Standard);
                 await Task.CompletedTask;
             }
             else

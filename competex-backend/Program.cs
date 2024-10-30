@@ -4,6 +4,8 @@ using competex_backend.DAL.Interfaces;
 using competex_backend;
 using competex_backend.BLL.Services;
 using competex_backend.BLL.Interfaces;
+using competex_backend.API.DTOs;
+using competex_backend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,14 +17,23 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+
+builder.Services.AddScoped<IGenericRepository<Member>, MockMemberRepository>();
 builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
+
+builder.Services.AddScoped<IGenericRepository<Club>, MockClubRepository>();
 builder.Services.AddScoped<IClubRepository, MockClubRepository>();
+
 builder.Services.AddScoped<IClubMemberRepository, MockClubMemberRepository>();
 
 // Register MockDatabaseManager as a singleton
 builder.Services.AddSingleton<IDatabaseManager, MockDatabaseManager>();
 
+// Register GenericService for each entity/DTO pair
+
 builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IClubService, ClubService>();
+
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 

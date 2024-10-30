@@ -2,8 +2,7 @@
 
 namespace competex_backend.BLL.Interfaces
 {
-    public interface IMemberService : IGenericService<MemberDTO>
+    public interface IClubService : IGenericService<ClubDTO>
     {
-        bool CheckNumber();
     }
 }

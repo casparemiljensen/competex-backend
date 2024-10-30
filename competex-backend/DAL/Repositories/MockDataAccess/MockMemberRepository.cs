@@ -30,6 +30,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         // Add a new member asynchronously
         public async Task<Guid> InsertAsync(Member obj)
         {
+            // TODO: Whenever providing a GUID in post calls, it is ignored and a new GUID is generated.
+            // Remove possibility to make it in UI.
             obj.MemberId = Guid.NewGuid();  // Generate a new Guid for new members
             try
             {

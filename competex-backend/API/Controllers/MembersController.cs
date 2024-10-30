@@ -19,14 +19,11 @@ namespace competex_backend.API.Controllers
             _memberService = memberService;
         }
 
-        // When merged with Ilums changes.
-        // change to async Task<IActionResult> GetById(Guid id)
-        // Add await
 
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
-            var obj = _memberService.GetById(id);
+            var obj = await _memberService.GetByIdAsync(id);
 
             if(obj != null)
             {
@@ -36,20 +33,21 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var obj = _memberService.GetAll().Select(m => $"{m.FirstName} {m.LastName}");
-            if(obj != null)
+            var obj = await _memberService.GetAllAsync();
+            var res = obj.Select(m => $"{m.FirstName} {m.LastName}");
+            if(res != null)
             {
-                return Ok(obj);
+                return Ok(res);
             }
             return BadRequest("An error occured");
         }
 
         [HttpPost]
-        public IActionResult Create(MemberDTO obj)
+        public async Task<IActionResult> Create(MemberDTO obj)
         {
-            var res = _memberService.Create(obj);
+            var res = await _memberService.CreateAsync(obj);
             if (res)
             {
                 return Ok();
@@ -58,9 +56,9 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(MemberDTO obj)
+        public async Task<IActionResult> Update(MemberDTO obj)
         {
-            var res = _memberService.Update(obj);
+            var res = await _memberService.UpdateAsync(obj);
             if (res)
             {
                 return Ok();
@@ -69,9 +67,20 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var res = _memberService.Remove(id);
+            var res = await _memberService.RemoveAsync(id);
+            if (res)
+            {
+                return Ok();
+            }
+            return BadRequest("An error occured");
+        }
+
+        [HttpGet("/another")]
+        public IActionResult GetNumber()
+        {
+            var res = _memberService.CheckNumber();
             if (res)
             {
                 return Ok();

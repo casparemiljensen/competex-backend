@@ -11,7 +11,7 @@ namespace competex_backend
             CreateMap<Member, MemberDTO>();
 
             CreateMap<MemberDTO, Member>()
-                .ForMember(dest => dest.MemberId, opt => opt.Ignore()); // Ignore MemberId during mapping
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore MemberId during mapping
         }
     }
 }

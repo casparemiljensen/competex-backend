@@ -4,10 +4,10 @@ namespace competex_backend.BLL.Interfaces
 {
     public interface IGenericService<T> where T : class
     {
-        T? GetById(Guid id);
-        IEnumerable<T> GetAll();
-        bool Create(T obj);
-        bool Update(T obj);
-        bool Remove(Guid id);
+        Task<T?> GetByIdAsync(Guid id);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<bool> CreateAsync(T obj);
+        Task<bool> UpdateAsync(T obj);
+        Task<bool> RemoveAsync(Guid id);
     }
 }

@@ -1,19 +1,27 @@
-﻿using competex_backend.DAL.Interfaces;
-using competex_backend.Models;
-using System.Xml.Linq;
+﻿using competex_backend.Models;
+using Member = competex_backend.Models.Member;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
-    public class MockDatabaseManager : IDatabaseManager
+    public class MockDatabaseManager
     {
-        public List<Club> Clubs { get; set; } = new();
         public List<Member> Members { get; set; } = new();
+        public List<Club> Clubs { get; set; } = new();
         public List<ClubMember> ClubMembers { get; set; } = new();
         public List<Entity> Entities { get; set; } = new();
 
         public MockDatabaseManager()
         {
             SeedData();
+        }
+
+        public List<T> GetEntities<T>() where T : class
+        {
+            if (typeof(T) == typeof(Member)) return Members as List<T>;
+            if (typeof(T) == typeof(ClubMember)) return ClubMembers as List<T>;
+            if (typeof(T) == typeof(Entity)) return Entities as List<T>;
+
+            throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
 
         private void SeedData()
@@ -30,8 +38,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #endregion
 
             #region clubs
-            var club1 = new Club("Vejle Kaninhop","Kaninhop");
-            var club2 = new Club("Lystrup Kaninhop","Kaninhop");
+            var club1 = new Club("Vejle Kaninhop", "Kaninhop");
+            var club2 = new Club("Lystrup Kaninhop", "Kaninhop");
             var club3 = new Club("Kaninernes Klub Hjørring", "Kaninhop");
             var club4 = new Club("Aabybro kaninhop", "Kaninhop");
             var club5 = new Club("Aalborg kaninforening", "Kaninhop");
@@ -39,13 +47,13 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #endregion
 
             #region clubmembers
-            var clubMember1 = new ClubMember { ClubId = club1.ClubId, MemberId = member1.MemberId, JoinDate = new DateTime(2011, 4, 20) };
-            var clubMember2 = new ClubMember { ClubId = club1.ClubId, MemberId = member2.MemberId, JoinDate = new DateTime(2024, 1, 13) };
-            var clubMember3 = new ClubMember { ClubId = club1.ClubId, MemberId = member3.MemberId, JoinDate = new DateTime(2015, 6, 17) };
-            var clubMember4 = new ClubMember { ClubId = club2.ClubId, MemberId = member4.MemberId, JoinDate = new DateTime(2001, 8, 31) };
-            var clubMember5 = new ClubMember { ClubId = club2.ClubId, MemberId = member5.MemberId, JoinDate = DateTime.UtcNow};
+            var clubMember1 = new ClubMember { ClubId = club1.Id, MemberId = member1.Id, JoinDate = new DateTime(2011, 4, 20) };
+            var clubMember2 = new ClubMember { ClubId = club1.Id, MemberId = member2.Id, JoinDate = new DateTime(2024, 1, 13) };
+            var clubMember3 = new ClubMember { ClubId = club1.Id, MemberId = member3.Id, JoinDate = new DateTime(2015, 6, 17) };
+            var clubMember4 = new ClubMember { ClubId = club2.Id, MemberId = member4.Id, JoinDate = new DateTime(2001, 8, 31) };
+            var clubMember5 = new ClubMember { ClubId = club2.Id, MemberId = member5.Id, JoinDate = DateTime.UtcNow };
 
-            ClubMembers.AddRange(new[] { clubMember1, clubMember2, clubMember3, clubMember4, clubMember5});
+            ClubMembers.AddRange(new[] { clubMember1, clubMember2, clubMember3, clubMember4, clubMember5 });
             #endregion
 
             #region entities

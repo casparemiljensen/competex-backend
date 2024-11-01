@@ -37,7 +37,7 @@ namespace competex_backend.API.Controllers
             var result = await _memberService.GetAllAsync();
             if (result.IsSuccess)
             {
-                var obj = result.Value.Select(m => $"{m.FirstName} {m.LastName}");
+                var obj = result.Value.Select(m => $"{m.FirstName} {m.LastName} - {m.Id}");
                 return Ok(obj);
             }
             return BadRequest(result.Error); // Return BadRequest with error details
@@ -85,6 +85,17 @@ namespace competex_backend.API.Controllers
             if (res != null)
             {
                 return Ok(res);
+            }
+            return BadRequest("An error occured");
+        }
+
+        [HttpGet("GetNumber")]
+        public IActionResult GetNumber()
+        {
+            var res = _memberService.CheckNumber();
+            if (res)
+            {
+                return Ok();
             }
             return BadRequest("An error occured");
         }

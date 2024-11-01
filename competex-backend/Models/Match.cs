@@ -2,9 +2,9 @@
 
 namespace competex_backend.Models
 {
-    public class Match
+    public class Match : IIdentifiable
     {
-        public Guid MatchId { get; set; }
+        public Guid Id { get; init; }
         public Guid RoundId { get; set; }
         public List<Participant>? Participants { get; set; }
         public MatchStatus Status { get; set; } = MatchStatus.Pending;

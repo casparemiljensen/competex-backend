@@ -1,13 +1,13 @@
 ﻿namespace competex_backend.Models
 {
-    public class Participant
+    public class Participant : IIdentifiable
     {
-        public Guid ParticipantId { get; set; }
+        public Guid Id { get; init; }
         public string Name { get; set; }
 
         public Participant(string name)
         {
-            ParticipantId = Guid.NewGuid();
+            Id = Guid.NewGuid();
             Name = name;
         }
     }

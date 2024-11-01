@@ -1,9 +1,9 @@
 ﻿namespace competex_backend.Models
 {
-    public abstract class Score
+    public abstract class Score : IIdentifiable
     {
 
-        public Guid ScoreId { get; set; }
+        public Guid Id { get; init; }
         public Match? Match { get; set; }
         public Participant? Participant { get; set; }
         public ScoreType ScoreType { get; set; }

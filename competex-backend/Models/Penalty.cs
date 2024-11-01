@@ -1,8 +1,8 @@
 ﻿namespace competex_backend.Models
 {
-    public class Penalty
+    public class Penalty : IIdentifiable
     {
-        public Guid PenaltyId { get; set; }
+        public Guid Id { get; init; }
         public PenaltyType PenaltyType { get; set; }    
         public object? PenaltyValue { get; set; }
     }

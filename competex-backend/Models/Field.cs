@@ -1,8 +1,8 @@
 ﻿namespace competex_backend.Models
 {
-    public class Field
+    public class Field : IIdentifiable
     {
-        public Guid FieldId { get; set; }
+        public Guid Id { get; init; }
         public string Name { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public int Capacity { get; set; }
@@ -11,12 +11,12 @@
         public Field(string name)
         {
             Name = name;
-            FieldId = new Guid();
+            Id = new Guid();
         }
-        public Field(string name, Guid fieldId)
+        public Field(string name, Guid id)
             :this(name)
         {
-            FieldId = fieldId;
+            Id = id;
         }
     }
 }

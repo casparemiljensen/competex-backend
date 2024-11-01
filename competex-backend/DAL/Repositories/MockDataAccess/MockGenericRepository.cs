@@ -14,74 +14,85 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             _entities = db.GetEntities<T>();
         }
 
-        // Retrieve a specific member by ID asynchronously
-        public Task<T?> GetByIdAsync(Guid Id)
+        // Get entity by ID
+        public async Task<ResultT<T>> GetByIdAsync(Guid id) // If problems then make T nullable
         {
-            var member = _entities.FirstOrDefault(m => m.Id == Id);
-            return Task.FromResult(member);
+            var entity = await Task.Run(() => _entities.FirstOrDefault(c => c.Id == id));
+            return entity is not null
+                ? ResultT<T>.Success(entity)
+                : ResultT<T>.Failure(Error.NotFound($"{typeof(T).ToString().ToLower()} not found.", $"{typeof(T).ToString().ToLower()} with ID {id} does not exist."));
         }
 
-        // Retrieve all members asynchronously
-        public Task<IEnumerable<T>> GetAllAsync()
+        public async Task<ResultT<IEnumerable<T>>> GetAllAsync()
         {
-            return Task.FromResult<IEnumerable<T>>(_entities.AsEnumerable());
+            var entities = await Task.Run(() => _entities.ToList());
+            return ResultT<IEnumerable<T>>.Success(entities);
         }
 
 
 
-        //Add a new member asynchronously
-        public async Task<Guid> InsertAsync(T obj)
+        // Add a new entity
+        public async Task<ResultT<Guid>> InsertAsync(T obj)
         {
             // TODO: Whenever providing a GUID in post calls, it is ignored and a new GUID is generated.
             // Remove possibility to make it in UI.
-            obj.Id = Guid.NewGuid();  // Generate a new Guid for new members
+            // obj.Id = Guid.NewGuid();  // Generate a new Guid for new clubs
             try
             {
-                _entities.Add(obj);
-                await Task.CompletedTask; // Simulate async work
-                return obj.Id;
+                await Task.Run(() => _entities.Add(obj)); // Simulate async work
+                return ResultT<Guid>.Success(obj.Id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Guid.Empty;
+                return ResultT<Guid>.Failure(Error.Failure("InsertionError", $"Failed to insert {typeof(T).ToString().ToLower()}: {ex.Message}"));
             }
         }
 
 
-        // Update an existing member asynchronously
 
-        public async Task<bool> UpdateAsync(T obj)
+        // Update an existing entity
+        public async Task<Result> UpdateAsync(T obj)
         {
-            var existingRecord = _entities.FirstOrDefault(c => c.Id == obj.Id);
-            if (existingRecord != null)
+            int index = await Task.Run(() => _entities.FindIndex(m => m.Id == obj.Id));
+            if (index == -1)
             {
-                existingRecord = obj; // Set existing record to new record
-                await Task.CompletedTask; // Simulate async work
-                return true;
-                //existingClub.Organizers = club.Organizers;
-                //existingClub.ClubMembers = club.ClubMembers;
+                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).ToString().ToLower()} with ID {obj.Id} does not exist."));
             }
-            return false;
+
+            try
+            {
+                await Task.Run(() =>
+                {
+                    _entities[index] = obj; // Replace the object directly
+                }); // Simulate async work
+
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(Error.Failure("UpdateError", $"Failed to update {typeof(T).ToString().ToLower()}: {ex.Message}"));
+            }
         }
 
-        // Delete a member by ID asynchronously
-        public async Task<bool> DeleteAsync(Guid id)
+
+        // Delete an entity
+        public async Task<Result> DeleteAsync(Guid id)
         {
-            var memberToRemove = _entities.FirstOrDefault(m => m.Id == id);
-            if (memberToRemove != null)
+            var entityToRemove = await Task.Run(() => _entities.FirstOrDefault(c => c.Id == id));
+            if (entityToRemove is null)
             {
-                try
-                {
-                    _entities.Remove(memberToRemove);
-                    await Task.CompletedTask; // Simulate async work
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Could not delete member", ex);
-                }
+                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).ToString().ToLower()} with ID {id} does not exist."));
             }
-            return false;
+
+            try
+            {
+                await Task.Run(() => _entities.Remove(entityToRemove)); // Simulate async work
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(Error.Failure("DeletionError", $"Could not delete {typeof(T).ToString().ToLower()}: {ex.Message}"));
+            }
         }
     }
 }

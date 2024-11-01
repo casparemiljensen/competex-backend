@@ -9,13 +9,14 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         {
         }
 
-            public IEnumerable<Club> GetClubByName(string name)
+        public async Task<ResultT<IEnumerable<Club>>> GetClubsByNameAsync(string name)
         {
             // Simulate an asynchronous operation
-            var clubs = await Task.Run(() => _db.Clubs.Where(c => c.Name == name).ToList());
+            var clubs = await Task.Run(() => _entities.Where(c => c.Name == name).ToList());
 
             // Return the results wrapped in ResultT
             return ResultT<IEnumerable<Club>>.Success(clubs);
+
         }
     }
 }

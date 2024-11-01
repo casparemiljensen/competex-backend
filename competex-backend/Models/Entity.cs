@@ -4,7 +4,7 @@ namespace competex_backend.Models
 {
     public class Entity : IIdentifiable
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
         public EntityType Type { get; set; }
         public string Name { get; set; } = string.Empty;
         public DateTime BirthDate { get; set; }

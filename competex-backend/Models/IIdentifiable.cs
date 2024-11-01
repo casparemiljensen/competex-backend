@@ -1,7 +1,10 @@
-﻿namespace competex_backend.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace competex_backend.Models
 {
     public interface IIdentifiable
     {
-        Guid Id { get; set; }
+        [Required]
+        Guid Id { get; init; }
     }
 }

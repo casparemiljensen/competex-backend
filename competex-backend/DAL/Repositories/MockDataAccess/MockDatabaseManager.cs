@@ -30,11 +30,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             // Mock data
 
             #region members
-            var member1 = new Member("Janni", "Karlsson");
-            var member2 = new Member("Søren", "Pind");
-            var member3 = new Member("Caspar", "Emil Jensen", new Guid("bec52019-b429-47bc-987e-47d13224d75e")) { Birthday = new DateTime(1990, 1, 1), Email = "Caspar@uni.com", Phone = "12345890", Permissions = "Admin" };
-            var member4 = new Member("Thomas", "Ilum Andersen", new Guid("cd4d665d-cd71-4aaa-9799-9f9c973ce19e")) { Birthday = new DateTime(1985, 5, 23), Email = "Ilum@uni.com", Phone = "98763210", Permissions = "User" };
-            var member5 = new Member("Thomas", "Dam Nykjær", new Guid("c7a53ea7-950a-4c8f-83c8-6262f2ec1571")) { Birthday = new DateTime(1995, 10, 10), Email = "Dam@uni.com", Phone = "55555555", Permissions = "Judge" };
+            var member1 = new Member() { FirstName = "Janni", LastName = "Karlsson" };
+            var member2 = new Member() { FirstName = "Søren", LastName = "Pind" };
+            var member3 = new Member() { FirstName = "Caspar", LastName = "Emil Jensen", Id = new Guid("bec52019-b429-47bc-987e-47d13224d75e"), Birthday = new DateTime(1990, 1, 1), Email = "Caspar@uni.com", Phone = "12345890", Permissions = "Admin" };
+            var member4 = new Member() { FirstName = "Thomas", LastName = "Ilum Andersen", Id = new Guid("cd4d665d-cd71-4aaa-9799-9f9c973ce19e"), Birthday = new DateTime(1985, 5, 23), Email = "Ilum@uni.com", Phone = "98763210", Permissions = "User" };
+            var member5 = new Member() { FirstName = "Thomas", LastName = "Dam Nykjær", Id = new Guid("c7a53ea7-950a-4c8f-83c8-6262f2ec1571"), Birthday = new DateTime(1995, 10, 10), Email = "Dam@uni.com", Phone = "55555555", Permissions = "Judge" };
             Members.AddRange(new[] { member1, member2, member3, member4, member5 });
             #endregion
 

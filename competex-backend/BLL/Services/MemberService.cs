@@ -38,26 +38,26 @@ namespace competex_backend.BLL.Services
             if (member == null)
                 return null;
             return _mapper.Map<MemberDTO>(member);
-        //}
+        }
 
         //public bool Create(MemberDTO obj)
         //{
         //    // Map MemberDto to Member
         //    var member = _mapper.Map<Member>(obj);
         //    _memberRepository.InsertAsync(member);
-        }
+        //}
         //}
 
         //public bool Update(MemberDTO obj)
         //{
         //    var member = _mapper.Map<Member>(obj);
         //    _memberRepository.UpdateAsync(member);
-        }
+        //}
         //}
 
         //public bool Remove(Guid id)
         //{
         //    _memberRepository.DeleteAsync(id);
-        }
+        //}
     }
 }

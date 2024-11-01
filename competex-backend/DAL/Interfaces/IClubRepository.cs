@@ -4,6 +4,6 @@ namespace competex_backend.DAL.Interfaces
 {
     public interface IClubRepository : IGenericRepository<Club>
     {
-        //IEnumerable<Club> GetClubByName(string name);
+        Task<ResultT<IEnumerable<Club>>> GetClubsByNameAsync(string name);
     }
 }

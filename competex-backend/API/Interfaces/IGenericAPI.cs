@@ -4,10 +4,10 @@ namespace competex_backend.API.Interfaces
 {
     public interface IGenericAPI<T>
     {
-        Task<IActionResult> GetById(Guid id);
-        Task<IActionResult> GetAll();
-        Task<IActionResult> Create(T obj);
-        Task<IActionResult> Update(T obj);
-        Task<IActionResult> Delete(Guid id);
+        Task<IActionResult> GetByIdAsync(Guid id);
+        Task<IActionResult> GetAllAsync();
+        Task<IActionResult> CreateAsync(T obj);
+        Task<IActionResult> UpdateAsync(T obj);
+        Task<IActionResult> DeleteAsync(Guid id);
     }
 }

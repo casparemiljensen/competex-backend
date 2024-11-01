@@ -1,4 +1,5 @@
-﻿using competex_backend.Models;
+﻿using Common.ResultPattern;
+using competex_backend.Models;
 
 namespace competex_backend.DAL.Interfaces
 {
@@ -10,10 +11,10 @@ namespace competex_backend.DAL.Interfaces
         //bool Update(T obj);
         //bool Delete(Guid id);
 
-        Task<T?> GetByIdAsync(Guid id);
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<Guid> InsertAsync(T obj);
-        Task<bool> UpdateAsync(T obj);
-        Task<bool> DeleteAsync(Guid id);
+        Task<ResultT<T>> GetByIdAsync(Guid id);
+        Task<ResultT<IEnumerable<T>>> GetAllAsync();
+        Task<ResultT<Guid>> InsertAsync(T obj);
+        Task<Result> UpdateAsync(T obj);
+        Task<Result> DeleteAsync(Guid id);
     }
 }

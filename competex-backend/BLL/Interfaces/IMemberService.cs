@@ -4,5 +4,7 @@ namespace competex_backend.BLL.Interfaces
 {
     public interface IMemberService : IGenericService<MemberDTO>
     {
+        bool CheckNumber();
+        MemberDTO GetByName(string firstName);
     }
 }

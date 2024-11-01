@@ -1,11 +1,11 @@
 ﻿namespace competex_backend.Models
 {
-    public class Judge
+    public class Judge : IIdentifiable
     {
-        public int JudgeId { get; set; }
+        public Guid Id { get; init; }
         public string Name { get; set; } = string.Empty;
         public string ContactInfo { get; set; } = string.Empty;
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public List<Match>? Matches { get; set; }
     }
 }

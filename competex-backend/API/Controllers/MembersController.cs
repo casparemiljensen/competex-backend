@@ -19,59 +19,80 @@ namespace competex_backend.API.Controllers
             _memberService = memberService;
         }
 
-        // When merged with Ilums changes.
-        // change to async Task<IActionResult> GetById(Guid id)
-        // Add await
 
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            var obj = _memberService.GetById(id);
-
-            if(obj != null)
+            var result = await _memberService.GetByIdAsync(id);
+            if (result.IsSuccess)
             {
-                return Ok(obj);
+                return Ok(result.Value);
             }
-            return BadRequest("An error occured");
+            return NotFound(result.Error); // Return NotFound with error details
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var obj = _memberService.GetAll().Select(m => $"{m.FirstName} {m.LastName}");
-            if(obj != null)
+            var result = await _memberService.GetAllAsync();
+            if (result.IsSuccess)
             {
+                var obj = result.Value.Select(m => $"{m.FirstName} {m.LastName} - {m.Id}");
                 return Ok(obj);
             }
-            return BadRequest("An error occured");
+            return BadRequest(result.Error); // Return BadRequest with error details
         }
 
         [HttpPost]
-        public IActionResult Create(MemberDTO obj)
+        public async Task<IActionResult> CreateAsync(MemberDTO obj)
         {
-            var res = _memberService.Create(obj);
-            if (res)
+            var result = await _memberService.CreateAsync(obj);
+            if (result.IsSuccess)
             {
-                return Ok();
+                return Ok(result.Value); // Return Created response
             }
-            return BadRequest("An error occured");
+            return BadRequest(result.Error); // Return BadRequest with error details
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(MemberDTO obj)
+        public async Task<IActionResult> UpdateAsync(MemberDTO obj)
         {
-            var res = _memberService.Update(obj);
-            if (res)
+            // You may want to include the id in the obj for identification
+
+            var result = await _memberService.UpdateAsync(obj);
+            if (result.IsSuccess)
             {
-                return Ok();
+                return NoContent(); // Return NoContent for successful update
+            }
+            return BadRequest(result.Error); // Return BadRequest with error details
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(Guid id)
+        {
+            var result = await _memberService.RemoveAsync(id);
+            if (result.IsSuccess)
+            {
+                return NoContent(); // Return NoContent for successful deletion
+            }
+            return BadRequest(result.Error); // Return BadRequest with error details
+        }
+
+        [HttpGet("GetByName")]
+        public IActionResult GetByName(string firstName)
+        {
+            var res = _memberService.GetByName(firstName);
+            if (res != null)
+            {
+                return Ok(res);
             }
             return BadRequest("An error occured");
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        [HttpGet("GetNumber")]
+        public IActionResult GetNumber()
         {
-            var res = _memberService.Remove(id);
+            var res = _memberService.CheckNumber();
             if (res)
             {
                 return Ok();

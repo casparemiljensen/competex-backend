@@ -1,9 +1,9 @@
 ﻿namespace competex_backend.Models
 {
-    public abstract class Score
+    public abstract class Score : IIdentifiable
     {
 
-        public int ScoreId { get; set; }
+        public Guid Id { get; init; }
         public Match? Match { get; set; }
         public Participant? Participant { get; set; }
         public ScoreType ScoreType { get; set; }
@@ -23,7 +23,7 @@
     public class TimeScore : Score
     {
         public TimeSpan Time { get; set; }
-        public TimeScore(TimeSpan time) : base(ScoreType.time)
+        public TimeScore(TimeSpan time) : base(ScoreType.Time)
         {
             Time = time;
         }
@@ -40,7 +40,7 @@
             public int SetsWon { get; set; }
 
             // Constructor
-            public SetScore(int setsWon) : base(ScoreType.set)
+            public SetScore(int setsWon) : base(ScoreType.Set)
             {
                 this.SetsWon = setsWon;
             }
@@ -53,12 +53,10 @@
             }
         }
 
-
-
         public class PointScore : Score
         {
             public int Points { get; set; }
-            public PointScore(int points) : base(ScoreType.number)
+            public PointScore(int points) : base(ScoreType.Number)
             {
                 Points = points;
             }

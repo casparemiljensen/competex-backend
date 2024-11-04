@@ -35,7 +35,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var member3 = new Member() { FirstName = "Caspar", LastName = "Emil Jensen", Id = new Guid("bec52019-b429-47bc-987e-47d13224d75e"), Birthday = new DateTime(1990, 1, 1), Email = "Caspar@uni.com", Phone = "12345890", Permissions = "Admin" };
             var member4 = new Member() { FirstName = "Thomas", LastName = "Ilum Andersen", Id = new Guid("cd4d665d-cd71-4aaa-9799-9f9c973ce19e"), Birthday = new DateTime(1985, 5, 23), Email = "Ilum@uni.com", Phone = "98763210", Permissions = "User" };
             var member5 = new Member() { FirstName = "Thomas", LastName = "Dam Nykjær", Id = new Guid("c7a53ea7-950a-4c8f-83c8-6262f2ec1571"), Birthday = new DateTime(1995, 10, 10), Email = "Dam@uni.com", Phone = "55555555", Permissions = "Judge" };
-            Members.AddRange(new[] { member1, member2, member3, member4, member5 });
+            Members.AddRange([member1, member2, member3, member4, member5]);
             #endregion
 
             #region clubs
@@ -44,7 +44,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var club3 = new Club("Kaninernes Klub Hjørring", "Kaninhop");
             var club4 = new Club("Aabybro kaninhop", "Kaninhop");
             var club5 = new Club("Aalborg kaninforening", "Kaninhop");
-            Clubs.AddRange(new[] { club1, club2, club3, club4, club5 });
+            Clubs.AddRange([club1, club2, club3, club4, club5]);
             #endregion
 
             #region clubmembers
@@ -54,7 +54,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var clubMember4 = new ClubMember { ClubId = club2.Id, MemberId = member4.Id, JoinDate = new DateTime(2001, 8, 31) };
             var clubMember5 = new ClubMember { ClubId = club2.Id, MemberId = member5.Id, JoinDate = DateTime.UtcNow };
 
-            ClubMembers.AddRange(new[] { clubMember1, clubMember2, clubMember3, clubMember4, clubMember5 });
+            ClubMembers.AddRange([clubMember1, clubMember2, clubMember3, clubMember4, clubMember5]);
             #endregion
 
             #region entities
@@ -98,7 +98,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Level = EntityLevel.Beginner,
             };
 
-            Entities.AddRange(new[] { entity1, entity2, entity3, entity4, entity5 });
+            Entities.AddRange([entity1, entity2, entity3, entity4, entity5]);
             #endregion
 
 
@@ -139,7 +139,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Surface = SurfaceType.Turf
             };
 
-            Fields.AddRange(new[] { field1, field2, field3, field4, field5 });
+            Fields.AddRange([field1, field2, field3, field4, field5]);
             #endregion
         }
     }

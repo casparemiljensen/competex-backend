@@ -48,10 +48,10 @@ namespace competex_backend.BLL.Services
             return ResultT<Guid>.Failure(result.Error ?? Error.Validation("CreationFailed", $"Failed to create {typeof(T)}."));
         }
 
-        public async Task<Result> UpdateAsync(TDto obj)
+        public async Task<Result> UpdateAsync(Guid id, TDto obj)
         {
             var entity = _mapper.Map<T>(obj);
-            var result = await _repository.UpdateAsync(entity);
+            var result = await _repository.UpdateAsync(id, entity);
             if (result.IsSuccess)
             {
                 return Result.Success();

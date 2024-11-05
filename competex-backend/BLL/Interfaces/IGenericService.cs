@@ -8,7 +8,7 @@ namespace competex_backend.BLL.Interfaces
         Task<ResultT<T>> GetByIdAsync(Guid id); //Maybe make T nullable later if we run into problems
         Task<ResultT<IEnumerable<T>>> GetAllAsync();
         Task<ResultT<Guid>> CreateAsync(T obj);
-        Task<Result> UpdateAsync(T obj);
+        Task<Result> UpdateAsync(Guid id, T obj);
         Task<Result> RemoveAsync(Guid id);
     }
 }

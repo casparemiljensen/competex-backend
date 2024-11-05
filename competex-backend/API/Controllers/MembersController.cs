@@ -55,11 +55,11 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(MemberDTO obj)
+        public async Task<IActionResult> UpdateAsync(Guid id,MemberDTO obj)
         {
             // You may want to include the id in the obj for identification
 
-            var result = await _memberService.UpdateAsync(obj);
+            var result = await _memberService.UpdateAsync(id, obj);
             if (result.IsSuccess)
             {
                 return NoContent(); // Return NoContent for successful update

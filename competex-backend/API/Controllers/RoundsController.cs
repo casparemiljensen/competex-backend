@@ -12,11 +12,11 @@ namespace competex_backend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoundController : ControllerBase, IRoundAPI
+    public class RoundsController : ControllerBase, IRoundAPI
     {
         private IRoundService _roundService;
 
-        public RoundController(IRoundService roundService)
+        public RoundsController(IRoundService roundService)
         {
             _roundService = roundService;
         }
@@ -56,11 +56,11 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(RoundDTO obj)
+        public async Task<IActionResult> UpdateAsync(Guid id, RoundDTO obj)
         {
             // You may want to include the id in the obj for identification
 
-            var result = await _roundService.UpdateAsync(obj);
+            var result = await _roundService.UpdateAsync(id, obj);
             if (result.IsSuccess)
             {
                 return NoContent(); // Return NoContent for successful update
@@ -79,7 +79,7 @@ namespace competex_backend.API.Controllers
             return BadRequest(result.Error); // Return BadRequest with error details
         }
 
-        [HttpGet("GetRoundIdsByCompetitionId/{competitionId}")]
+        [HttpGet("competition/{competitionId}")]
         public async Task<ActionResult> GetRoundIdsByCompetitionId(Guid competitionId)
         {
             var result = await _roundService.GetByCompetitionId(competitionId);

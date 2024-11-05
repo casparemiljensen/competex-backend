@@ -14,7 +14,7 @@ namespace competex_backend.DAL.Interfaces
         Task<ResultT<T>> GetByIdAsync(Guid id);
         Task<ResultT<IEnumerable<T>>> GetAllAsync();
         Task<ResultT<Guid>> InsertAsync(T obj);
-        Task<Result> UpdateAsync(T obj);
+        Task<Result> UpdateAsync(Guid id,T obj);
         Task<Result> DeleteAsync(Guid id);
     }
 }

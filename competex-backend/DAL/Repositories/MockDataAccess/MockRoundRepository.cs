@@ -1,4 +1,5 @@
 using System;
+using competex_backend.API.DTOs;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 
@@ -9,10 +10,9 @@ public class MockRoundRepository : MockGenericRepository<Round>, IRoundRepositor
     public MockRoundRepository(MockDatabaseManager db) : base(db)
     {
     }
-    public async Task<ResultT<IEnumerable<Guid>>> GetRoundIdsByCompetitionId(Guid competitionId)
+    public async Task<ResultT<IEnumerable<Round>>> GetRoundIdsByCompetitionId(Guid competitionId)
     {
-        var guids = await Task.Run(() => _entities.FindAll(round => round.CompetitionId == competitionId)
-            .Select(round => round.Id));
-        return ResultT<IEnumerable<Guid>>.Success(guids);
+        var rounds = await Task.Run(() => _entities.FindAll(round => round.CompetitionId == competitionId));
+        return ResultT<IEnumerable<Round>>.Success(rounds);
     }
 }

@@ -80,9 +80,9 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpGet("competition/{competitionId}")]
-        public async Task<ActionResult> GetRoundIdsByCompetitionId(Guid competitionId)
+        public async Task<ActionResult> GetRoundIdsByCompetitionId(Guid competitionId, [FromQuery] int? pageSize, [FromQuery] int? pageNumber)
         {
-            var result = await _roundService.GetByCompetitionId(competitionId);
+            var result = await _roundService.GetByCompetitionId(competitionId, pageSize, pageNumber);
             if (result.IsSuccess && result.Value != null)
             {
                 return Ok(result.Value); // Return NoContent for successful deletion

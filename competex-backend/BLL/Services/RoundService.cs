@@ -6,7 +6,7 @@ using competex_backend.Models;
 
 namespace competex_backend.BLL.Services
 {
-    public class RoundService : GenericService<Round, RoundDTO>, IRoundService 
+    public class RoundService : GenericService<Round, RoundDTO>, IRoundService
     {
         private readonly IRoundRepository _roundRepository;
         private readonly IMapper _mapper;
@@ -24,9 +24,9 @@ namespace competex_backend.BLL.Services
             _mapper = mapper;
         }
 
-        public async Task<ResultT<IEnumerable<RoundDTO>>> GetByCompetitionId(Guid competitionId)
+        public async Task<ResultT<IEnumerable<RoundDTO>>> GetByCompetitionId(Guid competitionId, int? pageSize, int? pageNumber)
         {
-            var result = await _roundRepository.GetRoundIdsByCompetitionId(competitionId);
+            var result = await _roundRepository.GetRoundIdsByCompetitionId(competitionId, pageSize, pageNumber);
             if (result.IsSuccess && result.Value != null)
             {
                 return ResultT<IEnumerable<RoundDTO>>.Success(result.Value.Select(round => _mapper.Map<RoundDTO>(round)));

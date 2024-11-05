@@ -4,6 +4,6 @@ namespace competex_backend.BLL.Interfaces
 {
     public interface IRoundService : IGenericService<RoundDTO>
     {
-        Task<ResultT<IEnumerable<RoundDTO>>> GetByCompetitionId(Guid competitionId);
+        Task<ResultT<IEnumerable<RoundDTO>>> GetByCompetitionId(Guid competitionId, int? pageSize, int? pageNumber);
     }
 }

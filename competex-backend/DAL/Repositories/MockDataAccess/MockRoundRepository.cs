@@ -9,8 +9,10 @@ public class MockRoundRepository : MockGenericRepository<Round>, IRoundRepositor
     public MockRoundRepository(MockDatabaseManager db) : base(db)
     {
     }
-    public IEnumerable<Guid> GetRoundIdsByCompetitionId(Guid competitionId)
+    public async Task<ResultT<IEnumerable<Guid>>> GetRoundIdsByCompetitionId(Guid competitionId)
     {
-        return _entities.FindAll(round => round.CompetitionId == competitionId).Select(round => round.Id);
+        var guids = await Task.Run(() => _entities.FindAll(round => round.CompetitionId == competitionId)
+            .Select(round => round.Id));
+        return ResultT<IEnumerable<Guid>>.Success(guids);
     }
 }

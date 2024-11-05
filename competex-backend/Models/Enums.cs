@@ -50,4 +50,18 @@
         Set,
         Number
     }
+    public enum RoundType
+    {
+        Base,
+        Middle,
+        Final,
+    }
+
+    public enum RoundStatus
+    {
+        Future,
+        Starting,
+        Ongoing,
+        Ended
+    }
 }

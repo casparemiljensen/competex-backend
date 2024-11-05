@@ -1,6 +1,8 @@
 using competex_backend.API.DTOs;
 using competex_backend.API.Interfaces;
 using competex_backend.BLL.Interfaces;
+using competex_backend.BLL.Services;
+using competex_backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -8,22 +10,22 @@ using System.Net;
 
 namespace competex_backend.API.Controllers
 {
-    [Route("api/[round]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class RoundController : ControllerBase, IRoundAPI
     {
-        private IMemberService _memberService;
+        private IRoundService _roundService;
 
-        public RoundController(IMemberService memberService)
+        public RoundController(IRoundService roundService)
         {
-            _memberService = memberService;
+            _roundService = roundService;
         }
 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            var result = await _memberService.GetByIdAsync(id);
+            var result = await _roundService.GetByIdAsync(id);
             if (result.IsSuccess)
             {
                 return Ok(result.Value);
@@ -34,19 +36,18 @@ namespace competex_backend.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var result = await _memberService.GetAllAsync();
+            var result = await _roundService.GetAllAsync();
             if (result.IsSuccess)
             {
-                var obj = result.Value.Select(m => $"{m.FirstName} {m.LastName} - {m.Id}");
-                return Ok(obj);
+                return Ok(result.Value);
             }
             return BadRequest(result.Error); // Return BadRequest with error details
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(MemberDTO obj)
+        public async Task<IActionResult> CreateAsync(RoundDTO obj)
         {
-            var result = await _memberService.CreateAsync(obj);
+            var result = await _roundService.CreateAsync(obj);
             if (result.IsSuccess)
             {
                 return Ok(result.Value); // Return Created response
@@ -55,11 +56,11 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(MemberDTO obj)
+        public async Task<IActionResult> UpdateAsync(RoundDTO obj)
         {
             // You may want to include the id in the obj for identification
 
-            var result = await _memberService.UpdateAsync(obj);
+            var result = await _roundService.UpdateAsync(obj);
             if (result.IsSuccess)
             {
                 return NoContent(); // Return NoContent for successful update
@@ -70,7 +71,7 @@ namespace competex_backend.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            var result = await _memberService.RemoveAsync(id);
+            var result = await _roundService.RemoveAsync(id);
             if (result.IsSuccess)
             {
                 return NoContent(); // Return NoContent for successful deletion
@@ -78,30 +79,15 @@ namespace competex_backend.API.Controllers
             return BadRequest(result.Error); // Return BadRequest with error details
         }
 
-        [HttpGet("GetByName")]
-        public IActionResult GetByName(string firstName)
+        [HttpGet("GetRoundIdsByCompetitionId/{competitionId}")]
+        public async Task<ActionResult> GetRoundIdsByCompetitionId(Guid competitionId)
         {
-            var res = _memberService.GetByName(firstName);
-            if (res != null)
+            var result = await _roundService.GetByCompetitionId(competitionId);
+            if (result.IsSuccess && result.Value != null)
             {
-                return Ok(res);
+                return Ok(result.Value); // Return NoContent for successful deletion
             }
-            return BadRequest("An error occured");
-        }
-
-        public Task<IActionResult> CreateAsync(RoundDTO obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IActionResult> UpdateAsync(RoundDTO obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        ActionResult IRoundAPI.GetRoundIdsByCompetitionId(Guid competitionId)
-        {
-            throw new NotImplementedException();
+            return BadRequest(result.Error); // Return BadRequest with error details
         }
     }
 }

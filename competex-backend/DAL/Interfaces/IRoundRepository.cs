@@ -5,5 +5,5 @@ namespace competex_backend.DAL.Interfaces;
 
 public interface IRoundRepository : IGenericRepository<Round>
 {
-    public IEnumerable<Guid> GetRoundIdsByCompetitionId(Guid CompetitionId);
+    public Task<ResultT<IEnumerable<Guid>>> GetRoundIdsByCompetitionId(Guid CompetitionId);
 }

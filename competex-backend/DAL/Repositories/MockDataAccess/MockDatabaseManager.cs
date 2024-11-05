@@ -104,11 +104,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #endregion
 
             #region rounds
-            var round1 =  new Round("TestRoundOne");
-            var round2 =  new Round("TestRoundTwo") { CompetitionId = new Guid("596462f8-2e32-4a21-921a-b5768c6b0d86") };
-            var round3 =  new Round("TestRoundThree");
-            var round4 =  new Round("TestRoundFour");
-            var round5 =  new Round("TestRoundFive");
+            var round1 = new Round("TestRoundOne") { Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac") };
+            var round2 = new Round("TestRoundTwo") { CompetitionId = new Guid("596462f8-2e32-4a21-921a-b5768c6b0d86") };
+            var round3 = new Round("TestRoundThree");
+            var round4 = new Round("TestRoundFour");
+            var round5 = new Round("TestRoundFive");
 
             Rounds.AddRange([round1, round2, round3, round4, round5]);
             #endregion

@@ -56,7 +56,7 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, RoundDTO obj)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] RoundDTO obj)
         {
             // You may want to include the id in the obj for identification
 

@@ -2,7 +2,7 @@
 
 namespace competex_backend.API.Interfaces
 {
-    public interface IGenericAPI<T>
+    public interface IGenericAPI<T> where T : class
     {
         Task<IActionResult> GetByIdAsync(Guid id);
         Task<IActionResult> GetAllAsync();

@@ -26,7 +26,7 @@ public class Round : IIdentifiable
         EndTime = endTime;
         Matches = matches;
     }
-    
+
     public Round(string name)
     {
         Id = Guid.NewGuid();
@@ -38,5 +38,10 @@ public class Round : IIdentifiable
         StartTime = DateTime.MinValue;
         EndTime = DateTime.MinValue;
         Matches = [];
+    }
+
+    public override string ToString()
+    {
+        return $"Id: {Id}\nName: {Name}\nSequenceNumber: {SequenceNumber}";
     }
 }

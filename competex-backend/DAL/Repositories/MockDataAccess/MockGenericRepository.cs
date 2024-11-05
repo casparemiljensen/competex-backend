@@ -53,30 +53,17 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         // Update an existing entity
         public async Task<Result> UpdateAsync(Guid id, T obj)
         {
-            int index = await Task.Run(() => _entities.FindIndex(m => m.Id == id));
+            int index = await Task.Run(() => _entities.FindIndex(o => o.Id == id));
             if (index == -1)
             {
-                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).ToString().ToLower()} with ID {id} does not exist."));
+                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).ToString().ToLower()} with ID {obj.Id} does not exist."));
             }
 
             try
             {
                 await Task.Run(() =>
                 {
-                    var target = _entities[index];
-
-                    foreach (var prop in obj.GetType().GetProperties())
-                    {
-                        var propertyName = prop.Name;
-                        var propertyValue = prop.GetValue(obj);
-
-                        // Set the property on the target object using reflection
-                        var targetProp = target.GetType().GetProperty(propertyName);
-                        if (targetProp != null && targetProp.CanWrite)  // Ensure property exists and is writable
-                        {
-                            targetProp.SetValue(target, propertyValue);
-                        }
-                    }
+                    _entities[index] = obj; // Replace the object directly
                 }); // Simulate async work
 
                 return Result.Success();

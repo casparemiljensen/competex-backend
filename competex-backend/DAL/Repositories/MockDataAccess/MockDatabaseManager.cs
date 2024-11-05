@@ -63,7 +63,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Type = EntityType.Rabbit,
                 Name = "Thumper",
                 BirthDate = new DateTime(2021, 4, 15),
-                Level = EntityLevel.Beginner,
+                Level = Level.Beginner,
             };
 
             var entity2 = new Entity(member4, new Guid("0b3c2028-ce7a-45c2-9fd4-da81f9f3c269"))
@@ -71,7 +71,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Type = EntityType.Rabbit,
                 Name = "Cotton",
                 BirthDate = new DateTime(2020, 8, 3),
-                Level = EntityLevel.Intermediate,
+                Level = Level.Intermediate,
             };
 
             var entity3 = new Entity(member3, new Guid("3cd7caa4-378d-4336-914e-c29d3ff40d85"))
@@ -79,7 +79,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Type = EntityType.Rabbit,
                 Name = "Pepper",
                 BirthDate = new DateTime(2022, 1, 20),
-                Level = EntityLevel.Advanced,
+                Level = Level.Advanced,
             };
 
             var entity4 = new Entity(member4)
@@ -87,7 +87,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Type = EntityType.Rabbit,
                 Name = "Snowball",
                 BirthDate = new DateTime(2019, 11, 25),
-                Level = EntityLevel.Advanced,
+                Level = Level.Advanced,
             };
 
             var entity5 = new Entity(member5)
@@ -95,7 +95,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Type = EntityType.Rabbit,
                 Name = "Flopsy",
                 BirthDate = new DateTime(2021, 6, 10),
-                Level = EntityLevel.Beginner,
+                Level = Level.Beginner,
             };
 
             Entities.AddRange([entity1, entity2, entity3, entity4, entity5]);

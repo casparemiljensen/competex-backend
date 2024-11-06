@@ -24,14 +24,14 @@ namespace competex_backend.BLL.Services
             _mapper = mapper;
         }
 
-        public async Task<ResultT<IEnumerable<RoundDTO>>> GetByCompetitionId(Guid competitionId, int? pageSize, int? pageNumber)
+        public async Task<ResultT<Tuple<int, IEnumerable<RoundDTO>>>> GetByCompetitionId(Guid competitionId, int? pageSize, int? pageNumber)
         {
             var result = await _roundRepository.GetRoundIdsByCompetitionId(competitionId, pageSize, pageNumber);
             if (result.IsSuccess && result.Value != null)
             {
-                return ResultT<IEnumerable<RoundDTO>>.Success(result.Value.Select(round => _mapper.Map<RoundDTO>(round)));
+                return ResultT<Tuple<int, IEnumerable<RoundDTO>>>.Success(new Tuple<int, IEnumerable<RoundDTO>>(result.Value.Item1 ,result.Value.Item2.Select(round => _mapper.Map<RoundDTO>(round))));
             }
-            return ResultT<IEnumerable<RoundDTO>>.Failure(result.Error ?? Error.Failure("UnknownError", "An unknown error occurred."));
+            return ResultT<Tuple<int, IEnumerable<RoundDTO>>>.Failure(result.Error ?? Error.Failure("UnknownError", "An unknown error occurred."));
         }
     }
 }

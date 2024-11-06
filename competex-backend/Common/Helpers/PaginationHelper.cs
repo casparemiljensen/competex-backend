@@ -25,7 +25,14 @@ public static class PaginationHelper
         {
             return 0;
         }
-
+        Console.WriteLine(pageSize);
+        Console.WriteLine(pageNumber);
+        Console.WriteLine((int)pageSize * ((int)pageNumber - 1));
         return (int)pageSize * ((int)pageNumber - 1);
+    }
+
+    public static int GetTotalPages(int? pageSize, int? pageNumber, int numberOfLines)
+    {
+        return (int)Math.Ceiling((double)(numberOfLines / (pageSize ?? Defaults.PageSize)) + 1);
     }
 }

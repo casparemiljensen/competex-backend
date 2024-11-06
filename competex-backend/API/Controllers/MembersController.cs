@@ -35,7 +35,7 @@ namespace competex_backend.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            var result = await _memberService.GetAllAsync(pageSize, pageSize);
+            var result = await _memberService.GetAllAsync(pageSize, pageNumber);
             if (result.IsSuccess)
             {
                 //var obj = result.Value.Item2;

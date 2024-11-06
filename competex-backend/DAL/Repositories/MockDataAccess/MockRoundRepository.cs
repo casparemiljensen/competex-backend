@@ -11,12 +11,15 @@ public class MockRoundRepository : MockGenericRepository<Round>, IRoundRepositor
     public MockRoundRepository(MockDatabaseManager db) : base(db)
     {
     }
-    public async Task<ResultT<IEnumerable<Round>>> GetRoundIdsByCompetitionId(Guid competitionId, int? pageSize, int? pageNumber)
+    public async Task<ResultT<Tuple<int, IEnumerable<Round>>>> GetRoundIdsByCompetitionId(Guid competitionId, int? pageSize, int? pageNumber)
     {
-        var rounds = await Task.Run(() => _entities
-        .FindAll(round => round.CompetitionId == competitionId)
+        var entities = await Task.Run(() => _entities.FindAll(round => round.CompetitionId == competitionId));
+        var rounds = await Task.Run(() => entities
         .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
-        .Take(pageSize ?? 10)); //TODO: Make defaults
-        return ResultT<IEnumerable<Round>>.Success(rounds);
+        .Take(pageSize ?? Defaults.PageSize)); //TODO: Make defaults
+        return ResultT<Tuple<int, IEnumerable<Round>>>.Success(
+            new Tuple<int, IEnumerable<Round>>(
+                PaginationHelper.GetTotalPages(pageSize, pageNumber, entities.Count),
+                rounds));
     }
 }

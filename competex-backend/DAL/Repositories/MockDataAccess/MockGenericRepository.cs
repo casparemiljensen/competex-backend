@@ -27,7 +27,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public async Task<ResultT<Tuple<int, IEnumerable<T>>>> GetAllAsync(int? pageSize, int? pageNumber)
         {
             var entities = await Task.Run(() => _entities);
-            int totalPages = (int)Math.Ceiling((double)(entities.Count / (pageSize ?? Defaults.PageSize)) + 1);
+            int totalPages = PaginationHelper.GetTotalPages(pageSize, pageNumber, entities.Count);
 
             var result = entities
             .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))

@@ -91,7 +91,12 @@ namespace competex_backend.API.Controllers
             var result = await _roundService.GetByCompetitionId(competitionId, pageSize, pageNumber);
             if (result.IsSuccess && result.Value != null)
             {
-                return Ok(result.Value); // Return NoContent for successful deletion
+                var obj = new PaginationWrapperDTO<IEnumerable<RoundDTO>>(
+                    result.Value.Item2,
+                    pageSize ?? Defaults.PageSize,
+                    pageNumber ?? Defaults.PageNumber,
+                    result.Value.Item1);
+                return Ok(obj); // Return NoContent for successful deletion
             }
             return BadRequest(result.Error); // Return BadRequest with error details
         }

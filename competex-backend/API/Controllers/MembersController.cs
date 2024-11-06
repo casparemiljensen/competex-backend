@@ -1,6 +1,7 @@
 ﻿using competex_backend.API.DTOs;
 using competex_backend.API.Interfaces;
 using competex_backend.BLL.Interfaces;
+using competex_backend.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -37,7 +38,8 @@ namespace competex_backend.API.Controllers
             var result = await _memberService.GetAllAsync(pageSize, pageSize);
             if (result.IsSuccess)
             {
-                var obj = result.Value.Select(m => $"{m.FirstName} {m.LastName} - {m.Id}");
+                //var obj = result.Value.Item2;
+                var obj = new PaginationWrapperDTO<IEnumerable<MemberDTO>>(result.Value.Item2, pageSize ?? Defaults.PageSize, pageNumber ?? Defaults.PageNumber, result.Value.Item1);
                 return Ok(obj);
             }
             return BadRequest(result.Error); // Return BadRequest with error details

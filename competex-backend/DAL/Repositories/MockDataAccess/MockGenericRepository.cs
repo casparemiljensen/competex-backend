@@ -24,13 +24,15 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 : ResultT<T>.Failure(Error.NotFound($"{typeof(T).ToString().ToLower()} not found.", $"{typeof(T).ToString().ToLower()} with ID {id} does not exist."));
         }
 
-        public async Task<ResultT<IEnumerable<T>>> GetAllAsync(int? pageSize, int? pageNumber)
+        public async Task<ResultT<Tuple<int, IEnumerable<T>>>> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            var entities = await Task.Run(() => _entities
+            var entities = await Task.Run(() => _entities);
+            int totalPages = (int)Math.Ceiling((double)(entities.Count / (pageSize ?? Defaults.PageSize)) + 1);
+
+            var result = entities
             .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
-            .Take(pageSize ?? Defaults.pageSize)
-            .ToList());
-            return ResultT<IEnumerable<T>>.Success(entities);
+            .Take(pageSize ?? Defaults.PageSize);
+            return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
         }
 
 

@@ -2,6 +2,7 @@ using competex_backend.API.DTOs;
 using competex_backend.API.Interfaces;
 using competex_backend.BLL.Interfaces;
 using competex_backend.BLL.Services;
+using competex_backend.Common.Helpers;
 using competex_backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -39,7 +40,9 @@ namespace competex_backend.API.Controllers
             var result = await _roundService.GetAllAsync(pageSize, pageNumber);
             if (result.IsSuccess)
             {
-                return Ok(result.Value);
+                var obj = new PaginationWrapperDTO<IEnumerable<RoundDTO>>(result.Value.Item2, pageSize ?? Defaults.PageSize, pageNumber ?? Defaults.PageNumber, result.Value.Item1);
+                Console.WriteLine(obj.ToString());
+                return Ok(obj);
             }
             return BadRequest(result.Error); // Return BadRequest with error details
         }

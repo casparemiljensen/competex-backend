@@ -2,6 +2,7 @@
 {
     public static class Defaults
     {
-        public static int pageSize = 10;
+        public static int PageSize = 10;
+        public static int PageNumber = 10;
     }
 }

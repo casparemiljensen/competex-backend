@@ -11,7 +11,7 @@ public static class PaginationHelper
 
         if (take == null || take <= 0)
         {
-            return (int)skip / Defaults.pageSize;
+            return (int)skip / Defaults.PageSize;
         }
 
         return (int)skip / (int)take;
@@ -19,7 +19,7 @@ public static class PaginationHelper
 
     public static int GetSkip(int? pageSize, int? pageNumber)
     {
-        pageSize = pageSize ?? Defaults.pageSize;
+        pageSize = pageSize ?? Defaults.PageSize;
 
         if (pageNumber == null || pageNumber <= 0)
         {

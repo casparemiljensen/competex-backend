@@ -6,8 +6,6 @@ namespace competex_backend.API.Interfaces
     public interface IRoundAPI : IGenericAPI<RoundDTO>
     {
         // TODO: Change to Task<IActionResult> Or change IGenericAPI to return IActionResult
-        IActionResult GetByName(string firstName);
-
-        Task<ActionResult> GetRoundIdsByCompetitionId(Guid competitionId, int? pageSize, int? pageNumber);
+        ActionResult GetRoundIdsByCompetitionId(Guid competitionId);
     }
 }

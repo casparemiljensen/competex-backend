@@ -65,4 +65,18 @@
         D1, // 2 Rounds
         C2 // Samlet tid
     }
+    public enum RoundType
+    {
+        Base,
+        Middle,
+        Final,
+    }
+
+    public enum RoundStatus
+    {
+        Future,
+        Starting,
+        Ongoing,
+        Ended
+    }
 }

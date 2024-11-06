@@ -1,7 +1,9 @@
-﻿using competex_backend.API.DTOs;
+using competex_backend.API.DTOs;
 using competex_backend.API.Interfaces;
 using competex_backend.BLL.Interfaces;
+using competex_backend.BLL.Services;
 using competex_backend.Common.Helpers;
+using competex_backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -11,20 +13,20 @@ namespace competex_backend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MembersController : ControllerBase, IMemberAPI
+    public class RoundsController : ControllerBase, IRoundAPI
     {
-        private IMemberService _memberService;
+        private IRoundService _roundService;
 
-        public MembersController(IMemberService memberService)
+        public RoundsController(IRoundService roundService)
         {
-            _memberService = memberService;
+            _roundService = roundService;
         }
 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            var result = await _memberService.GetByIdAsync(id);
+            var result = await _roundService.GetByIdAsync(id);
             if (result.IsSuccess)
             {
                 return Ok(result.Value);
@@ -35,11 +37,10 @@ namespace competex_backend.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            var result = await _memberService.GetAllAsync(pageSize, pageSize);
+            var result = await _roundService.GetAllAsync(pageSize, pageNumber);
             if (result.IsSuccess)
             {
-                //var obj = result.Value.Item2;
-                var obj = new PaginationWrapperDTO<IEnumerable<MemberDTO>>(
+                var obj = new PaginationWrapperDTO<IEnumerable<RoundDTO>>(
                     result.Value.Item2,
                     pageSize ?? Defaults.PageSize,
                     pageNumber ?? Defaults.PageNumber,
@@ -50,9 +51,9 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(MemberDTO obj)
+        public async Task<IActionResult> CreateAsync(RoundDTO obj)
         {
-            var result = await _memberService.CreateAsync(obj);
+            var result = await _roundService.CreateAsync(obj);
             if (result.IsSuccess)
             {
                 return Ok(result.Value); // Return Created response
@@ -61,11 +62,11 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] MemberDTO obj)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] RoundDTO obj)
         {
             // You may want to include the id in the obj for identification
 
-            var result = await _memberService.UpdateAsync(id, obj);
+            var result = await _roundService.UpdateAsync(id, obj);
             if (result.IsSuccess)
             {
                 return NoContent(); // Return NoContent for successful update
@@ -76,7 +77,7 @@ namespace competex_backend.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            var result = await _memberService.RemoveAsync(id);
+            var result = await _roundService.RemoveAsync(id);
             if (result.IsSuccess)
             {
                 return NoContent(); // Return NoContent for successful deletion
@@ -84,26 +85,15 @@ namespace competex_backend.API.Controllers
             return BadRequest(result.Error); // Return BadRequest with error details
         }
 
-        [HttpGet("GetByName")]
-        public IActionResult GetByName(string firstName)
+        [HttpGet("competition/{competitionId}")]
+        public async Task<ActionResult> GetRoundIdsByCompetitionId(Guid competitionId, [FromQuery] int? pageSize, [FromQuery] int? pageNumber)
         {
-            var res = _memberService.GetByName(firstName);
-            if (res != null)
+            var result = await _roundService.GetByCompetitionId(competitionId, pageSize, pageNumber);
+            if (result.IsSuccess && result.Value != null)
             {
-                return Ok(res);
+                return Ok(result.Value); // Return NoContent for successful deletion
             }
-            return BadRequest("An error occured");
-        }
-
-        [HttpGet("GetNumber")]
-        public IActionResult GetNumber()
-        {
-            var res = _memberService.CheckNumber();
-            if (res)
-            {
-                return Ok();
-            }
-            return BadRequest("An error occured");
+            return BadRequest(result.Error); // Return BadRequest with error details
         }
     }
 }

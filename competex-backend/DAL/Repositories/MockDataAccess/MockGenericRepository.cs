@@ -1,4 +1,5 @@
-﻿using competex_backend.DAL.Interfaces;
+﻿using competex_backend.Common.Helpers;
+using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
@@ -23,10 +24,15 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 : ResultT<T>.Failure(Error.NotFound($"{typeof(T).ToString().ToLower()} not found.", $"{typeof(T).ToString().ToLower()} with ID {id} does not exist."));
         }
 
-        public async Task<ResultT<IEnumerable<T>>> GetAllAsync()
+        public async Task<ResultT<Tuple<int, IEnumerable<T>>>> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            var entities = await Task.Run(() => _entities.ToList());
-            return ResultT<IEnumerable<T>>.Success(entities);
+            var entities = await Task.Run(() => _entities);
+            int totalPages = (int)Math.Ceiling((double)(entities.Count / (pageSize ?? Defaults.PageSize)) + 1);
+
+            var result = entities
+            .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
+            .Take(pageSize ?? Defaults.PageSize);
+            return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
         }
 
 
@@ -51,9 +57,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
 
         // Update an existing entity
-        public async Task<Result> UpdateAsync(T obj)
+        public async Task<Result> UpdateAsync(Guid id, T obj)
         {
-            int index = await Task.Run(() => _entities.FindIndex(m => m.Id == obj.Id));
+            int index = await Task.Run(() => _entities.FindIndex(o => o.Id == id));
             if (index == -1)
             {
                 return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).ToString().ToLower()} with ID {obj.Id} does not exist."));

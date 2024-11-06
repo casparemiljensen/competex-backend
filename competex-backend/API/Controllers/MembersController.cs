@@ -49,7 +49,7 @@ namespace competex_backend.API.Controllers
             var result = await _memberService.CreateAsync(obj);
             if (result.IsSuccess)
             {
-                return Ok(result.Value); // Return Created response
+                return CreatedAtAction(nameof(result.Value), new { id = result.Value }, obj); // Return Created response
             }
             return BadRequest(result.Error); // Return BadRequest with error details
         }

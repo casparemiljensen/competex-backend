@@ -18,9 +18,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IGenericRepository<Member>, MockMemberRepository>();
 builder.Services.AddScoped<IGenericRepository<Club>, MockClubRepository>();
+builder.Services.AddScoped<IGenericRepository<Round>, MockRoundRepository>();
 builder.Services.AddSingleton<MockDatabaseManager>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IClubService, ClubService>();
+builder.Services.AddScoped<IRoundService, RoundService>();
 //builder.Services.AddScoped<IClubRepository, MockClubRepository>();
 //builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
 //builder.Services.AddScoped<IClubMemberRepository, MockClubMemberRepository>();

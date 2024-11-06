@@ -1,5 +1,13 @@
 ﻿namespace competex_backend.Models
 {
+    public enum Status // Can be used for both competition and event.
+    {
+        Pending,
+        Active,
+        Cancelled,
+        Concluded
+    }
+
     public enum MatchStatus
     {
         Pending,
@@ -30,7 +38,7 @@
         Horse
     }
 
-    public enum EntityLevel
+    public enum Level // Can be used for all types of participants and competitions.
     {
         Intermediate,
         Beginner,
@@ -48,6 +56,27 @@
     {
         Time,
         Set,
-        Number
+        Number,
+        TimeAndPenalty
+    }
+
+    public enum ScoreMethod
+    {
+        D1, // 2 Rounds
+        C2 // Samlet tid
+    }
+    public enum RoundType
+    {
+        Base,
+        Middle,
+        Final,
+    }
+
+    public enum RoundStatus
+    {
+        Future,
+        Starting,
+        Ongoing,
+        Ended
     }
 }

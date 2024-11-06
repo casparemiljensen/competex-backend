@@ -10,6 +10,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<ClubMember> ClubMembers { get; set; } = new();
         public List<Entity> Entities { get; set; } = new();
         public List<Field> Fields { get; set; } = new();
+        public List<Round> Rounds { get; set; } = new();
 
         public MockDatabaseManager()
         {
@@ -18,9 +19,10 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
         public List<T> GetEntities<T>() where T : class
         {
-            if (typeof(T) == typeof(Member)) return Members as List<T>;
-            if (typeof(T) == typeof(ClubMember)) return ClubMembers as List<T>;
-            if (typeof(T) == typeof(Entity)) return Entities as List<T>;
+            if (typeof(T) == typeof(Member)) return (Members as List<T>)!;
+            if (typeof(T) == typeof(ClubMember)) return (ClubMembers as List<T>)!;
+            if (typeof(T) == typeof(Entity)) return (Entities as List<T>)!;
+            if (typeof(T) == typeof(Round)) return (Rounds as List<T>)!;
 
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
@@ -63,7 +65,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Type = EntityType.Rabbit,
                 Name = "Thumper",
                 BirthDate = new DateTime(2021, 4, 15),
-                Level = EntityLevel.Beginner,
+                Level = Level.Beginner,
             };
 
             var entity2 = new Entity(member4, new Guid("0b3c2028-ce7a-45c2-9fd4-da81f9f3c269"))
@@ -71,7 +73,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Type = EntityType.Rabbit,
                 Name = "Cotton",
                 BirthDate = new DateTime(2020, 8, 3),
-                Level = EntityLevel.Intermediate,
+                Level = Level.Intermediate,
             };
 
             var entity3 = new Entity(member3, new Guid("3cd7caa4-378d-4336-914e-c29d3ff40d85"))
@@ -79,7 +81,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Type = EntityType.Rabbit,
                 Name = "Pepper",
                 BirthDate = new DateTime(2022, 1, 20),
-                Level = EntityLevel.Advanced,
+                Level = Level.Advanced,
             };
 
             var entity4 = new Entity(member4)
@@ -87,7 +89,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Type = EntityType.Rabbit,
                 Name = "Snowball",
                 BirthDate = new DateTime(2019, 11, 25),
-                Level = EntityLevel.Advanced,
+                Level = Level.Advanced,
             };
 
             var entity5 = new Entity(member5)
@@ -95,14 +97,21 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Type = EntityType.Rabbit,
                 Name = "Flopsy",
                 BirthDate = new DateTime(2021, 6, 10),
-                Level = EntityLevel.Beginner,
+                Level = Level.Beginner,
             };
 
             Entities.AddRange([entity1, entity2, entity3, entity4, entity5]);
             #endregion
 
+            #region rounds
+            var round1 = new Round("TestRoundOne") { Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac") };
+            var round2 = new Round("TestRoundTwo") { CompetitionId = new Guid("596462f8-2e32-4a21-921a-b5768c6b0d86") };
+            var round3 = new Round("TestRoundThree");
+            var round4 = new Round("TestRoundFour");
+            var round5 = new Round("TestRoundFive");
 
-
+            Rounds.AddRange([round1, round2, round3, round4, round5]);
+            #endregion
             #region fields
             var field1 = new Field("Bane 1", new Guid("1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"))
             {

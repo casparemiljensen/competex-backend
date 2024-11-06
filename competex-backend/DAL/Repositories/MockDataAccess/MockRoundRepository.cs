@@ -1,4 +1,6 @@
 using System;
+using competex_backend.API.DTOs;
+using competex_backend.Common.Helpers;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 
@@ -9,8 +11,15 @@ public class MockRoundRepository : MockGenericRepository<Round>, IRoundRepositor
     public MockRoundRepository(MockDatabaseManager db) : base(db)
     {
     }
-    public IEnumerable<Guid> GetRoundIdsByCompetitionId(Guid competitionId)
+    public async Task<ResultT<Tuple<int, IEnumerable<Round>>>> GetRoundIdsByCompetitionId(Guid competitionId, int? pageSize, int? pageNumber)
     {
-        return _entities.FindAll(round => round.CompetitionId == competitionId).Select(round => round.Id);
+        var entities = await Task.Run(() => _entities.FindAll(round => round.CompetitionId == competitionId));
+        var rounds = await Task.Run(() => entities
+        .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
+        .Take(pageSize ?? Defaults.PageSize)); //TODO: Make defaults
+        return ResultT<Tuple<int, IEnumerable<Round>>>.Success(
+            new Tuple<int, IEnumerable<Round>>(
+                PaginationHelper.GetTotalPages(pageSize, pageNumber, entities.Count),
+                rounds));
     }
 }

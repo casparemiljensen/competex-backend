@@ -9,6 +9,7 @@ namespace competex_backend
         public MappingProfile()
         {
             CreateMap<Member, MemberDTO>();
+            CreateMap<Round, RoundDTO>();
             //CreateMap<MemberDTO, Member>();
             //CreateMap<MemberDTO, Member>().ConstructUsing(
             //        src => new Member(
@@ -19,7 +20,9 @@ namespace competex_backend
 
             ////Example of ignoring a property
             CreateMap<MemberDTO, Member>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore MemberId during mapping
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
+            CreateMap<RoundDTO, Round>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
         }
     }
 }

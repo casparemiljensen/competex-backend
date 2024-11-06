@@ -1,6 +1,6 @@
 ﻿namespace competex_backend.Models
 {
-    public class Participant : IIdentifiable
+    public abstract class Participant : IIdentifiable
     {
         public Guid Id { get; init; }
         public string Name { get; set; }

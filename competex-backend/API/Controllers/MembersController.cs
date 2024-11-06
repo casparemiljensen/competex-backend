@@ -39,7 +39,11 @@ namespace competex_backend.API.Controllers
             if (result.IsSuccess)
             {
                 //var obj = result.Value.Item2;
-                var obj = new PaginationWrapperDTO<IEnumerable<MemberDTO>>(result.Value.Item2, pageSize ?? Defaults.PageSize, pageNumber ?? Defaults.PageNumber, result.Value.Item1);
+                var obj = new PaginationWrapperDTO<IEnumerable<MemberDTO>>(
+                    result.Value.Item2,
+                    pageSize ?? Defaults.PageSize,
+                    pageNumber ?? Defaults.PageNumber,
+                    result.Value.Item1);
                 return Ok(obj);
             }
             return BadRequest(result.Error); // Return BadRequest with error details

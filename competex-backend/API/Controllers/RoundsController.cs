@@ -40,8 +40,11 @@ namespace competex_backend.API.Controllers
             var result = await _roundService.GetAllAsync(pageSize, pageNumber);
             if (result.IsSuccess)
             {
-                var obj = new PaginationWrapperDTO<IEnumerable<RoundDTO>>(result.Value.Item2, pageSize ?? Defaults.PageSize, pageNumber ?? Defaults.PageNumber, result.Value.Item1);
-                Console.WriteLine(obj.ToString());
+                var obj = new PaginationWrapperDTO<IEnumerable<RoundDTO>>(
+                    result.Value.Item2,
+                    pageSize ?? Defaults.PageSize,
+                    pageNumber ?? Defaults.PageNumber,
+                    result.Value.Item1);
                 return Ok(obj);
             }
             return BadRequest(result.Error); // Return BadRequest with error details

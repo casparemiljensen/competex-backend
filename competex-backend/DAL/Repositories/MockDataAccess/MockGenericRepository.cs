@@ -1,4 +1,5 @@
-﻿using competex_backend.DAL.Interfaces;
+﻿using competex_backend.Common.Helpers;
+using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
@@ -23,9 +24,12 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 : ResultT<T>.Failure(Error.NotFound($"{typeof(T).ToString().ToLower()} not found.", $"{typeof(T).ToString().ToLower()} with ID {id} does not exist."));
         }
 
-        public async Task<ResultT<IEnumerable<T>>> GetAllAsync()
+        public async Task<ResultT<IEnumerable<T>>> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            var entities = await Task.Run(() => _entities.ToList());
+            var entities = await Task.Run(() => _entities
+            .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
+            .Take(pageSize ?? Defaults.pageSize)
+            .ToList());
             return ResultT<IEnumerable<T>>.Success(entities);
         }
 

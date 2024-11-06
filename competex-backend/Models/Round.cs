@@ -8,11 +8,11 @@ public class Round : IIdentifiable
     public string Name { get; set; }
     public uint SequenceNumber { get; set; }
     public RoundType RoundType { get; set; }
-    public Guid? CompetitionId { get; init; }
+    public Guid CompetitionId { get; init; }
     public RoundStatus Status { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
-    public Guid[] Matches { get; set; }
+    public IEnumerable<Guid> Matches { get; set; }
 
     public Round(Guid id, string name, uint sequenceNumber, RoundType roundType, Guid competitionId, RoundStatus status, DateTime startTime, DateTime endTime, Guid[] matches)
     {
@@ -30,10 +30,10 @@ public class Round : IIdentifiable
     public Round(string name)
     {
         Id = Guid.NewGuid();
-        Name = name;
+        Name = name.Trim();
         SequenceNumber = 0;
         RoundType = RoundType.Base;
-        CompetitionId = null;
+        CompetitionId = Guid.Empty;
         Status = RoundStatus.Future;
         StartTime = DateTime.MinValue;
         EndTime = DateTime.MinValue;

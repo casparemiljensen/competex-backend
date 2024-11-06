@@ -30,9 +30,9 @@ namespace competex_backend.BLL.Services
             return ResultT<TDto>.Failure(result.Error ?? Error.Failure("UnknownError", "An unknown error occurred."));
         }
 
-        public async Task<ResultT<IEnumerable<TDto>>> GetAllAsync()
+        public async Task<ResultT<IEnumerable<TDto>>> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            var result = await _repository.GetAllAsync();
+            var result = await _repository.GetAllAsync(pageSize, pageNumber);
             var entities = result.Value.Select(m => _mapper.Map<TDto>(m)).ToList();
             return ResultT<IEnumerable<TDto>>.Success(entities);
         }

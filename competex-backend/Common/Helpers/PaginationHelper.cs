@@ -11,7 +11,7 @@ public static class PaginationHelper
 
         if (take == null || take <= 0)
         {
-            return (int)skip / 10; //TODO : 10 should be the default value for take
+            return (int)skip / Defaults.pageSize;
         }
 
         return (int)skip / (int)take;
@@ -19,10 +19,7 @@ public static class PaginationHelper
 
     public static int GetSkip(int? pageSize, int? pageNumber)
     {
-        if (pageSize == null || pageSize < 0)
-        {
-            return 0;
-        }
+        pageSize = pageSize ?? Defaults.pageSize;
 
         if (pageNumber == null || pageNumber <= 0)
         {

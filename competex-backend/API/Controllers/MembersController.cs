@@ -32,9 +32,9 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            var result = await _memberService.GetAllAsync();
+            var result = await _memberService.GetAllAsync(pageSize, pageSize);
             if (result.IsSuccess)
             {
                 var obj = result.Value.Select(m => $"{m.FirstName} {m.LastName} - {m.Id}");

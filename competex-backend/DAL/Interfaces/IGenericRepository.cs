@@ -12,7 +12,7 @@ namespace competex_backend.DAL.Interfaces
         //bool Delete(Guid id);
 
         Task<ResultT<T>> GetByIdAsync(Guid id);
-        Task<ResultT<IEnumerable<T>>> GetAllAsync();
+        Task<ResultT<IEnumerable<T>>> GetAllAsync(int? pageSize, int? pageNumber);
         Task<ResultT<Guid>> InsertAsync(T obj);
         Task<Result> UpdateAsync(Guid id, T obj);
         Task<Result> DeleteAsync(Guid id);

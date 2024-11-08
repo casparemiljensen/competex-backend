@@ -11,6 +11,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Entity> Entities { get; set; } = new();
         public List<Field> Fields { get; set; } = new();
         public List<Round> Rounds { get; set; } = new();
+        public List<Competition> Competitions { get; set; } = new();
 
         public MockDatabaseManager()
         {
@@ -23,6 +24,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             if (typeof(T) == typeof(ClubMember)) return (ClubMembers as List<T>)!;
             if (typeof(T) == typeof(Entity)) return (Entities as List<T>)!;
             if (typeof(T) == typeof(Round)) return (Rounds as List<T>)!;
+            if (typeof(T) == typeof(Competition)) return (Competitions as List<T>)!;
 
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
@@ -122,6 +124,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             Rounds.AddRange([round1, round2, round3, round4, round5]);
             #endregion
+
             #region fields
             var field1 = new Field()
             {
@@ -170,6 +173,21 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
 
             Fields.AddRange([field1, field2, field3, field4, field5]);
+            #endregion
+
+            #region competitions
+            var comp1 = new Competition
+            {
+                Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"),
+                CompetitionType = new List<CompetitionType> { new CompetitionType() },  // Initialize with one or more CompetitionType objects
+                StartDate = new DateTime(2024, 5, 1),
+                EndDate = new DateTime(2024, 5, 10),
+                level = Level.Intermediate,
+                Status = Status.Pending,
+                MinParticipants = 5,
+                MaxParticipants = 20
+            };
+            Competitions.AddRange([comp1]);
             #endregion
         }
     }

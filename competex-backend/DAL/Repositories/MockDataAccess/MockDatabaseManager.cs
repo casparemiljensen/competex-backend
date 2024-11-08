@@ -13,8 +13,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Round> Rounds { get; set; } = new();
         public List<Competition> Competitions { get; set; } = new();
         public List<Event> Events { get; set; } = new();
-        public List<SportType> Sporttypes { get; set; } = new();
+        public List<SportType> SportTypes { get; set; } = new();
         public List<Admin> Admins { get; set; } = new();
+        public List<CompetitionType> CompetitionTypes { get; set; } = [];
 
         public MockDatabaseManager()
         {
@@ -29,8 +30,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             if (typeof(T) == typeof(Round)) return (Rounds as List<T>)!;
             if (typeof(T) == typeof(Competition)) return (Competitions as List<T>)!;
             if (typeof(T) == typeof(Event)) return (Events as List<T>)!;
-            if (typeof(T) == typeof(SportType)) return (Sporttypes as List<T>)!;
+            if (typeof(T) == typeof(SportType)) return (SportTypes as List<T>)!;
             if (typeof(T) == typeof(Admin)) return (Admins as List<T>)!;
+            if (typeof(T) == typeof(CompetitionType)) return (CompetitionTypes as List<T>)!;
 
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
@@ -67,7 +69,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 EventAttributes = new List<string> { "Indoor", "Ball" },
                 EntityType = EntityType.None
             };
-            Sporttypes.AddRange([sportType1]);
+            SportTypes.AddRange([sportType1]);
 
             #endregion
 
@@ -270,6 +272,80 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Competitions = new List<Competition>() { comp2 }
             };
             Events.Add(mockEvent);
+            #endregion
+
+            #region CompetitionType
+            var competitionTypeOne = new CompetitionType
+            {
+                Id = new Guid("5e6f7a8b-9c0d-1e2f-3a4b-5a6d7e8f9d0b"),
+                Name = "CompetitionTypeOne",
+                CompetitionAttributes = ["AttributeOne", "AttributeTwo"],
+                ScoreMethod = ScoreMethod.C2,
+                ScoreType = ScoreType.Time
+            };
+            var competitionTypeTwo = new CompetitionType
+            {
+                Id = new Guid("9c8b7a6d-5f4e-3a2d-1b0a-9d8c7b6f5a4e"),
+                Name = "CompetitionTypeTwo",
+                CompetitionAttributes = ["AttributeThree", "AttributeFour"],
+                ScoreMethod = ScoreMethod.D1,
+                ScoreType = ScoreType.Set
+            };
+
+            var competitionTypeThree = new CompetitionType
+            {
+                Id = new Guid("6f7e8d9c-4b3a-2c1d-0e9f-8a7b6c5d4e3f"),
+                Name = "CompetitionTypeThree",
+                CompetitionAttributes = ["AttributeFive", "AttributeSix"],
+                ScoreMethod = ScoreMethod.C2,
+                ScoreType = ScoreType.Number
+            };
+
+            var competitionTypeFour = new CompetitionType
+            {
+                Id = new Guid("3a2b1c0d-9e8f-7d6c-5b4a-3f2e1d0c9b8a"),
+                Name = "CompetitionTypeFour",
+                CompetitionAttributes = ["AttributeSeven", "AttributeEight"],
+                ScoreMethod = ScoreMethod.D1,
+                ScoreType = ScoreType.TimeAndPenalty
+            };
+
+            CompetitionTypes.AddRange([competitionTypeOne, competitionTypeTwo, competitionTypeThree, competitionTypeFour]);
+            #endregion
+
+            #region SportType
+            var sportTypeOne = new SportType
+            {
+                Id = new Guid("3a2b1a0d-9e8f-7d6c-5b4a-3f2e1d0c9b8a"),
+                Name = "SportTypeTestOne",
+                EntityType = EntityType.Rabbit,
+                EventAttributes = ["EventAttributeOne"],
+            };
+            var sportTypeTwo = new SportType
+            {
+                Id = new Guid("8b9d1a2c-3f4e-5d6b-7c8a-9e0f1d2a3b4c"),
+                Name = "SportTypeTestTwo",
+                EntityType = EntityType.Horse,
+                EventAttributes = ["EventAttributeTwo", "EventAttributeThree"],
+            };
+
+            var sportTypeThree = new SportType
+            {
+                Id = new Guid("2e3f4d5b-6a7c-8d9e-0f1a-2b3c4d5e6f7a"),
+                Name = "SportTypeTestThree",
+                EntityType = EntityType.Rabbit,
+                EventAttributes = ["EventAttributeFour"],
+            };
+
+            var sportTypeFour = new SportType
+            {
+                Id = new Guid("7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d1e2f"),
+                Name = "SportTypeTestFour",
+                EntityType = EntityType.Horse,
+                EventAttributes = ["EventAttributeFive", "EventAttributeSix"],
+            };
+
+            SportTypes.AddRange([sportTypeOne, sportTypeTwo, sportTypeThree, sportTypeFour]);
             #endregion
         }
     }

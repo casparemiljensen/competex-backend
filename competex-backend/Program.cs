@@ -24,6 +24,8 @@ builder.Services.AddSingleton<MockDatabaseManager>();
 builder.Services.AddScoped<IGenericRepository<Member>, MockMemberRepository>();
 builder.Services.AddScoped<IGenericRepository<Club>, MockClubRepository>();
 builder.Services.AddScoped<IGenericRepository<Round>, MockRoundRepository>();
+builder.Services.AddScoped<IGenericRepository<SportType>, MockSportTypeRepository>();
+builder.Services.AddScoped<IGenericRepository<CompetitionType>, MockCompetitionTypeRepository>();
 builder.Services.AddScoped<IGenericRepository<Competition>, MockCompetitionRepository>();
 builder.Services.AddScoped<IGenericRepository<Event>, MockEventRepository>();
 #endregion
@@ -46,6 +48,8 @@ builder.Services.AddScoped<IGenericService<ClubDTO>, GenericService<Club, ClubDT
 builder.Services.AddScoped<IGenericService<RoundDTO>, GenericService<Round, RoundDTO>>();
 builder.Services.AddScoped<IGenericService<CompetitionDTO>, GenericService<Competition, CompetitionDTO>>();
 builder.Services.AddScoped<IGenericService<EventDTO>, GenericService<Event, EventDTO>>();
+builder.Services.AddScoped<ISportTypeService, SportTypeService>();
+builder.Services.AddScoped<ICompetitionTypeService, CompetitionTypeService>();
 # endregion
 
 //builder.Services.AddScoped<IClubRepository, MockClubRepository>();

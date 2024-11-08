@@ -1,5 +1,4 @@
 using System;
-using competex_backend.API.DTOs;
 using competex_backend.Common.Helpers;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;

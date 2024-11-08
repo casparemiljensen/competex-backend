@@ -1,5 +1,7 @@
 ﻿using Common.ResultPattern;
+using competex_backend.DAL.Filters;
 using competex_backend.Models;
+using System.Linq.Expressions;
 
 namespace competex_backend.DAL.Interfaces
 {
@@ -12,9 +14,11 @@ namespace competex_backend.DAL.Interfaces
         //bool Delete(Guid id);
 
         Task<ResultT<T>> GetByIdAsync(Guid id);
-        Task<ResultT<IEnumerable<T>>> GetAllAsync();
+        Task<ResultT<IEnumerable<T>>> GetAllAsync(BaseFilter? filter = null);
         Task<ResultT<Guid>> InsertAsync(T obj);
         Task<Result> UpdateAsync(T obj);
         Task<Result> DeleteAsync(Guid id);
+        //Task<ResultT<IEnumerable<T>>> GetByFilterAsync(BaseFilter filter);
+
     }
 }

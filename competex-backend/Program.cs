@@ -16,11 +16,22 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<MockDatabaseManager>();
+
 builder.Services.AddScoped<IGenericRepository<Member>, MockMemberRepository>();
 builder.Services.AddScoped<IGenericRepository<Club>, MockClubRepository>();
-builder.Services.AddSingleton<MockDatabaseManager>();
+builder.Services.AddScoped<IGenericRepository<ClubMembership>, MockClubMembershipRepository>();
+
+
+// Register repositories for specific interfaces
+builder.Services.AddScoped<IClubRepository, MockClubRepository>();
+builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
+builder.Services.AddScoped<IClubMembershipRepository, MockClubMembershipRepository>();
+
+// Register services
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IClubService, ClubService>();
+builder.Services.AddScoped<IClubMembershipService, ClubMembershipService>();
 //builder.Services.AddScoped<IClubRepository, MockClubRepository>();
 //builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
 //builder.Services.AddScoped<IClubMemberRepository, MockClubMemberRepository>();
@@ -46,3 +57,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+    

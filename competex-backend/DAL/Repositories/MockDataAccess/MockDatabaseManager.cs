@@ -7,7 +7,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
     {
         public List<Member> Members { get; set; } = new();
         public List<Club> Clubs { get; set; } = new();
-        public List<ClubMember> ClubMembers { get; set; } = new();
+        public List<ClubMembership> ClubMemberships { get; set; } = new();
         public List<Entity> Entities { get; set; } = new();
         public List<Field> Fields { get; set; } = new();
 
@@ -19,9 +19,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<T> GetEntities<T>() where T : class
         {
             if (typeof(T) == typeof(Member)) return Members as List<T>;
-            if (typeof(T) == typeof(ClubMember)) return ClubMembers as List<T>;
+            if (typeof(T) == typeof(ClubMembership)) return ClubMemberships as List<T>;
             if (typeof(T) == typeof(Entity)) return Entities as List<T>;
-
+            if (typeof(T) == typeof(Club)) return Clubs as List<T>;
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
 
@@ -39,22 +39,22 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #endregion
 
             #region clubs
-            var club1 = new Club("Vejle Kaninhop", "Kaninhop");
-            var club2 = new Club("Lystrup Kaninhop", "Kaninhop");
-            var club3 = new Club("Kaninernes Klub Hjørring", "Kaninhop");
-            var club4 = new Club("Aabybro kaninhop", "Kaninhop");
-            var club5 = new Club("Aalborg kaninforening", "Kaninhop");
+            var club1 = new Club("Vejle Kaninhop", "Kaninhop",new Guid("4d8c3a9a-eedd-4083-9adf-a912c4f30417"));
+            var club2 = new Club("Lystrup Kaninhop", "Kaninhop", new Guid());
+            var club3 = new Club("Kaninernes Klub Hjørring", "Kaninhop", new Guid());
+            var club4 = new Club("Aabybro kaninhop", "Kaninhop", new Guid());
+            var club5 = new Club("Aalborg kaninforening", "Kaninhop", new Guid());
             Clubs.AddRange(new[] { club1, club2, club3, club4, club5 });
             #endregion
 
             #region clubmembers
-            var clubMember1 = new ClubMember { ClubId = club1.Id, MemberId = member1.Id, JoinDate = new DateTime(2011, 4, 20) };
-            var clubMember2 = new ClubMember { ClubId = club1.Id, MemberId = member2.Id, JoinDate = new DateTime(2024, 1, 13) };
-            var clubMember3 = new ClubMember { ClubId = club1.Id, MemberId = member3.Id, JoinDate = new DateTime(2015, 6, 17) };
-            var clubMember4 = new ClubMember { ClubId = club2.Id, MemberId = member4.Id, JoinDate = new DateTime(2001, 8, 31) };
-            var clubMember5 = new ClubMember { ClubId = club2.Id, MemberId = member5.Id, JoinDate = DateTime.UtcNow };
+            var clubMember1 = new ClubMembership { ClubId = club1.Id, MemberId = member1.Id, JoinDate = new DateTime(2011, 4, 20) };
+            var clubMember2 = new ClubMembership { ClubId = club1.Id, MemberId = member2.Id, JoinDate = new DateTime(2024, 1, 13) };
+            var clubMember3 = new ClubMembership { ClubId = club1.Id, MemberId = member3.Id, JoinDate = new DateTime(2015, 6, 17) };
+            var clubMember4 = new ClubMembership { ClubId = club2.Id, MemberId = member4.Id, JoinDate = new DateTime(2001, 8, 31) };
+            var clubMember5 = new ClubMembership { ClubId = club2.Id, MemberId = member5.Id, JoinDate = DateTime.UtcNow };
 
-            ClubMembers.AddRange(new[] { clubMember1, clubMember2, clubMember3, clubMember4, clubMember5 });
+            ClubMemberships.AddRange(new[] { clubMember1, clubMember2, clubMember3, clubMember4, clubMember5 });
             #endregion
 
             #region entities

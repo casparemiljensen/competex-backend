@@ -1,5 +1,7 @@
-﻿using competex_backend.DAL.Interfaces;
+﻿using competex_backend.DAL.Filters;
+using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
+using System.Linq.Expressions;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
@@ -20,13 +22,40 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var entity = await Task.Run(() => _entities.FirstOrDefault(c => c.Id == id));
             return entity is not null
                 ? ResultT<T>.Success(entity)
-                : ResultT<T>.Failure(Error.NotFound($"{typeof(T).ToString().ToLower()} not found.", $"{typeof(T).ToString().ToLower()} with ID {id} does not exist."));
+                : ResultT<T>.Failure(Error.NotFound($"{typeof(T).Name.ToLower()} not found.", $"{typeof(T).Name.ToLower()} with ID {id} does not exist."));
         }
 
-        public async Task<ResultT<IEnumerable<T>>> GetAllAsync()
+        public async Task<ResultT<IEnumerable<T>>> GetAllAsync(BaseFilter? filter = null)
         {
-            var entities = await Task.Run(() => _entities.ToList());
-            return ResultT<IEnumerable<T>>.Success(entities);
+            if (filter is null)
+            {
+                var entities = await Task.Run(() => _entities.ToList());
+                return ResultT<IEnumerable<T>>.Success(entities);
+            }
+
+            try
+            {
+                // Initialize a queryable list from the in-memory collection of entities.
+                var query = _entities.AsQueryable();
+
+                // Apply filtering if a list of IDs is provided in the filter and contains elements.
+                if (filter.Ids is not null)
+                {
+                    // Restrict the query to entities whose IDs are in the provided list.
+                    query = query.Where(entity => filter.Ids.Contains(entity.Id));
+                }
+
+                // Run the query asynchronously and retrieve the results as a list.
+                var filteredEntities = await Task.Run(() => query.ToList());
+
+                // Return the result as a successful operation containing the filtered entities.
+                return ResultT<IEnumerable<T>>.Success(filteredEntities);
+            }
+            catch (Exception ex)
+            {
+                // If an error occurs, return a failure result with an error message indicating the issue.
+                return ResultT<IEnumerable<T>>.Failure(Error.FilterError("FilterError", $"Failed to filter {typeof(T).Name.ToLower()}: {ex.Message}"));
+            }
         }
 
 
@@ -56,7 +85,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             int index = await Task.Run(() => _entities.FindIndex(m => m.Id == obj.Id));
             if (index == -1)
             {
-                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).ToString().ToLower()} with ID {obj.Id} does not exist."));
+                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).Name.ToLower()} with ID {obj.Id} does not exist."));
             }
 
             try
@@ -70,7 +99,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             }
             catch (Exception ex)
             {
-                return Result.Failure(Error.Failure("UpdateError", $"Failed to update {typeof(T).ToString().ToLower()}: {ex.Message}"));
+                return Result.Failure(Error.Failure("UpdateError", $"Failed to update {typeof(T).Name.ToLower()}: {ex.Message}"));
             }
         }
 
@@ -81,7 +110,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var entityToRemove = await Task.Run(() => _entities.FirstOrDefault(c => c.Id == id));
             if (entityToRemove is null)
             {
-                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).ToString().ToLower()} with ID {id} does not exist."));
+                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).Name.ToLower()} with ID {id} does not exist."));
             }
 
             try
@@ -91,8 +120,36 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             }
             catch (Exception ex)
             {
-                return Result.Failure(Error.Failure("DeletionError", $"Could not delete {typeof(T).ToString().ToLower()}: {ex.Message}"));
+                return Result.Failure(Error.Failure("DeletionError", $"Could not delete {typeof(T).Name.ToLower()}: {ex.Message}"));
             }
         }
+
+        // New filter method
+        //public async Task<ResultT<IEnumerable<T>>> GetByFilterAsync(BaseFilter filter)
+        //{
+        //    try
+        //    {
+        //        // Initialize a queryable list from the in-memory collection of entities.
+        //        var query = _entities.AsQueryable();
+
+        //        // Apply filtering if a list of IDs is provided in the filter and contains elements.
+        //        if (filter.Ids is not null && filter.Ids.Any())
+        //        {
+        //            // Restrict the query to entities whose IDs are in the provided list.
+        //            query = query.Where(entity => filter.Ids.Contains(entity.Id));
+        //        }
+
+        //        // Run the query asynchronously and retrieve the results as a list.
+        //        var filteredEntities = await Task.Run(() => query.ToList());
+
+        //        // Return the result as a successful operation containing the filtered entities.
+        //        return ResultT<IEnumerable<T>>.Success(filteredEntities);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // If an error occurs, return a failure result with an error message indicating the issue.
+        //        return ResultT<IEnumerable<T>>.Failure(Error.FilterError("FilterError", $"Failed to filter {typeof(T).Name.ToLower()}: {ex.Message}"));
+        //    }
+        //}
     }
 }

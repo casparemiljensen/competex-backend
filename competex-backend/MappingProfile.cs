@@ -8,6 +8,12 @@ namespace competex_backend
     {
         public MappingProfile()
         {
+            CreateMap<ClubMembership, ClubMembershipDTO>();
+
+            ////Example of ignoring a property
+            CreateMap<ClubMembershipDTO, ClubMembership>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore MemberId during mapping
+
             CreateMap<Member, MemberDTO>();
             //CreateMap<MemberDTO, Member>();
             //CreateMap<MemberDTO, Member>().ConstructUsing(

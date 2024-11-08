@@ -13,13 +13,14 @@
         public string Permissions { get; set; } = String.Empty; //Set to correct type when we figure out how to handle permissions
         // public ICollection<ClubMember> ClubMembers { get; set; } = new List<ClubMember>();
 
-
         // No club implementation yet. 
 
         public Member()
         {
             Id = Guid.NewGuid();
         }
+
+
         //public Member(Guid id)
         //{
         //    Id = id == Guid.Empty ? Guid.NewGuid() : id;

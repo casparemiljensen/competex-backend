@@ -4,13 +4,13 @@
     public class Member : IIdentifiable
     {
         public Guid Id { get; set; }
-        public string FirstName { get; set; } = String.Empty;
-        public string LastName { get; set; } = String.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
 
         public DateTime Birthday { get; set; }
-        public string Email { get; set; } = String.Empty;
-        public string Phone { get; set; } = String.Empty;
-        public string Permissions { get; set; } = String.Empty; //Set to correct type when we figure out how to handle permissions
+        public string Email { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Permissions { get; set; } = string.Empty; //Set to correct type when we figure out how to handle permissions
         // public ICollection<ClubMember> ClubMembers { get; set; } = new List<ClubMember>();
 
 

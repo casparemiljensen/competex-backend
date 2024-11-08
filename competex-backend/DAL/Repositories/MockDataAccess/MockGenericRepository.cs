@@ -132,16 +132,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                             return (propertyValue as IEnumerable)!.Cast<object>()
                                 .Any(item => item.ToString()?.Trim().Replace("\"", "") == serializedFilterValue.ToString().Trim().Replace("\"", ""));
                         }));
-                    /*
-                    filtertedEntities.AddRange(
-                    entities
-                        .Where(entity =>
-                        {
-                            var propertyValue = propertyInfo.GetValue(entity);
-                            return (propertyValue as IEnumerable)!.Cast<object>()
-                                .Any(item => item.ToString()?.Trim().Replace("\"", "") == serializedFilterValue.ToString().Trim().Replace("\"", ""));
-                        })
-                    );*/
                 }
                 else
                 {
@@ -151,9 +141,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
                     }
                     return ResultT<IEnumerable<T>>.Success(entities.Where(entity =>
-                            propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", "")));/*
-                    filtertedEntities.AddRange(entities.Where(entity =>
-                            propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", "")));*/
+                            propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", "")));
                 }
             }
             else
@@ -166,8 +154,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         // Add a new entity
         public async Task<ResultT<Guid>> InsertAsync(T obj)
         {
-            // TODO: Whenever providing a GUID in post calls, it is ignored and a new GUID is generated.
-            // Remove possibility to make it in UI.
             obj.Id = Guid.NewGuid();  // Generate a new Guid for new clubs
             try
             {
@@ -228,33 +214,5 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 return Result.Failure(Error.Failure("DeletionError", $"Could not delete {typeof(T).Name.ToLower()}: {ex.Message}"));
             }
         }
-
-        // New filter method
-        //public async Task<ResultT<IEnumerable<T>>> GetByFilterAsync(BaseFilter filter)
-        //{
-        //    try
-        //    {
-        //        // Initialize a queryable list from the in-memory collection of entities.
-        //        var query = _entities.AsQueryable();
-
-        //        // Apply filtering if a list of IDs is provided in the filter and contains elements.
-        //        if (filter.Ids is not null && filter.Ids.Any())
-        //        {
-        //            // Restrict the query to entities whose IDs are in the provided list.
-        //            query = query.Where(entity => filter.Ids.Contains(entity.Id));
-        //        }
-
-        //        // Run the query asynchronously and retrieve the results as a list.
-        //        var filteredEntities = await Task.Run(() => query.ToList());
-
-        //        // Return the result as a successful operation containing the filtered entities.
-        //        return ResultT<IEnumerable<T>>.Success(filteredEntities);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // If an error occurs, return a failure result with an error message indicating the issue.
-        //        return ResultT<IEnumerable<T>>.Failure(Error.FilterError("FilterError", $"Failed to filter {typeof(T).Name.ToLower()}: {ex.Message}"));
-        //    }
-        //}
     }
 }

@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace competex_backend.API.Interfaces
 {
-    public interface IRoundAPI : IGenericAPI<RoundDTO>
+    public interface ICompetitionTypeAPI : IGenericAPI<CompetitionTypeDTO>
     {
         // TODO: Change to Task<IActionResult> Or change IGenericAPI to return IActionResult
-        Task<ActionResult> GetRoundIdsByCompetitionId(Guid competitionId, int? pageSize, int? pageNumber);
     }
+
 }

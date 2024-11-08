@@ -29,7 +29,7 @@ namespace competex_backend.BLL.Services
             var result = await _roundRepository.GetRoundIdsByCompetitionId(competitionId, pageSize, pageNumber);
             if (result.IsSuccess && result.Value != null)
             {
-                return ResultT<Tuple<int, IEnumerable<RoundDTO>>>.Success(new Tuple<int, IEnumerable<RoundDTO>>(result.Value.Item1 ,result.Value.Item2.Select(round => _mapper.Map<RoundDTO>(round))));
+                return ResultT<Tuple<int, IEnumerable<RoundDTO>>>.Success(new Tuple<int, IEnumerable<RoundDTO>>(result.Value.Item1, result.Value.Item2.Select(round => _mapper.Map<RoundDTO>(round))));
             }
             return ResultT<Tuple<int, IEnumerable<RoundDTO>>>.Failure(result.Error ?? Error.Failure("UnknownError", "An unknown error occurred."));
         }

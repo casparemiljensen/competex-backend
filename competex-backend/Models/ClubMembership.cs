@@ -2,9 +2,8 @@
 
 namespace competex_backend.Models
 {
-    public class ClubMembership : IIdentifiable
+    public class ClubMembership : Identifiable
     {
-        public Guid Id { get; set; }
         public Guid ClubId { get; set; }
         public Guid MemberId { get; set; }
         public DateTime JoinDate { get; set; }

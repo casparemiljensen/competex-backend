@@ -37,6 +37,17 @@ namespace competex_backend.BLL.Services
             return ResultT<Tuple<int, IEnumerable<TDto>>>.Success(new Tuple<int, IEnumerable<TDto>>(result.Value.Item1, entities));
         }
 
+        public async Task<ResultT<Tuple<int, IEnumerable<TDto>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
+        {
+            var result = await _repository.SearchAllAsync(pageSize, pageNumber, filters);
+            if (!result.IsSuccess)
+            {
+                return ResultT<Tuple<int, IEnumerable<TDto>>>.Failure(result.Error!);
+            }
+            var entities = result.Value.Item2.Select(m => _mapper.Map<TDto>(m));
+            return ResultT<Tuple<int, IEnumerable<TDto>>>.Success(new Tuple<int, IEnumerable<TDto>>(result.Value.Item1, entities));
+        }
+
         public async Task<ResultT<Guid>> CreateAsync(TDto obj)
         {
             var entity = _mapper.Map<T>(obj);

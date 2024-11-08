@@ -25,7 +25,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<T> GetEntities<T>() where T : class
         {
             if (typeof(T) == typeof(Member)) return (Members as List<T>)!;
-            if (typeof(T) == typeof(ClubMember)) return (ClubMembers as List<T>)!;
+            if (typeof(T) == typeof(ClubMembership)) return (ClubMemberships as List<T>)!;
             if (typeof(T) == typeof(Entity)) return (Entities as List<T>)!;
             if (typeof(T) == typeof(Round)) return (Rounds as List<T>)!;
             if (typeof(T) == typeof(Competition)) return (Competitions as List<T>)!;
@@ -33,8 +33,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             if (typeof(T) == typeof(SportType)) return (SportTypes as List<T>)!;
             if (typeof(T) == typeof(Admin)) return (Admins as List<T>)!;
             if (typeof(T) == typeof(CompetitionType)) return (CompetitionTypes as List<T>)!;
-            if (typeof(T) == typeof(ClubMembership)) return ClubMemberships as List<T>;
-            if (typeof(T) == typeof(Club)) return Clubs as List<T>;
+            if (typeof(T) == typeof(Club)) return (Clubs as List<T>)!;
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
 
@@ -97,7 +96,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var clubMember4 = new ClubMembership { ClubId = club2.Id, MemberId = member4.Id, JoinDate = new DateTime(2001, 8, 31) };
             var clubMember5 = new ClubMembership { ClubId = club2.Id, MemberId = member5.Id, JoinDate = DateTime.UtcNow };
 
-            ClubMembers.AddRange([clubMember1, clubMember2, clubMember3, clubMember4, clubMember5]);
+            ClubMemberships.AddRange([clubMember1, clubMember2, clubMember3, clubMember4, clubMember5]);
             #endregion
 
             #region entities

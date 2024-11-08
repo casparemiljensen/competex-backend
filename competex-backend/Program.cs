@@ -42,10 +42,14 @@ builder.Services.AddScoped<ICompetitionService, CompetitionService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<ISportTypeService, SportTypeService>();
 builder.Services.AddScoped<ICompetitionTypeService, CompetitionTypeService>();
+builder.Services.AddScoped<IClubMembershipService, ClubMembershipService>();
+# endregion
+
+#region HUH?
 builder.Services.AddScoped<IClubRepository, MockClubRepository>();
 builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
 builder.Services.AddScoped<IClubMembershipRepository, MockClubMembershipRepository>();
-# endregion
+#endregion
 
 # region IGenericService
 // Register services with DTO mappings for IGenericService<TDto>
@@ -58,6 +62,7 @@ builder.Services.AddScoped<IGenericService<CompetitionDTO>, GenericService<Compe
 builder.Services.AddScoped<IGenericService<EventDTO>, GenericService<Event, EventDTO>>();
 builder.Services.AddScoped<IGenericService<SportTypeDTO>, GenericService<SportType, SportTypeDTO>>();
 builder.Services.AddScoped<IGenericService<CompetitionTypeDTO>, GenericService<CompetitionType, CompetitionTypeDTO>>();
+builder.Services.AddScoped<IGenericService<ClubMembershipDTO>, GenericService<ClubMembership, ClubMembershipDTO>>();
 
 # endregion
 

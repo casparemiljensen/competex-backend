@@ -2,9 +2,8 @@ using System;
 
 namespace competex_backend.Models;
 
-public class Round : IIdentifiable
+public class Round : Identifiable
 {
-    public Guid Id { get; set; }
     public required string Name { get; set; }
     public uint SequenceNumber { get; set; }
     public RoundType RoundType { get; set; }

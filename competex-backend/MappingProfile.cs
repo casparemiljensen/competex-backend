@@ -20,6 +20,7 @@ namespace competex_backend
             CreateMap<Event, EventDTO>();
             CreateMap<CompetitionType, CompetitionTypeDTO>();
             CreateMap<SportType, SportTypeDTO>();
+            CreateMap<Club, ClubDTO>();
             //CreateMap<MemberDTO, Member>();
             //CreateMap<MemberDTO, Member>().ConstructUsing(
             //        src => new Member(
@@ -32,6 +33,8 @@ namespace competex_backend
             CreateMap<MemberDTO, Member>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
             CreateMap<RoundDTO, Round>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
+            CreateMap<ClubDTO, Club>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
         }
     }

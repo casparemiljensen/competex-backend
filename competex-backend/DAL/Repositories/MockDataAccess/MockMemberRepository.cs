@@ -12,7 +12,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
         public Task<Member?> GetByFirstNameAsync(string firstName)
         {
-            var member = _entities.FirstOrDefault(m => m.FirstName == firstName);
+            var member = _entities.FirstOrDefault(m => m.FirstName.ToLower() == firstName.ToLowerInvariant());
             return Task.FromResult(member);
         }
     }

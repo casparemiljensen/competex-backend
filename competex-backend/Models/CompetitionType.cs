@@ -1,9 +1,8 @@
 ﻿
 namespace competex_backend.Models
 {
-    public class CompetitionType : IIdentifiable
+    public class CompetitionType : Identifiable
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public List<string> CompetitionAttributes { get; set; } = new List<string>();
         public ScoreType ScoreType { get; set; }

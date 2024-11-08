@@ -1,9 +1,8 @@
 ﻿namespace competex_backend.Models
 
 {
-    public class Member : IIdentifiable
+    public class Member : Identifiable
     {
-        public Guid Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
 

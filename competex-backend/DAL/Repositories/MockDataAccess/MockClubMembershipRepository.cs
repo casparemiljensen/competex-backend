@@ -3,6 +3,7 @@ using competex_backend.DAL.Filters;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 using System.Data;
+using System.Text.Json;
 using Member = competex_backend.Models.Member;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
@@ -22,7 +23,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
 
         // Get all clubs of a member asynchronously
-        public async Task<ResultT<List<Club>>> GetClubsOfMemberAsync(Guid memberId)
+        public async Task<ResultT<Tuple<int, IEnumerable<Club>>>> GetClubsOfMemberAsync(Guid memberId, int? pageSize, int? pageNumber)
         {
             // Get the list of Club IDs associated with the given memberId
             var clubIds = _entities
@@ -30,24 +31,24 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 .Select(clubMember => clubMember.ClubId)
                 .ToList();
             // Create a filter with the retrieved club IDs
-            var filter = new BaseFilter { Ids = clubIds };
+            var filter = new Dictionary<string, object>() { { "Id", clubIds } }; //TODO: FIX
 
             // Use GetByFilterAsync to get the list of clubs based on the filter
-            var clubsResult = await _clubRepository.GetAllAsync(filter);
+            var clubsResult = await _clubRepository.SearchAllAsync(pageSize, pageNumber, filter);
 
             // Check if the operation was successful, and handle accordingly
             if (clubsResult.IsSuccess)
             {
                 // Return the clubs as a List
-                return ResultT<List<Club>>.Success(clubsResult.Value.ToList());
+                return clubsResult;
             }
 
             // If there was an error, return a failure result with the error details
-            return ResultT<List<Club>>.Failure(clubsResult.Error ?? Error.NotFound("NoClubsFound", $"No clubs found for the member with ID {memberId}"));
+            return ResultT<Tuple<int, IEnumerable<Club>>>.Failure(clubsResult.Error ?? Error.NotFound("NoClubsFound", $"No clubs found for the member with ID {memberId}"));
         }
 
         // Get all members of a club asynchronously
-        public async Task<ResultT<List<Member>>> GetMembersOfClubAsync(Guid clubId)
+        public async Task<ResultT<Tuple<int, IEnumerable<Member>>>> GetMembersOfClubAsync(Guid clubId, int? pageSize, int? pageNumber)
         {
             // Get the list of Member IDs associated with the given clubId
             var memberIds = _entities
@@ -56,23 +57,21 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 .ToList();
 
             // Create a filter with the retrieved member IDs
-            var filter = new BaseFilter { Ids = memberIds };
+            var filter = new Dictionary<string, object>() { { "id", memberIds } };
 
             // Use GetByFilterAsync to get the list of members based on the filter
-            var membersResult = await _memberRepository.GetAllAsync(filter);
+            var membersResult = await _memberRepository.SearchAllAsync(pageSize, pageNumber, filter);
 
             // Check if the operation was successful, and handle accordingly
             if (membersResult.IsSuccess && membersResult.Value is not null)
             {
                 // Return the members as a List
-                return ResultT<List<Member>>.Success(membersResult.Value.ToList());
+                return membersResult;
             }
 
             // If there was an error or the result was null, return a failure result with an error message
-            return ResultT<List<Member>>.Failure(membersResult.Error ?? Error.NotFound("NoMembersFound", $"No members found for the club with ID {clubId}."));
+            return ResultT<Tuple<int, IEnumerable<Member>>>.Failure(membersResult.Error ?? Error.NotFound("NoMembersFound", $"No members found for the club with ID {clubId}."));
         }
-
-
 
         public Task<Result> CreateEventAsync()
         {

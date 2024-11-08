@@ -1,8 +1,11 @@
-﻿using competex_backend.Common.Helpers;
+﻿using AutoMapper.Internal;
+using competex_backend.Common.Helpers;
 using competex_backend.DAL.Filters;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
-using System.Linq.Expressions;
+using System.Collections;
+using System.Reflection;
+using System.Text.Json;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
@@ -26,40 +29,138 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 : ResultT<T>.Failure(Error.NotFound($"{typeof(T).Name.ToLower()} not found.", $"{typeof(T).Name.ToLower()} with ID {id} does not exist."));
         }
 
-        public async Task<ResultT<IEnumerable<T>>> GetAllAsync(int? pageSize, int? pageNumber, BaseFilter? filter = null)
+        public async Task<ResultT<Tuple<int, IEnumerable<T>>>> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            if (filter is null)
-            {
-                var entities = await Task.Run(() => _entities.ToList());
-                return ResultT<IEnumerable<T>>.Success(entities);
-            }
+            var entities = await Task.Run(() => _entities);
 
-            try
-            {
-                // Initialize a queryable list from the in-memory collection of entities.
-                var query = _entities.AsQueryable();
+            var totalPages = PaginationHelper.GetTotalPages(pageSize, pageNumber, entities.Count);
 
-                // Apply filtering if a list of IDs is provided in the filter and contains elements.
-                if (filter.Ids is not null)
-                {
-                    // Restrict the query to entities whose IDs are in the provided list.
-                    query = query.Where(entity => filter.Ids.Contains(entity.Id));
-                }
-
-                // Run the query asynchronously and retrieve the results as a list.
-                var filteredEntities = await Task.Run(() => query.ToList().Skip(PaginationHelper.GetSkip(pageSize, pageNumber)).Take(pageSize ?? Defaults.PageSize));
-
-
-                // Return the result as a successful operation containing the filtered entities.
-                return ResultT<IEnumerable<T>>.Success(filteredEntities);
-            }
-            catch (Exception ex)
-            {
-                // If an error occurs, return a failure result with an error message indicating the issue.
-                return ResultT<IEnumerable<T>>.Failure(Error.FilterError("FilterError", $"Failed to filter {typeof(T).Name.ToLower()}: {ex.Message}"));
-            }
+            var result = entities
+            .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
+            .Take(pageSize ?? Defaults.PageSize);
+            return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
         }
 
+        public async Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
+        {
+            var entities = await Task.Run(() => _entities);
+            List<T> filtertedEntities = [];
+            if (filters != null)
+            {
+                foreach (var filter in filters)
+                {
+                    if (filter.Value is JsonElement jsonElement)
+                    {
+                        if (jsonElement.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var filterEntity in jsonElement.EnumerateArray())
+                            {
+                                Console.WriteLine(filterEntity);
+                                var filteredResult = InsertName(filter.Key, filterEntity, entities);
+                                if (!filteredResult.IsSuccess)
+                                {
+                                    return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
+                                }
+                                filtertedEntities.AddRange(filteredResult.Value);
+                            }
+                        }
+                        else
+                        {
+                            var filteredResult = InsertName(filter.Key, filter.Value, entities);
+                            if (!filteredResult.IsSuccess)
+                            {
+                                return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
+                            }
+                            filtertedEntities.AddRange(filteredResult.Value);
+                        }
+                    }
+                    if (filter.Value is IEnumerable enumerable)
+                    {
+                        foreach (var filterEntity in enumerable)
+                        {
+                            Console.WriteLine(filterEntity);
+                            var filteredResult = InsertName(filter.Key, filterEntity, entities);
+                            if (!filteredResult.IsSuccess)
+                            {
+                                return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
+                            }
+                            filtertedEntities.AddRange(filteredResult.Value);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                filtertedEntities = _entities;
+            }
+
+            int totalPages = PaginationHelper.GetTotalPages(pageSize, pageNumber, filtertedEntities.Count());
+
+            var result = filtertedEntities.Distinct()
+            .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
+            .Take(pageSize ?? Defaults.PageSize);
+            return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
+        }
+
+        private ResultT<IEnumerable<T>> InsertName(string filterKey, object filterValue, List<T> entities)
+        {
+            Console.WriteLine(filterKey);
+            Console.WriteLine(filterValue.ToString());
+            // Convert filter value to string if necessary (in case it is a JsonElement or other type)
+            if (filterValue is JsonElement jsonElement)
+            {
+                filterValue = jsonElement.ToString();
+            }
+            DateTime time;
+            if (DateTime.TryParse(filterValue.ToString(), out time))
+            {
+                filterValue = time.ToString();
+            }
+
+            var serializedFilterValue = JsonSerializer.Serialize(filterValue);
+
+            var propertyInfo = typeof(T).GetProperty(filterKey, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            if (propertyInfo != null)
+            {
+                if (propertyInfo.GetValue(entities[0]) is IEnumerable)
+                {
+                    return ResultT<IEnumerable<T>>.Success(entities
+                        .Where(entity =>
+                        {
+                            var propertyValue = propertyInfo.GetValue(entity);
+                            return (propertyValue as IEnumerable)!.Cast<object>()
+                                .Any(item => item.ToString()?.Trim().Replace("\"", "") == serializedFilterValue.ToString().Trim().Replace("\"", ""));
+                        }));
+                    /*
+                    filtertedEntities.AddRange(
+                    entities
+                        .Where(entity =>
+                        {
+                            var propertyValue = propertyInfo.GetValue(entity);
+                            return (propertyValue as IEnumerable)!.Cast<object>()
+                                .Any(item => item.ToString()?.Trim().Replace("\"", "") == serializedFilterValue.ToString().Trim().Replace("\"", ""));
+                        })
+                    );*/
+                }
+                else
+                {
+                    foreach (var entity in entities)
+                    {
+                        Console.WriteLine(propertyInfo!.GetValue(entity)!.ToString()!.Trim() + ":" + serializedFilterValue.ToString().Trim().Replace("\"", ""));
+
+                    }
+                    return ResultT<IEnumerable<T>>.Success(entities.Where(entity =>
+                            propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", "")));/*
+                    filtertedEntities.AddRange(entities.Where(entity =>
+                            propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", "")));*/
+                }
+            }
+            else
+            {
+                return ResultT<IEnumerable<T>>.Failure(Error.FilterError("FilterError", $"Could not find a property with name {filterKey}"));
+            }
+        }
 
 
         // Add a new entity

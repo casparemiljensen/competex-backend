@@ -1,8 +1,7 @@
 ﻿namespace competex_backend.Models
 {
-    public class Field : IIdentifiable
+    public class Field : Identifiable
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public int Capacity { get; set; }

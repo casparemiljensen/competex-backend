@@ -11,6 +11,5 @@ namespace competex_backend.Models
         public Member Member { get; set; } = null!;
         public DateTime JoinDate { get; set; }
         public ClubMemberRole? Role { get; set; } = ClubMemberRole.Standard;
-
     }
 }

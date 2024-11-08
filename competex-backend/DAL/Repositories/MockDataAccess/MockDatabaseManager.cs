@@ -11,6 +11,10 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Entity> Entities { get; set; } = new();
         public List<Field> Fields { get; set; } = new();
         public List<Round> Rounds { get; set; } = new();
+        public List<Competition> Competitions { get; set; } = new();
+        public List<Event> Events { get; set; } = new();
+        public List<SportType> Sporttypes { get; set; } = new();
+        public List<Admin> Admins { get; set; } = new();
 
         public MockDatabaseManager()
         {
@@ -23,6 +27,10 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             if (typeof(T) == typeof(ClubMember)) return (ClubMembers as List<T>)!;
             if (typeof(T) == typeof(Entity)) return (Entities as List<T>)!;
             if (typeof(T) == typeof(Round)) return (Rounds as List<T>)!;
+            if (typeof(T) == typeof(Competition)) return (Competitions as List<T>)!;
+            if (typeof(T) == typeof(Event)) return (Events as List<T>)!;
+            if (typeof(T) == typeof(SportType)) return (Sporttypes as List<T>)!;
+            if (typeof(T) == typeof(Admin)) return (Admins as List<T>)!;
 
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
@@ -46,7 +54,37 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var club3 = new Club { Name = "Kaninernes Klub Hjørring", AssociatedSport = "Kaninhop" };
             var club4 = new Club { Name = "Aabybro kaninhop", AssociatedSport = "Kaninhop" };
             var club5 = new Club { Name = "Aalborg kaninforening", AssociatedSport = "Kaninhop" };
-            Clubs.AddRange([club1, club2, club3, club4, club5]);
+            var club6 = new Club { Id = new Guid("aa57885f-cab9-48da-85d6-57a671c7d664"), Name = "Aalborg Håndbold", AssociatedSport = "Handball" };
+            Clubs.AddRange([club1, club2, club3, club4, club5, club6]);
+            #endregion
+
+            #region sporttypes
+
+            var sportType1 = new SportType
+            {
+                Id = new Guid("1035c83a-1899-49cb-bfd6-bcefc1aafffb"),
+                Name = "Handball",
+                EventAttributes = new List<string> { "Indoor", "Ball" },
+                EntityType = EntityType.None
+            };
+            Sporttypes.AddRange([sportType1]);
+
+            #endregion
+
+            #region admins
+            var admin = new Admin
+            {
+                Id = member3.Id,
+                FirstName = member3.FirstName,
+                LastName = member3.LastName,
+                Birthday = member3.Birthday,
+                Email = member3.Email,
+                Phone = member3.Phone,
+                Permissions = member3.Permissions,
+                SportTypes = new List<SportType> { sportType1 }
+            };
+            Admins.AddRange([admin]);
+
             #endregion
 
             #region clubmembers
@@ -118,10 +156,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var round3 = new Round { Name = "TestRoundThree" };
             var round4 = new Round { Name = "TestRoundFour" };
             var round5 = new Round { Name = "TestRoundFive" };
-
-
             Rounds.AddRange([round1, round2, round3, round4, round5]);
             #endregion
+
             #region fields
             var field1 = new Field()
             {
@@ -168,8 +205,71 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Surface = SurfaceType.Turf
             };
 
+            var field6 = new Field
+            {
+                Id = new Guid(),
+                Name = "Bane 1",
+                Location = "Hal 1",
+                Capacity = 2000,
+                Surface = SurfaceType.PVC
+            };
 
-            Fields.AddRange([field1, field2, field3, field4, field5]);
+            Fields.AddRange([field1, field2, field3, field4, field5, field6]);
+            #endregion
+
+            #region competitions
+            var comp1 = new Competition
+            {
+                Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"),
+                CompetitionType = new List<CompetitionType> { new CompetitionType() },
+                StartDate = new DateTime(2024, 5, 1),
+                EndDate = new DateTime(2024, 5, 10),
+                level = Level.Intermediate,
+                Status = Status.Pending,
+                MinParticipants = 5,
+                MaxParticipants = 20
+            };
+
+            var comp2 = new Competition
+            {
+                Id = new Guid("42fff518-0815-4148-b826-33a4a1686dc0"),
+                CompetitionType = new List<CompetitionType> { new CompetitionType { Id = new Guid("54cba910-da16-49ed-b4fc-865df9a2e47d"), Name = "Champions League Handball", ScoreType = ScoreType.Number, ScoreMethod = ScoreMethod.None } },
+                StartDate = new DateTime(2024, 7, 1),
+                EndDate = new DateTime(2024, 7, 3),
+                level = Level.Professional,
+                Status = Status.Pending,
+                MinParticipants = 10,
+                MaxParticipants = 10
+            };
+
+            Competitions.AddRange([comp1, comp2]);
+            #endregion
+
+
+            #region events
+            var mockEvent = new Event
+            {
+                Id = new Guid("27d4f28f-bd77-4bdc-865b-f13f7bbf71df"),
+                Title = "Champions League Håndbold",
+                Description = "Handball Finals",
+                StartDate = new DateTime(2024, 6, 15, 9, 0, 0),
+                EndDate = new DateTime(2024, 6, 15, 18, 0, 0),
+                Location = new Location
+                {
+                    Name = "Sparekassen Danmark Arena",
+                    Address = "Willy Brandts Vej 31",
+                    Zip = "9000",
+                    City = "Aalborg",
+                    Country = "Denmark"
+                },
+                RegistrationStartDate = new DateTime(2024, 6, 10),
+                RegistrationEndDate = new DateTime(2024, 6, 20),
+                Status = Status.Pending,
+                Organizer = Guid.Parse("aa57885f-cab9-48da-85d6-57a671c7d664"), // Mock ClubId as Organizer
+                SportType = sportType1,
+                Competitions = new List<Competition>() { comp2 }
+            };
+            Events.Add(mockEvent);
             #endregion
         }
     }

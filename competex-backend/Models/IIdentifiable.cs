@@ -5,6 +5,6 @@ namespace competex_backend.Models
     public interface IIdentifiable
     {
         [Required]
-        Guid Id { get; init; }
+        Guid Id { get; set; }
     }
 }

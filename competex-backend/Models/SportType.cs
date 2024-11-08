@@ -3,7 +3,7 @@ namespace competex_backend.Models
 {
     public class SportType : IIdentifiable
     {
-        public Guid Id { get; init; }
+        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public List<string> EventAttributes { get; set; } = new List<string>();
         public required IEnumerable<Club> Clubs { get; set; }

@@ -42,7 +42,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         {
             // TODO: Whenever providing a GUID in post calls, it is ignored and a new GUID is generated.
             // Remove possibility to make it in UI.
-            // obj.Id = Guid.NewGuid();  // Generate a new Guid for new clubs
+            obj.Id = Guid.NewGuid();  // Generate a new Guid for new clubs
             try
             {
                 await Task.Run(() => _entities.Add(obj)); // Simulate async work
@@ -69,7 +69,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 await Task.Run(() =>
                 {
+                    var id = _entities[index].Id; // Keep the original id
                     _entities[index] = obj; // Replace the object directly
+                    _entities[index].Id = id;
                 }); // Simulate async work
 
                 return Result.Success();

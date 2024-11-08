@@ -4,7 +4,7 @@ namespace competex_backend.Models
 {
     public class ClubMember : IIdentifiable
     {
-        public Guid Id { get; init; }
+        public Guid Id { get; set; }
         public Guid ClubId { get; set; }
         public Club Club { get; set; } = null!;
         public Guid MemberId { get; set; }

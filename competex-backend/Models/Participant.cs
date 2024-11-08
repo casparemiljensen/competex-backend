@@ -2,21 +2,16 @@
 {
     public abstract class Participant : IIdentifiable
     {
-        public Guid Id { get; init; }
-        public string Name { get; set; }
-
-        public Participant(string name)
-        {
-            Id = Guid.NewGuid();
-            Name = name;
-        }
+        public Guid Id { get; set; }
+        public required string Name { get; set; }
     }
 
     internal class Team : Participant
     {
         public List<Member> Members { get; set; }
-        public Team(string name, List<Member> members) : base(name)
+        public Team(string name, List<Member> members) : base()
         {
+            Name = name;
             Members = members;
         }
 
@@ -35,8 +30,9 @@
     internal class Single : Participant
     {
         public Member Member { get; set; }
-        public Single(string name, Member member) : base(name)
+        public Single(string name, Member member) : base()
         {
+            Name = name;
             Member = member;
         }
     }
@@ -45,8 +41,9 @@
     {
         public Member Member { get; set; }
         public Entity Entity { get; set; }
-        public Ekvipage(string name, Member member, Entity entity) : base(name)
+        public Ekvipage(string name, Member member, Entity entity) : base()
         {
+            Name = name;
             Member = member;
             Entity = entity;
         }

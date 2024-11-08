@@ -2,7 +2,7 @@
 {
     public class Penalty : IIdentifiable
     {
-        public Guid Id { get; init; }
+        public Guid Id { get; set; }
         public PenaltyType PenaltyType { get; set; }    
         public object? PenaltyValue { get; set; }
     }

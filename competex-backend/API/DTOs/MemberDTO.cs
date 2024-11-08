@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace competex_backend.API.DTOs
+﻿namespace competex_backend.API.DTOs
 {
     //@APIModel
     public class MemberDTO

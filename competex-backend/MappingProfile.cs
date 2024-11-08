@@ -15,6 +15,11 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore MemberId during mapping
 
             CreateMap<Member, MemberDTO>();
+            CreateMap<Round, RoundDTO>();
+            CreateMap<Competition, CompetitionDTO>();
+            CreateMap<Event, EventDTO>();
+            CreateMap<CompetitionType, CompetitionTypeDTO>();
+            CreateMap<SportType, SportTypeDTO>();
             //CreateMap<MemberDTO, Member>();
             //CreateMap<MemberDTO, Member>().ConstructUsing(
             //        src => new Member(
@@ -25,7 +30,9 @@ namespace competex_backend
 
             ////Example of ignoring a property
             CreateMap<MemberDTO, Member>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore MemberId during mapping
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
+            CreateMap<RoundDTO, Round>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
         }
     }
 }

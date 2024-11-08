@@ -1,6 +1,7 @@
 ﻿using competex_backend.API.DTOs;
 using competex_backend.API.Interfaces;
 using competex_backend.BLL.Interfaces;
+using competex_backend.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -32,12 +33,17 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            var result = await _memberService.GetAllAsync();
+            var result = await _memberService.GetAllAsync(pageSize, pageNumber);
             if (result.IsSuccess)
             {
-                var obj = result.Value.Select(m => $"{m.FirstName} {m.LastName} - {m.Id}");
+                //var obj = result.Value.Item2;
+                var obj = new PaginationWrapperDTO<IEnumerable<MemberDTO>>(
+                    result.Value.Item2,
+                    pageSize ?? Defaults.PageSize,
+                    pageNumber ?? Defaults.PageNumber,
+                    result.Value.Item1);
                 return Ok(obj);
             }
             return BadRequest(result.Error); // Return BadRequest with error details
@@ -55,11 +61,11 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(MemberDTO obj)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] MemberDTO obj)
         {
             // You may want to include the id in the obj for identification
 
-            var result = await _memberService.UpdateAsync(obj);
+            var result = await _memberService.UpdateAsync(id, obj);
             if (result.IsSuccess)
             {
                 return NoContent(); // Return NoContent for successful update

@@ -1,4 +1,5 @@
-﻿using competex_backend.DAL.Filters;
+﻿using competex_backend.Common.Helpers;
+using competex_backend.DAL.Filters;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 using System.Linq.Expressions;
@@ -25,7 +26,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 : ResultT<T>.Failure(Error.NotFound($"{typeof(T).Name.ToLower()} not found.", $"{typeof(T).Name.ToLower()} with ID {id} does not exist."));
         }
 
-        public async Task<ResultT<IEnumerable<T>>> GetAllAsync(BaseFilter? filter = null)
+        public async Task<ResultT<IEnumerable<T>>> GetAllAsync(int? pageSize, int? pageNumber, BaseFilter? filter = null)
         {
             if (filter is null)
             {
@@ -46,7 +47,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 }
 
                 // Run the query asynchronously and retrieve the results as a list.
-                var filteredEntities = await Task.Run(() => query.ToList());
+                var filteredEntities = await Task.Run(() => query.ToList().Skip(PaginationHelper.GetSkip(pageSize, pageNumber)).Take(pageSize ?? Defaults.PageSize));
+
 
                 // Return the result as a successful operation containing the filtered entities.
                 return ResultT<IEnumerable<T>>.Success(filteredEntities);
@@ -65,7 +67,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         {
             // TODO: Whenever providing a GUID in post calls, it is ignored and a new GUID is generated.
             // Remove possibility to make it in UI.
-            // obj.Id = Guid.NewGuid();  // Generate a new Guid for new clubs
+            obj.Id = Guid.NewGuid();  // Generate a new Guid for new clubs
             try
             {
                 await Task.Run(() => _entities.Add(obj)); // Simulate async work
@@ -80,9 +82,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
 
         // Update an existing entity
-        public async Task<Result> UpdateAsync(T obj)
+        public async Task<Result> UpdateAsync(Guid id, T obj)
         {
-            int index = await Task.Run(() => _entities.FindIndex(m => m.Id == obj.Id));
+            int index = await Task.Run(() => _entities.FindIndex(o => o.Id == id));
             if (index == -1)
             {
                 return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).Name.ToLower()} with ID {obj.Id} does not exist."));
@@ -92,7 +94,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 await Task.Run(() =>
                 {
+                    var id = _entities[index].Id; // Keep the original id
                     _entities[index] = obj; // Replace the object directly
+                    _entities[index].Id = id;
                 }); // Simulate async work
 
                 return Result.Success();

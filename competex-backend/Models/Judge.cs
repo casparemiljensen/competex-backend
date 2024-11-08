@@ -2,7 +2,7 @@
 {
     public class Judge : IIdentifiable
     {
-        public Guid Id { get; init; }
+        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string ContactInfo { get; set; } = string.Empty;
         public Guid UserId { get; set; }

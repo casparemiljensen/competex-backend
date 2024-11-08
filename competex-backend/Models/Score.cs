@@ -3,7 +3,7 @@
     public abstract class Score : IIdentifiable
     {
 
-        public Guid Id { get; init; }
+        public Guid Id { get; set; }
         public Match? Match { get; set; }
         public Participant? Participant { get; set; }
         public ScoreType ScoreType { get; set; }

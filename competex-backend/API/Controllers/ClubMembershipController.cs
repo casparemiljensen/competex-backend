@@ -1,6 +1,5 @@
 ﻿using competex_backend.API.DTOs;
 using competex_backend.BLL.Interfaces;
-using competex_backend.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -30,9 +29,9 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            var result = await _clubMembershipService.GetAllAsync();
+            var result = await _clubMembershipService.GetAllAsync(pageSize, pageNumber);
             if (result.IsSuccess)
             {
                 var obj = result.Value.Select(m => $"{m.MemberId} - {m.JoinDate}");

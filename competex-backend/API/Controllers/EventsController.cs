@@ -11,6 +11,5 @@ namespace competex_backend.API.Controllers
     public class EventsController : GenericsController<EventDTO>
     {
         public EventsController(IGenericService<EventDTO> service) : base(service) { }
-
     }
 }

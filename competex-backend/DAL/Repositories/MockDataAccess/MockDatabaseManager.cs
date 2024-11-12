@@ -51,11 +51,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #endregion
 
             #region clubs
-            var club1 = new Club { Name = "Vejle Kaninhop", AssociatedSport = "Kaninhop" };
-            var club2 = new Club { Name = "Lystrup Kaninhop", AssociatedSport = "Kaninhop" };
-            var club3 = new Club { Name = "Kaninernes Klub Hjørring", AssociatedSport = "Kaninhop" };
-            var club4 = new Club { Name = "Aabybro kaninhop", AssociatedSport = "Kaninhop" };
-            var club5 = new Club { Name = "Aalborg kaninforening", AssociatedSport = "Kaninhop" };
+            var club1 = new Club { Name = "Vejle Kaninhop", AssociatedSport = "Kaninhop", Id = new Guid() };
+            var club2 = new Club { Name = "Lystrup Kaninhop", AssociatedSport = "Kaninhop", Id = new Guid() };
+            var club3 = new Club { Name = "Kaninernes Klub Hjørring", AssociatedSport = "Kaninhop", Id = new Guid() };
+            var club4 = new Club { Name = "Aabybro kaninhop", AssociatedSport = "Kaninhop", Id = new Guid() };
+            var club5 = new Club { Name = "Aalborg kaninforening", AssociatedSport = "Kaninhop", Id = new Guid() };
             var club6 = new Club { Id = new Guid("aa57885f-cab9-48da-85d6-57a671c7d664"), Name = "Aalborg Håndbold", AssociatedSport = "Handball" };
             Clubs.AddRange([club1, club2, club3, club4, club5, club6]);
             #endregion
@@ -154,10 +154,10 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             #region rounds
             var round1 = new Round { Name = "TestRoundOne", Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac") };
-            var round2 = new Round { Name = "TestRoundTwo", CompetitionId = new Guid("596462f8-2e32-4a21-921a-b5768c6b0d86") };
-            var round3 = new Round { Name = "TestRoundThree" };
-            var round4 = new Round { Name = "TestRoundFour" };
-            var round5 = new Round { Name = "TestRoundFive" };
+            var round2 = new Round { Name = "TestRoundTwo", CompetitionId = new Guid("596462f8-2e32-4a21-921a-b5768c6b0d86"), Id = new Guid("5b4c1599-4943-458f-a808-0d472c0517dc") };
+            var round3 = new Round { Name = "TestRoundThree", CompetitionId = new Guid("596462f8-2e32-4a21-921a-b5768c6b0d86") };
+            var round4 = new Round { Name = "TestRoundFour", Id = new Guid("2a1535b5-acb8-4f0c-98ea-9594af58fafc") };
+            var round5 = new Round { Name = "TestRoundFive", Id = new Guid("531b44f4-74b1-4be5-a31c-3635f011a1b7") };
             Rounds.AddRange([round1, round2, round3, round4, round5]);
             #endregion
 

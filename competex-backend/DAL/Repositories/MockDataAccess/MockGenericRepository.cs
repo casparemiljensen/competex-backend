@@ -55,8 +55,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                         {
                             foreach (var filterEntity in jsonElement.EnumerateArray())
                             {
-                                Console.WriteLine(filterEntity);
-                                var filteredResult = InsertName(filter.Key, filterEntity, entities);
+                                var filteredResult = GetByKey(filter.Key, filterEntity, entities);
                                 if (!filteredResult.IsSuccess)
                                 {
                                     return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
@@ -66,7 +65,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                         }
                         else
                         {
-                            var filteredResult = InsertName(filter.Key, filter.Value, entities);
+                            var filteredResult = GetByKey(filter.Key, filter.Value, entities);
                             if (!filteredResult.IsSuccess)
                             {
                                 return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
@@ -74,12 +73,13 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                             filtertedEntities.AddRange(filteredResult.Value);
                         }
                     }
+                    //Internal list using native IEnumerable type
                     if (filter.Value is IEnumerable enumerable)
                     {
                         foreach (var filterEntity in enumerable)
                         {
                             Console.WriteLine(filterEntity);
-                            var filteredResult = InsertName(filter.Key, filterEntity, entities);
+                            var filteredResult = GetByKey(filter.Key, filterEntity, entities);
                             if (!filteredResult.IsSuccess)
                             {
                                 return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
@@ -102,10 +102,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
         }
 
-        private ResultT<IEnumerable<T>> InsertName(string filterKey, object filterValue, List<T> entities)
+        private ResultT<IEnumerable<T>> GetByKey(string filterKey, object filterValue, List<T> entities)
         {
-            Console.WriteLine(filterKey);
-            Console.WriteLine(filterValue.ToString());
             // Convert filter value to string if necessary (in case it is a JsonElement or other type)
             if (filterValue is JsonElement jsonElement)
             {
@@ -135,11 +133,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 }
                 else
                 {
-                    foreach (var entity in entities)
-                    {
-                        Console.WriteLine(propertyInfo!.GetValue(entity)!.ToString()!.Trim() + ":" + serializedFilterValue.ToString().Trim().Replace("\"", ""));
-
-                    }
                     return ResultT<IEnumerable<T>>.Success(entities.Where(entity =>
                             propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", "")));
                 }

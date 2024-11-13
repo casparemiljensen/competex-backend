@@ -6,6 +6,7 @@ namespace competex_backend.API.Interfaces
     {
         Task<IActionResult> GetByIdAsync(Guid id);
         Task<IActionResult> GetAllAsync(int? pageSize, int? pageNumber);
+        Task<IActionResult> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters);
         Task<IActionResult> CreateAsync(T obj);
         Task<IActionResult> UpdateAsync(Guid id, T obj);
         Task<IActionResult> DeleteAsync(Guid id);

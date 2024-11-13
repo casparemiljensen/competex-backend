@@ -1,8 +1,7 @@
 ﻿namespace competex_backend.Models
 {
-    public class Event : IIdentifiable
+    public class Event : Identifiable
     {
-        public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }

@@ -1,9 +1,8 @@
 ﻿
 namespace competex_backend.Models
 {
-    public class Competition : IIdentifiable
+    public class Competition : Identifiable
     {
-        public Guid Id { get; set; }
         public required IEnumerable<CompetitionType> CompetitionType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

@@ -1,9 +1,8 @@
 ﻿
 namespace competex_backend.Models
 {
-    public class SportType : IIdentifiable
+    public class SportType : Identifiable
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public List<string> EventAttributes { get; set; } = new List<string>();
         // TODO: Investigate if need need these properties

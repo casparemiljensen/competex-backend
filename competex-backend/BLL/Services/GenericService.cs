@@ -37,6 +37,17 @@ namespace competex_backend.BLL.Services
             return ResultT<Tuple<int, IEnumerable<TDto>>>.Success(new Tuple<int, IEnumerable<TDto>>(result.Value.Item1, entities));
         }
 
+        public async Task<ResultT<Tuple<int, IEnumerable<TDto>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
+        {
+            var result = await _repository.SearchAllAsync(pageSize, pageNumber, filters);
+            if (!result.IsSuccess)
+            {
+                return ResultT<Tuple<int, IEnumerable<TDto>>>.Failure(result.Error!);
+            }
+            var entities = result.Value.Item2.Select(m => _mapper.Map<TDto>(m));
+            return ResultT<Tuple<int, IEnumerable<TDto>>>.Success(new Tuple<int, IEnumerable<TDto>>(result.Value.Item1, entities));
+        }
+
         public async Task<ResultT<Guid>> CreateAsync(TDto obj)
         {
             var entity = _mapper.Map<T>(obj);
@@ -69,39 +80,5 @@ namespace competex_backend.BLL.Services
             return Result.Failure(result.Error ?? Error.Validation("DeletionFailed", $"Failed to delete ${typeof(T)}."));
         }
     }
-
-
-    //public async Task<TDto?> GetByIdAsync(Guid id)
-    //    {
-    //        var entity = await _repository.GetByIdAsync(id);
-    //        if (entity == null)
-    //            return default(TDto); // Returns the default value for TDto, which is null for reference types and zero/false for value types
-    //        return _mapper.Map<TDto>(entity);
-    //    }
-
-    //    public async Task<IEnumerable<TDto>> GetAllAsync()
-    //    {
-    //        var entities = await _repository.GetAllAsync();
-    //        return _mapper.Map<IEnumerable<TDto>>(entities);
-    //    }
-
-    //    public async Task<bool> CreateAsync(TDto dto)
-    //    {
-    //        var entity = _mapper.Map<T>(dto);
-    //        await _repository.InsertAsync(entity);
-    //        return true;
-    //    }
-
-    //    public async Task<bool> UpdateAsync(TDto dto)
-    //    {
-    //        var entity = _mapper.Map<T>(dto);
-    //        return await _repository.UpdateAsync(entity);
-    //    }
-
-    //    public async Task<bool> RemoveAsync(Guid id)
-    //    {
-    //        return await _repository.DeleteAsync(id);
-    //    }
-    //}
 
 }

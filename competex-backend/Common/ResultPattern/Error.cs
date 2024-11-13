@@ -90,4 +90,7 @@ public class Error
     /// <returns>A new instance of <see cref="Error"/>.</returns>
     public static Error AccessForbidden(string code, string description) =>
         new(code, description, ErrorType.AccessForbidden);
+
+    public static Error FilterError(string code, string description) =>
+    new(code, description, ErrorType.FilterError);
 }

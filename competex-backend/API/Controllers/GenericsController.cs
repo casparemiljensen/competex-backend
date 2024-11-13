@@ -45,6 +45,23 @@ namespace competex_backend.API.Controllers
             return BadRequest(result.Error);
         }
 
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchAllAsync(int? pageSize, int? pageNumber, [FromBody] Dictionary<string, object>? filters)
+        {
+            var result = await _genericService.SearchAllAsync(pageSize, pageNumber, filters);
+            if (result.IsSuccess)
+            {
+                //var obj = result.Value.Item2;
+                var obj = new PaginationWrapperDTO<IEnumerable<T>>(
+                    result.Value.Item2,
+                    pageSize ?? Defaults.PageSize,
+                    pageNumber ?? Defaults.PageNumber,
+                    result.Value.Item1);
+                return Ok(obj);
+            }
+            return BadRequest(result.Error);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync(T obj)
         {

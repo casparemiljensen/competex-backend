@@ -1,6 +1,11 @@
-﻿using competex_backend.Common.Helpers;
+﻿using AutoMapper.Internal;
+using competex_backend.Common.Helpers;
+using competex_backend.DAL.Filters;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
+using System.Collections;
+using System.Reflection;
+using System.Text.Json;
 
 namespace competex_backend.DAL.Repositories.MockDataAccess
 {
@@ -21,13 +26,14 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var entity = await Task.Run(() => _entities.FirstOrDefault(c => c.Id == id));
             return entity is not null
                 ? ResultT<T>.Success(entity)
-                : ResultT<T>.Failure(Error.NotFound($"{typeof(T).ToString().ToLower()} not found.", $"{typeof(T).ToString().ToLower()} with ID {id} does not exist."));
+                : ResultT<T>.Failure(Error.NotFound($"{typeof(T).Name.ToLower()} not found.", $"{typeof(T).Name.ToLower()} with ID {id} does not exist."));
         }
 
         public async Task<ResultT<Tuple<int, IEnumerable<T>>>> GetAllAsync(int? pageSize, int? pageNumber)
         {
             var entities = await Task.Run(() => _entities);
-            int totalPages = PaginationHelper.GetTotalPages(pageSize, pageNumber, entities.Count);
+
+            var totalPages = PaginationHelper.GetTotalPages(pageSize, pageNumber, entities.Count);
 
             var result = entities
             .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
@@ -35,13 +41,119 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
         }
 
+        public async Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
+        {
+            var entities = await Task.Run(() => _entities);
+            List<T> filtertedEntities = [];
+            if (filters != null)
+            {
+                foreach (var filter in filters)
+                {
+                    if (filter.Value is JsonElement jsonElement)
+                    {
+                        if (jsonElement.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var filterEntity in jsonElement.EnumerateArray())
+                            {
+                                Console.WriteLine(filterEntity);
+                                var filteredResult = InsertName(filter.Key, filterEntity, entities);
+                                if (!filteredResult.IsSuccess)
+                                {
+                                    return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
+                                }
+                                filtertedEntities.AddRange(filteredResult.Value);
+                            }
+                        }
+                        else
+                        {
+                            var filteredResult = InsertName(filter.Key, filter.Value, entities);
+                            if (!filteredResult.IsSuccess)
+                            {
+                                return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
+                            }
+                            filtertedEntities.AddRange(filteredResult.Value);
+                        }
+                    }
+                    if (filter.Value is IEnumerable enumerable)
+                    {
+                        foreach (var filterEntity in enumerable)
+                        {
+                            Console.WriteLine(filterEntity);
+                            var filteredResult = InsertName(filter.Key, filterEntity, entities);
+                            if (!filteredResult.IsSuccess)
+                            {
+                                return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
+                            }
+                            filtertedEntities.AddRange(filteredResult.Value);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                filtertedEntities = _entities;
+            }
+
+            int totalPages = PaginationHelper.GetTotalPages(pageSize, pageNumber, filtertedEntities.Count());
+
+            var result = filtertedEntities.Distinct()
+            .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
+            .Take(pageSize ?? Defaults.PageSize);
+            return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
+        }
+
+        private ResultT<IEnumerable<T>> InsertName(string filterKey, object filterValue, List<T> entities)
+        {
+            Console.WriteLine(filterKey);
+            Console.WriteLine(filterValue.ToString());
+            // Convert filter value to string if necessary (in case it is a JsonElement or other type)
+            if (filterValue is JsonElement jsonElement)
+            {
+                filterValue = jsonElement.ToString();
+            }
+            DateTime time;
+            if (DateTime.TryParse(filterValue.ToString(), out time))
+            {
+                filterValue = time.ToString();
+            }
+
+            var serializedFilterValue = JsonSerializer.Serialize(filterValue);
+
+            var propertyInfo = typeof(T).GetProperty(filterKey, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            if (propertyInfo != null)
+            {
+                if (propertyInfo.GetValue(entities[0]) is IEnumerable)
+                {
+                    return ResultT<IEnumerable<T>>.Success(entities
+                        .Where(entity =>
+                        {
+                            var propertyValue = propertyInfo.GetValue(entity);
+                            return (propertyValue as IEnumerable)!.Cast<object>()
+                                .Any(item => item.ToString()?.Trim().Replace("\"", "") == serializedFilterValue.ToString().Trim().Replace("\"", ""));
+                        }));
+                }
+                else
+                {
+                    foreach (var entity in entities)
+                    {
+                        Console.WriteLine(propertyInfo!.GetValue(entity)!.ToString()!.Trim() + ":" + serializedFilterValue.ToString().Trim().Replace("\"", ""));
+
+                    }
+                    return ResultT<IEnumerable<T>>.Success(entities.Where(entity =>
+                            propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", "")));
+                }
+            }
+            else
+            {
+                return ResultT<IEnumerable<T>>.Failure(Error.FilterError("FilterError", $"Could not find a property with name {filterKey}"));
+            }
+        }
 
 
         // Add a new entity
         public async Task<ResultT<Guid>> InsertAsync(T obj)
         {
-            // TODO: Whenever providing a GUID in post calls, it is ignored and a new GUID is generated.
-            // Remove possibility to make it in UI.
             obj.Id = Guid.NewGuid();  // Generate a new Guid for new clubs
             try
             {
@@ -62,7 +174,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             int index = await Task.Run(() => _entities.FindIndex(o => o.Id == id));
             if (index == -1)
             {
-                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).ToString().ToLower()} with ID {obj.Id} does not exist."));
+                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).Name.ToLower()} with ID {obj.Id} does not exist."));
             }
 
             try
@@ -78,7 +190,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             }
             catch (Exception ex)
             {
-                return Result.Failure(Error.Failure("UpdateError", $"Failed to update {typeof(T).ToString().ToLower()}: {ex.Message}"));
+                return Result.Failure(Error.Failure("UpdateError", $"Failed to update {typeof(T).Name.ToLower()}: {ex.Message}"));
             }
         }
 
@@ -89,7 +201,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var entityToRemove = await Task.Run(() => _entities.FirstOrDefault(c => c.Id == id));
             if (entityToRemove is null)
             {
-                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).ToString().ToLower()} with ID {id} does not exist."));
+                return Result.Failure(Error.NotFound("NotFound", $"{typeof(T).Name.ToLower()} with ID {id} does not exist."));
             }
 
             try
@@ -99,7 +211,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             }
             catch (Exception ex)
             {
-                return Result.Failure(Error.Failure("DeletionError", $"Could not delete {typeof(T).ToString().ToLower()}: {ex.Message}"));
+                return Result.Failure(Error.Failure("DeletionError", $"Could not delete {typeof(T).Name.ToLower()}: {ex.Message}"));
             }
         }
     }

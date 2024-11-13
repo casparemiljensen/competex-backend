@@ -45,7 +45,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         {
             var entities = await Task.Run(() => _entities);
             List<T> filtertedEntities = [];
-            if (filters != null)
+            if (filters == null)
+            {
+                filtertedEntities = _entities; 
+            }
+            else
             {
                 foreach (var filter in filters)
                 {
@@ -55,8 +59,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                         {
                             foreach (var filterEntity in jsonElement.EnumerateArray())
                             {
-                                Console.WriteLine(filterEntity);
-                                var filteredResult = InsertName(filter.Key, filterEntity, entities);
+                                var filteredResult = GetAllMatching(filter.Key, filterEntity, entities);
                                 if (!filteredResult.IsSuccess)
                                 {
                                     return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
@@ -66,7 +69,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                         }
                         else
                         {
-                            var filteredResult = InsertName(filter.Key, filter.Value, entities);
+                            var filteredResult = GetAllMatching(filter.Key, filter.Value, entities);
                             if (!filteredResult.IsSuccess)
                             {
                                 return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
@@ -74,12 +77,12 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                             filtertedEntities.AddRange(filteredResult.Value);
                         }
                     }
-                    if (filter.Value is IEnumerable enumerable)
+                    else if (filter.Value is IEnumerable enumerable)
                     {
                         foreach (var filterEntity in enumerable)
                         {
                             Console.WriteLine(filterEntity);
-                            var filteredResult = InsertName(filter.Key, filterEntity, entities);
+                            var filteredResult = GetAllMatching(filter.Key, filterEntity, entities);
                             if (!filteredResult.IsSuccess)
                             {
                                 return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
@@ -87,11 +90,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                             filtertedEntities.AddRange(filteredResult.Value);
                         }
                     }
+                    //Unrecognised type gets handed to the void
                 }
-            }
-            else
-            {
-                filtertedEntities = _entities;
             }
 
             int totalPages = PaginationHelper.GetTotalPages(pageSize, pageNumber, filtertedEntities.Count());
@@ -102,9 +102,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
         }
 
-        private ResultT<IEnumerable<T>> InsertName(string filterKey, object filterValue, List<T> entities)
+        private ResultT<IEnumerable<T>> GetAllMatching(string filterKey, object filterValue, List<T> entities)
         {
-
             // Convert filter value to string if necessary (in case it is a JsonElement or other type)
             if (filterValue is JsonElement jsonElement)
             {
@@ -120,27 +119,31 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             var propertyInfo = typeof(T).GetProperty(filterKey, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-            if (propertyInfo != null)
+            if (propertyInfo == null)
             {
-                if (propertyInfo.GetValue(entities[0]) is IEnumerable)
-                {
-                    return ResultT<IEnumerable<T>>.Success(entities
-                        .Where(entity =>
-                        {
-                            var propertyValue = propertyInfo.GetValue(entity);
-                            return (propertyValue as IEnumerable)!.Cast<object>()
-                                .Any(item => item.ToString()?.Trim().Replace("\"", "") == serializedFilterValue.ToString().Trim().Replace("\"", ""));
-                        }));
-                }
-                else
-                {
-                    return ResultT<IEnumerable<T>>.Success(entities.Where(entity =>
-                            propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", "")));
-                }
+                return ResultT<IEnumerable<T>>.Failure(Error.FilterError("FilterError", $"Could not find a property with name {filterKey}"));
+                
+            }
+
+            if (propertyInfo.GetValue(entities[0]) is IEnumerable)
+            {
+                return ResultT<IEnumerable<T>>.Success(entities
+                    .Where(entity =>
+                    {
+                        var propertyValue = propertyInfo.GetValue(entity);
+                        return (propertyValue as IEnumerable)!.Cast<object>()
+                            .Any(item => item.ToString()?.Trim().Replace("\"", "") == serializedFilterValue.ToString().Trim().Replace("\"", ""));
+                    }));
             }
             else
             {
-                return ResultT<IEnumerable<T>>.Failure(Error.FilterError("FilterError", $"Could not find a property with name {filterKey}"));
+                foreach (var entity in entities)
+                {
+                    Console.WriteLine(propertyInfo!.GetValue(entity)!.ToString()!.Trim() + ":" + serializedFilterValue.ToString().Trim().Replace("\"", ""));
+
+                }
+                return ResultT<IEnumerable<T>>.Success(entities.Where(entity =>
+                        propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", "")));
             }
         }
 

@@ -7,15 +7,16 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
     {
         public List<Member> Members { get; set; } = new();
         public List<Club> Clubs { get; set; } = new();
-        public List<ClubMembership> ClubMemberships { get; set; } = new();
-        public List<Entity> Entities { get; set; } = new();
-        public List<Field> Fields { get; set; } = new();
         public List<Round> Rounds { get; set; } = new();
+        public List<SportType> SportTypes { get; set; } = new();
+        public List<CompetitionType> CompetitionTypes { get; set; } = [];
         public List<Competition> Competitions { get; set; } = new();
         public List<Event> Events { get; set; } = new();
-        public List<SportType> SportTypes { get; set; } = new();
+        public List<ClubMembership> ClubMemberships { get; set; } = new();
         public List<Admin> Admins { get; set; } = new();
-        public List<CompetitionType> CompetitionTypes { get; set; } = [];
+
+        public List<Entity> Entities { get; set; } = new();
+        public List<Field> Fields { get; set; } = new();
 
         public MockDatabaseManager()
         {
@@ -25,15 +26,15 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<T> GetEntities<T>() where T : class
         {
             if (typeof(T) == typeof(Member)) return (Members as List<T>)!;
-            if (typeof(T) == typeof(ClubMembership)) return (ClubMemberships as List<T>)!;
-            if (typeof(T) == typeof(Entity)) return (Entities as List<T>)!;
+            if (typeof(T) == typeof(Club)) return (Clubs as List<T>)!;
             if (typeof(T) == typeof(Round)) return (Rounds as List<T>)!;
+            if (typeof(T) == typeof(SportType)) return (SportTypes as List<T>)!;
+            if (typeof(T) == typeof(CompetitionType)) return (CompetitionTypes as List<T>)!;
             if (typeof(T) == typeof(Competition)) return (Competitions as List<T>)!;
             if (typeof(T) == typeof(Event)) return (Events as List<T>)!;
-            if (typeof(T) == typeof(SportType)) return (SportTypes as List<T>)!;
+            if (typeof(T) == typeof(ClubMembership)) return (ClubMemberships as List<T>)!;
             if (typeof(T) == typeof(Admin)) return (Admins as List<T>)!;
-            if (typeof(T) == typeof(CompetitionType)) return (CompetitionTypes as List<T>)!;
-            if (typeof(T) == typeof(Club)) return (Clubs as List<T>)!;
+            if (typeof(T) == typeof(Entity)) return (Entities as List<T>)!;
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
 

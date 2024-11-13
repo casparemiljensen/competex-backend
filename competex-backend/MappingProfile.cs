@@ -16,26 +16,27 @@ namespace competex_backend
 
             CreateMap<Member, MemberDTO>();
             CreateMap<Round, RoundDTO>();
+            CreateMap<Club, ClubDTO>();
             CreateMap<Competition, CompetitionDTO>();
             CreateMap<Event, EventDTO>();
             CreateMap<CompetitionType, CompetitionTypeDTO>();
             CreateMap<SportType, SportTypeDTO>();
-            CreateMap<Club, ClubDTO>();
-            //CreateMap<MemberDTO, Member>();
-            //CreateMap<MemberDTO, Member>().ConstructUsing(
-            //        src => new Member(
-            //                src.Id
-            //            )
-            //    );
 
-
-            ////Example of ignoring a property
             CreateMap<MemberDTO, Member>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
             CreateMap<RoundDTO, Round>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<ClubDTO, Club>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<CompetitionTypeDTO, CompetitionType>()
+                 .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<EventDTO, Event>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<CompetitionDTO, Competition>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<SportTypeDTO, SportType>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
         }
     }
 }

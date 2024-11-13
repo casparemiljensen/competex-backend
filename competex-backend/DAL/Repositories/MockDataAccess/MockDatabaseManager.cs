@@ -42,8 +42,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             // Mock data
 
             #region members
-            var member1 = new Member() { FirstName = "Janni", LastName = "Karlsson", Id = new Guid() };
-            var member2 = new Member() { FirstName = "Søren", LastName = "Pind", Id = new Guid() };
+            var member1 = new Member() { FirstName = "Janni", LastName = "Karlsson", Id = Guid.NewGuid() };
+            var member2 = new Member() { FirstName = "Søren", LastName = "Pind", Id = Guid.NewGuid() };
             var member3 = new Member() { FirstName = "Caspar", LastName = "Emil Jensen", Id = new Guid("bec52019-b429-47bc-987e-47d13224d75e"), Birthday = new DateTime(1990, 1, 1), Email = "Caspar@uni.com", Phone = "12345890", Permissions = "Admin" };
             var member4 = new Member() { FirstName = "Thomas", LastName = "Ilum Andersen", Id = new Guid("cd4d665d-cd71-4aaa-9799-9f9c973ce19e"), Birthday = new DateTime(1985, 5, 23), Email = "Ilum@uni.com", Phone = "98763210", Permissions = "User" };
             var member5 = new Member() { FirstName = "Thomas", LastName = "Dam Nykjær", Id = new Guid("c7a53ea7-950a-4c8f-83c8-6262f2ec1571"), Birthday = new DateTime(1995, 10, 10), Email = "Dam@uni.com", Phone = "55555555", Permissions = "Judge" };
@@ -51,11 +51,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #endregion
 
             #region clubs
-            var club1 = new Club { Name = "Vejle Kaninhop", AssociatedSport = "Kaninhop" };
-            var club2 = new Club { Name = "Lystrup Kaninhop", AssociatedSport = "Kaninhop" };
-            var club3 = new Club { Name = "Kaninernes Klub Hjørring", AssociatedSport = "Kaninhop" };
-            var club4 = new Club { Name = "Aabybro kaninhop", AssociatedSport = "Kaninhop" };
-            var club5 = new Club { Name = "Aalborg kaninforening", AssociatedSport = "Kaninhop" };
+            var club1 = new Club { Id = new Guid("23bfd5cb-9ee9-48c0-b1ae-8a9550223dcd"), Name = "Vejle Kaninhop", AssociatedSport = "Kaninhop" };
+            var club2 = new Club { Id = Guid.NewGuid(), Name = "Lystrup Kaninhop", AssociatedSport = "Kaninhop" };
+            var club3 = new Club { Id = Guid.NewGuid(), Name = "Kaninernes Klub Hjørring", AssociatedSport = "Kaninhop" };
+            var club4 = new Club { Id = Guid.NewGuid(), Name = "Aabybro kaninhop", AssociatedSport = "Kaninhop" };
+            var club5 = new Club { Id = Guid.NewGuid(), Name = "Aalborg kaninforening", AssociatedSport = "Kaninhop" };
             var club6 = new Club { Id = new Guid("aa57885f-cab9-48da-85d6-57a671c7d664"), Name = "Aalborg Håndbold", AssociatedSport = "Handball" };
             Clubs.AddRange([club1, club2, club3, club4, club5, club6]);
             #endregion
@@ -90,11 +90,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #endregion
 
             #region clubmembers
-            var clubMember1 = new ClubMembership { ClubId = club1.Id, MemberId = member1.Id, JoinDate = new DateTime(2011, 4, 20) };
-            var clubMember2 = new ClubMembership { ClubId = club1.Id, MemberId = member2.Id, JoinDate = new DateTime(2024, 1, 13) };
-            var clubMember3 = new ClubMembership { ClubId = club1.Id, MemberId = member3.Id, JoinDate = new DateTime(2015, 6, 17) };
-            var clubMember4 = new ClubMembership { ClubId = club2.Id, MemberId = member4.Id, JoinDate = new DateTime(2001, 8, 31) };
-            var clubMember5 = new ClubMembership { ClubId = club2.Id, MemberId = member5.Id, JoinDate = DateTime.UtcNow };
+            var clubMember1 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club1.Id, MemberId = member1.Id, JoinDate = new DateTime(2011, 4, 20) };
+            var clubMember2 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club1.Id, MemberId = member2.Id, JoinDate = new DateTime(2024, 1, 13) };
+            var clubMember3 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club1.Id, MemberId = member3.Id, JoinDate = new DateTime(2015, 6, 17) };
+            var clubMember4 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club2.Id, MemberId = member4.Id, JoinDate = new DateTime(2001, 8, 31) };
+            var clubMember5 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club2.Id, MemberId = member5.Id, JoinDate = DateTime.UtcNow };
 
             ClubMemberships.AddRange([clubMember1, clubMember2, clubMember3, clubMember4, clubMember5]);
             #endregion
@@ -155,9 +155,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #region rounds
             var round1 = new Round { Name = "TestRoundOne", Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac") };
             var round2 = new Round { Name = "TestRoundTwo", CompetitionId = new Guid("596462f8-2e32-4a21-921a-b5768c6b0d86") };
-            var round3 = new Round { Name = "TestRoundThree" };
-            var round4 = new Round { Name = "TestRoundFour" };
-            var round5 = new Round { Name = "TestRoundFive" };
+            var round3 = new Round { Id = Guid.NewGuid(), Name = "TestRoundThree" };
+            var round4 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFour" };
+            var round5 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFive" };
             Rounds.AddRange([round1, round2, round3, round4, round5]);
             #endregion
 
@@ -246,7 +246,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             Competitions.AddRange([comp1, comp2]);
             #endregion
-
 
             #region events
             var mockEvent = new Event

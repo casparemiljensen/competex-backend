@@ -43,7 +43,12 @@ namespace competex_backend.API.Controllers
             var result = await _clubMembershipService.GetClubsOfMemberAsync(memberId, pageSize, pageNumber);
             if (result.IsSuccess)
             {
-                return Ok(result.Value);
+                var obj = new PaginationWrapperDTO<IEnumerable<ClubDTO>>(
+                    result.Value.Item2,
+                    pageSize ?? Defaults.PageSize,
+                    pageNumber ?? Defaults.PageNumber,
+                    result.Value.Item1);
+                return Ok(obj);
             }
             return NotFound(result.Error); // Return NotFound with error details if no clubs found
         }

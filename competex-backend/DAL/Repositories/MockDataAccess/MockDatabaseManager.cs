@@ -95,8 +95,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var clubMember3 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club1.Id, MemberId = member3.Id, JoinDate = new DateTime(2015, 6, 17) };
             var clubMember4 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club2.Id, MemberId = member4.Id, JoinDate = new DateTime(2001, 8, 31) };
             var clubMember5 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club2.Id, MemberId = member5.Id, JoinDate = DateTime.UtcNow };
+            var clubMember6 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club3.Id, MemberId = member3.Id, JoinDate = DateTime.UtcNow };
 
-            ClubMemberships.AddRange([clubMember1, clubMember2, clubMember3, clubMember4, clubMember5]);
+            ClubMemberships.AddRange([clubMember1, clubMember2, clubMember3, clubMember4, clubMember5, clubMember6]);
             #endregion
 
             #region entities

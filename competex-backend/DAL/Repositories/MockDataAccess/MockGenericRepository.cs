@@ -104,8 +104,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
         private ResultT<IEnumerable<T>> InsertName(string filterKey, object filterValue, List<T> entities)
         {
-            Console.WriteLine(filterKey);
-            Console.WriteLine(filterValue.ToString());
+
             // Convert filter value to string if necessary (in case it is a JsonElement or other type)
             if (filterValue is JsonElement jsonElement)
             {
@@ -135,11 +134,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 }
                 else
                 {
-                    foreach (var entity in entities)
-                    {
-                        Console.WriteLine(propertyInfo!.GetValue(entity)!.ToString()!.Trim() + ":" + serializedFilterValue.ToString().Trim().Replace("\"", ""));
-
-                    }
                     return ResultT<IEnumerable<T>>.Success(entities.Where(entity =>
                             propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", "")));
                 }

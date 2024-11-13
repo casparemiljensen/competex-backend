@@ -18,5 +18,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             return ResultT<IEnumerable<Club>>.Success(clubs);
 
         }
+
+
     }
 }

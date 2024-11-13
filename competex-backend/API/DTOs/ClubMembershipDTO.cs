@@ -1,16 +1,14 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using competex_backend.Models;
+using System.Text.Json.Serialization;
 
-namespace competex_backend.Models
+namespace competex_backend.API.DTOs
 {
-    public class ClubMember : IIdentifiable
+    public class ClubMembershipDTO
     {
         public Guid Id { get; init; }
         public Guid ClubId { get; set; }
-        public Club Club { get; set; } = null!;
         public Guid MemberId { get; set; }
-        public Member Member { get; set; } = null!;
         public DateTime JoinDate { get; set; }
         public ClubMemberRole? Role { get; set; } = ClubMemberRole.Standard;
-
     }
 }

@@ -22,6 +22,8 @@ namespace competex_backend
             CreateMap<CompetitionType, CompetitionTypeDTO>();
             CreateMap<SportType, SportTypeDTO>();
             CreateMap<Admin, AdminDTO>();
+            //CreateMap<ClubMembership, ClubMembershipDTO>(); // Don't we need this?
+            CreateMap<Entity, EntityDTO>();
 
             CreateMap<MemberDTO, Member>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
@@ -38,6 +40,10 @@ namespace competex_backend
             CreateMap<SportTypeDTO, SportType>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<AdminDTO, Admin>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            //CreateMap<ClubMembershipDTO, ClubMembership>()
+            //    .ForMember(dest => dest.Id, opt => opt.Ignore()); // Don't we need this?
+            CreateMap<EntityDTO, Entity>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
         }
     }

@@ -29,6 +29,7 @@ builder.Services.AddScoped<IGenericRepository<Competition>, MockCompetitionRepos
 builder.Services.AddScoped<IGenericRepository<Event>, MockEventRepository>();
 builder.Services.AddScoped<IGenericRepository<ClubMembership>, MockClubMembershipRepository>();
 builder.Services.AddScoped<IGenericRepository<Admin>, MockAdminRepository>();
+builder.Services.AddScoped<IGenericRepository<Entity>, MockEntityRepository>();
 #endregion
 
 
@@ -43,6 +44,7 @@ builder.Services.AddScoped<ICompetitionService, CompetitionService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IClubMembershipService, ClubMembershipService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IEntityService, EntityService>();
 # endregion
 
 #region Service DTO Mappings
@@ -56,6 +58,7 @@ builder.Services.AddScoped<ICompetitionRepository, MockCompetitionRepository>();
 builder.Services.AddScoped<IEventRepository, MockEventRepository>();
 builder.Services.AddScoped<IClubMembershipRepository, MockClubMembershipRepository>();
 builder.Services.AddScoped<IAdminRepository, MockAdminRepository>();
+builder.Services.AddScoped<IEntityRepository, MockEntityRepository>();
 #endregion
 
 # region IGenericService
@@ -70,6 +73,7 @@ builder.Services.AddScoped<IGenericService<CompetitionDTO>, GenericService<Compe
 builder.Services.AddScoped<IGenericService<EventDTO>, GenericService<Event, EventDTO>>();
 builder.Services.AddScoped<IGenericService<ClubMembershipDTO>, GenericService<ClubMembership, ClubMembershipDTO>>();
 builder.Services.AddScoped<IGenericService<AdminDTO>, GenericService<Admin, AdminDTO>>();
+builder.Services.AddScoped<IGenericService<EntityDTO>, GenericService<Entity, EntityDTO>>();
 
 # endregion
 

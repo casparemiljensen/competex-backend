@@ -14,7 +14,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Event> Events { get; set; } = new();
         public List<ClubMembership> ClubMemberships { get; set; } = new();
         public List<Admin> Admins { get; set; } = new();
-
         public List<Entity> Entities { get; set; } = new();
         public List<Field> Fields { get; set; } = new();
 

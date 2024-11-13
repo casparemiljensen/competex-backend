@@ -8,7 +8,7 @@ namespace competex_backend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EventsController : GenericsController<EventDTO>
+    public class EventsController : GenericsController<EventDTO>, IEventAPI
     {
         public EventsController(IGenericService<EventDTO> service) : base(service) { }
 

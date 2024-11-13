@@ -8,7 +8,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public MockFieldRepository(MockDatabaseManager db)
             :base(db)
         {
-        }
-        
+        } 
     }
 }

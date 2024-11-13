@@ -12,7 +12,7 @@ namespace competex_backend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompetitionsController : GenericsController<CompetitionDTO>
+    public class CompetitionsController : GenericsController<CompetitionDTO>, ICompetitionAPI
     {
         public CompetitionsController(IGenericService<CompetitionDTO> service) : base(service) { }
 

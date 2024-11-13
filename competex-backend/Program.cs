@@ -27,9 +27,8 @@ builder.Services.AddScoped<IGenericRepository<SportType>, MockSportTypeRepositor
 builder.Services.AddScoped<IGenericRepository<CompetitionType>, MockCompetitionTypeRepository>();
 builder.Services.AddScoped<IGenericRepository<Competition>, MockCompetitionRepository>();
 builder.Services.AddScoped<IGenericRepository<Event>, MockEventRepository>();
-builder.Services.AddScoped<IGenericRepository<Member>, MockMemberRepository>();
-builder.Services.AddScoped<IGenericRepository<Club>, MockClubRepository>();
 builder.Services.AddScoped<IGenericRepository<ClubMembership>, MockClubMembershipRepository>();
+builder.Services.AddScoped<IGenericRepository<Admin>, MockAdminRepository>();
 #endregion
 
 
@@ -38,17 +37,25 @@ builder.Services.AddScoped<IGenericRepository<ClubMembership>, MockClubMembershi
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IClubService, ClubService>();
 builder.Services.AddScoped<IRoundService, RoundService>();
-builder.Services.AddScoped<ICompetitionService, CompetitionService>();
-builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<ISportTypeService, SportTypeService>();
 builder.Services.AddScoped<ICompetitionTypeService, CompetitionTypeService>();
+builder.Services.AddScoped<ICompetitionService, CompetitionService>();
+builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IClubMembershipService, ClubMembershipService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 # endregion
 
-#region HUH?
-builder.Services.AddScoped<IClubRepository, MockClubRepository>();
+#region Service DTO Mappings
+// Registers services with DTO mappings for each model type.
 builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
+builder.Services.AddScoped<IClubRepository, MockClubRepository>();
+builder.Services.AddScoped<IRoundRepository, MockRoundRepository>();
+builder.Services.AddScoped<ISportTypeRepository, MockSportTypeRepository>();
+builder.Services.AddScoped<ICompetitionTypeRepository, MockCompetitionTypeRepository>();
+builder.Services.AddScoped<ICompetitionRepository, MockCompetitionRepository>();
+builder.Services.AddScoped<IEventRepository, MockEventRepository>();
 builder.Services.AddScoped<IClubMembershipRepository, MockClubMembershipRepository>();
+builder.Services.AddScoped<IAdminRepository, MockAdminRepository>();
 #endregion
 
 # region IGenericService
@@ -57,21 +64,14 @@ builder.Services.AddScoped<IClubMembershipRepository, MockClubMembershipReposito
 builder.Services.AddScoped<IGenericService<MemberDTO>, GenericService<Member, MemberDTO>>();
 builder.Services.AddScoped<IGenericService<ClubDTO>, GenericService<Club, ClubDTO>>();
 builder.Services.AddScoped<IGenericService<RoundDTO>, GenericService<Round, RoundDTO>>();
-builder.Services.AddScoped<IGenericService<CompetitionDTO>, GenericService<Competition, CompetitionDTO>>();
-builder.Services.AddScoped<IGenericService<CompetitionDTO>, GenericService<Competition, CompetitionDTO>>();
-builder.Services.AddScoped<IGenericService<EventDTO>, GenericService<Event, EventDTO>>();
 builder.Services.AddScoped<IGenericService<SportTypeDTO>, GenericService<SportType, SportTypeDTO>>();
 builder.Services.AddScoped<IGenericService<CompetitionTypeDTO>, GenericService<CompetitionType, CompetitionTypeDTO>>();
+builder.Services.AddScoped<IGenericService<CompetitionDTO>, GenericService<Competition, CompetitionDTO>>();
+builder.Services.AddScoped<IGenericService<EventDTO>, GenericService<Event, EventDTO>>();
 builder.Services.AddScoped<IGenericService<ClubMembershipDTO>, GenericService<ClubMembership, ClubMembershipDTO>>();
+builder.Services.AddScoped<IGenericService<AdminDTO>, GenericService<Admin, AdminDTO>>();
 
 # endregion
-
-//builder.Services.AddScoped<IClubRepository, MockClubRepository>();
-//builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
-//builder.Services.AddScoped<IClubMemberRepository, MockClubMemberRepository>();
-
-// Register MockDatabaseManager as a singleton
-//builder.Services.AddSingleton<IDatabaseManager, MockDatabaseManager>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 

@@ -2,7 +2,7 @@
 
 namespace competex_backend.BLL.Interfaces
 {
-    public interface IEntityService : IGenericService<EntityDTO>
+    public interface IFieldService : IGenericService<FieldDTO>
     {
     }
 }

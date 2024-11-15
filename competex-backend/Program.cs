@@ -30,6 +30,8 @@ builder.Services.AddScoped<IGenericRepository<Event>, MockEventRepository>();
 builder.Services.AddScoped<IGenericRepository<ClubMembership>, MockClubMembershipRepository>();
 builder.Services.AddScoped<IGenericRepository<Admin>, MockAdminRepository>();
 builder.Services.AddScoped<IGenericRepository<Entity>, MockEntityRepository>();
+builder.Services.AddScoped<IGenericRepository<Field>, MockFieldRepository>();
+builder.Services.AddScoped<IGenericRepository<Location>, MockLocationRepository>();
 #endregion
 
 
@@ -45,6 +47,8 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IClubMembershipService, ClubMembershipService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IEntityService, EntityService>();
+builder.Services.AddScoped<IFieldService, FieldService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
 # endregion
 
 #region Service DTO Mappings
@@ -59,6 +63,8 @@ builder.Services.AddScoped<IEventRepository, MockEventRepository>();
 builder.Services.AddScoped<IClubMembershipRepository, MockClubMembershipRepository>();
 builder.Services.AddScoped<IAdminRepository, MockAdminRepository>();
 builder.Services.AddScoped<IEntityRepository, MockEntityRepository>();
+builder.Services.AddScoped<IFieldRepository, MockFieldRepository>();
+builder.Services.AddScoped<ILocationRepository, MockLocationRepository>();
 #endregion
 
 # region IGenericService
@@ -74,6 +80,9 @@ builder.Services.AddScoped<IGenericService<EventDTO>, GenericService<Event, Even
 builder.Services.AddScoped<IGenericService<ClubMembershipDTO>, GenericService<ClubMembership, ClubMembershipDTO>>();
 builder.Services.AddScoped<IGenericService<AdminDTO>, GenericService<Admin, AdminDTO>>();
 builder.Services.AddScoped<IGenericService<EntityDTO>, GenericService<Entity, EntityDTO>>();
+builder.Services.AddScoped<IGenericService<FieldDTO>, GenericService<Field, FieldDTO>>();
+builder.Services.AddScoped<IGenericService<LocationDTO>, GenericService<Location, LocationDTO>>();
+
 
 # endregion
 
@@ -85,7 +94,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapse swagger on startup
+    });
 }
 
 app.UseHttpsRedirection();

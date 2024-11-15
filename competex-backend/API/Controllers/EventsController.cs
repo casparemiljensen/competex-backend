@@ -1,7 +1,6 @@
 ﻿using competex_backend.API.DTOs;
 using competex_backend.API.Interfaces;
 using competex_backend.BLL.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace competex_backend.API.Controllers
@@ -10,7 +9,10 @@ namespace competex_backend.API.Controllers
     [ApiController]
     public class EventsController : GenericsController<EventDTO>, IEventAPI
     {
-        public EventsController(IGenericService<EventDTO> service) : base(service) { }
-
+        private IEventService _eventService;
+        public EventsController(IGenericService<EventDTO> service, IEventService eventService) : base(service)
+        {
+            _eventService = eventService;
+        }
     }
 }

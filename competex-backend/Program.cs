@@ -6,6 +6,8 @@ using competex_backend.BLL.Services;
 using competex_backend.BLL.Interfaces;
 using competex_backend.API.DTOs;
 using competex_backend.Models;
+using competex_backend.Common.ErrorHandling;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,8 @@ builder.Services.AddScoped<IGenericRepository<Event>, MockEventRepository>();
 builder.Services.AddScoped<IGenericRepository<Member>, MockMemberRepository>();
 builder.Services.AddScoped<IGenericRepository<Club>, MockClubRepository>();
 builder.Services.AddScoped<IGenericRepository<ClubMembership>, MockClubMembershipRepository>();
+builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>();
+builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRepository>();
 #endregion
 
 
@@ -43,12 +47,17 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<ISportTypeService, SportTypeService>();
 builder.Services.AddScoped<ICompetitionTypeService, CompetitionTypeService>();
 builder.Services.AddScoped<IClubMembershipService, ClubMembershipService>();
+builder.Services.AddScoped<IScoringSystemService, ScoringSystemService>();
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 # endregion
 
 #region HUH?
 builder.Services.AddScoped<IClubRepository, MockClubRepository>();
 builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
 builder.Services.AddScoped<IClubMembershipRepository, MockClubMembershipRepository>();
+builder.Services.AddScoped<IRegistrationRepository, MockRegistrationRepository>();
+builder.Services.AddScoped<IEventRepository, MockEventRepository>();
+builder.Services.AddScoped<ICompetitionRepository, MockCompetitionRepository>();
 #endregion
 
 # region IGenericService
@@ -63,7 +72,8 @@ builder.Services.AddScoped<IGenericService<EventDTO>, GenericService<Event, Even
 builder.Services.AddScoped<IGenericService<SportTypeDTO>, GenericService<SportType, SportTypeDTO>>();
 builder.Services.AddScoped<IGenericService<CompetitionTypeDTO>, GenericService<CompetitionType, CompetitionTypeDTO>>();
 builder.Services.AddScoped<IGenericService<ClubMembershipDTO>, GenericService<ClubMembership, ClubMembershipDTO>>();
-
+builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
+builder.Services.AddScoped<IGenericService<RegistrationDTO>, GenericService<Registration, RegistrationDTO>>();
 # endregion
 
 //builder.Services.AddScoped<IClubRepository, MockClubRepository>();
@@ -81,12 +91,17 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+    });
 }
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.MapControllers();
 

@@ -1,3 +1,6 @@
+using competex_backend.Common.ErrorHandling;
+using competex_backend.DAL.Interfaces;
+
 namespace competex_backend.Common.Helpers;
 
 public static class PaginationHelper
@@ -25,14 +28,40 @@ public static class PaginationHelper
         {
             return 0;
         }
-        Console.WriteLine(pageSize);
-        Console.WriteLine(pageNumber);
-        Console.WriteLine((int)pageSize * ((int)pageNumber - 1));
         return (int)pageSize * ((int)pageNumber - 1);
     }
 
     public static int GetTotalPages(int? pageSize, int? pageNumber, int numberOfLines)
     {
         return (int)Math.Ceiling((double)(numberOfLines / (pageSize ?? Defaults.PageSize)) + 1);
+    }
+
+    public async static Task<IEnumerable<T>> GetAll<T, TRepo>(TRepo repo, Dictionary<string, object>? searchParams) where TRepo : IGenericRepository<T> where T : class
+    {
+        List<T> output = [];
+        int pageNr = 0;
+        while (true)
+        {
+            var result = await repo.SearchAllAsync(2, pageNr, searchParams);
+
+            Console.WriteLine(result.Value.Item2.Count());
+            if (!result.IsSuccess)
+            {
+                throw new ApiException(500, "Failed to access DataBase");
+            }
+
+            foreach (var item in result.Value.Item2)
+            {
+                output.Add(item);
+            }
+
+            if (result.Value.Item1 == pageNr)
+            {
+                break;
+            }
+            pageNr++;
+        }
+        Console.WriteLine(output.ToList().Count);
+        return output.ToList();
     }
 }

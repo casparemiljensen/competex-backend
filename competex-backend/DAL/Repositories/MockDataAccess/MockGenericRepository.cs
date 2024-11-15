@@ -1,9 +1,11 @@
 ﻿using AutoMapper.Internal;
+using competex_backend.Common.ErrorHandling;
 using competex_backend.Common.Helpers;
 using competex_backend.DAL.Filters;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json;
 
@@ -43,54 +45,49 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
         public async Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
         {
-            var entities = await Task.Run(() => _entities);
-            List<T> filtertedEntities = [];
+            List<T> filtertedEntities = await Task.Run(() => _entities);
             if (filters == null)
             {
                 filtertedEntities = _entities; 
             }
             else
-            {
+            {   
                 foreach (var filter in filters)
                 {
+                    List<T> orList = [];
                     if (filter.Value is JsonElement jsonElement)
                     {
                         if (jsonElement.ValueKind == JsonValueKind.Array)
                         {
                             foreach (var filterEntity in jsonElement.EnumerateArray())
                             {
-                                var filteredResult = GetAllMatching(filter.Key, filterEntity, entities);
-                                if (!filteredResult.IsSuccess)
-                                {
-                                    return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
-                                }
-                                filtertedEntities.AddRange(filteredResult.Value);
+                                orList.AddRange(GetAllMatching(filter.Key, filterEntity, filtertedEntities).ToList());
                             }
                         }
                         else
                         {
-                            var filteredResult = GetAllMatching(filter.Key, filter.Value, entities);
-                            if (!filteredResult.IsSuccess)
-                            {
-                                return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
-                            }
-                            filtertedEntities.AddRange(filteredResult.Value);
+                            orList = GetAllMatching(filter.Key, filter.Value, filtertedEntities).ToList();
                         }
                     }
                     else if (filter.Value is IEnumerable enumerable)
                     {
                         foreach (var filterEntity in enumerable)
                         {
-                            Console.WriteLine(filterEntity);
-                            var filteredResult = GetAllMatching(filter.Key, filterEntity, entities);
-                            if (!filteredResult.IsSuccess)
-                            {
-                                return ResultT<Tuple<int, IEnumerable<T>>>.Failure(filteredResult.Error!);
-                            }
-                            filtertedEntities.AddRange(filteredResult.Value);
+                            orList.AddRange(GetAllMatching(filter.Key, filterEntity, filtertedEntities));
                         }
                     }
-                    //Unrecognised type gets handed to the void
+                    else if (filter.Value.GetType().IsAssignableTo(typeof(string)) || filter.Value is Guid)
+                    {
+                        orList.AddRange(GetAllMatching(filter.Key, filter.Value, filtertedEntities));
+                    }
+                    else
+                    {
+                        //Unrecognised type gets handed to the void
+                        Console.WriteLine(typeof(Guid).IsAssignableTo(typeof(string)));
+                        throw new ApiException(500, $"Type not found {filter.Value}");
+                    }
+                    //Set orList to filteredEntities for potentially more "and" properties
+                    filtertedEntities = orList;
                 }
             }
 
@@ -98,11 +95,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             var result = filtertedEntities.Distinct()
             .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
-            .Take(pageSize ?? Defaults.PageSize);
+            .Take(pageSize ?? Defaults.PageSize).ToList();
             return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
         }
 
-        private ResultT<IEnumerable<T>> GetAllMatching(string filterKey, object filterValue, List<T> entities)
+        private IEnumerable<T> GetAllMatching(string filterKey, object filterValue, List<T> entities)
         {
             // Convert filter value to string if necessary (in case it is a JsonElement or other type)
             if (filterValue is JsonElement jsonElement)
@@ -121,29 +118,23 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             if (propertyInfo == null)
             {
-                return ResultT<IEnumerable<T>>.Failure(Error.FilterError("FilterError", $"Could not find a property with name {filterKey}"));
-                
+                throw new ApiException(500, $"No property on {typeof(T).Name} called {filterKey}");
             }
 
-            if (propertyInfo.GetValue(entities[0]) is IEnumerable)
+            if (typeof(IEnumerable).IsAssignableFrom(typeof(T)) && typeof(T) != typeof(string))
             {
-                return ResultT<IEnumerable<T>>.Success(entities
+                return entities
                     .Where(entity =>
                     {
                         var propertyValue = propertyInfo.GetValue(entity);
                         return (propertyValue as IEnumerable)!.Cast<object>()
                             .Any(item => item.ToString()?.Trim().Replace("\"", "") == serializedFilterValue.ToString().Trim().Replace("\"", ""));
-                    }));
+                    });
             }
             else
             {
-                foreach (var entity in entities)
-                {
-                    Console.WriteLine(propertyInfo!.GetValue(entity)!.ToString()!.Trim() + ":" + serializedFilterValue.ToString().Trim().Replace("\"", ""));
-
-                }
-                return ResultT<IEnumerable<T>>.Success(entities.Where(entity =>
-                        propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", "")));
+                return entities.Where(entity =>
+                        propertyInfo!.GetValue(entity)!.ToString()!.Trim() == serializedFilterValue.ToString().Trim().Replace("\"", ""));
             }
         }
 

@@ -34,7 +34,6 @@ namespace competex_backend.API.Controllers
             var result = await _genericService.GetAllAsync(pageSize, pageNumber);
             if (result.IsSuccess)
             {
-                //var obj = result.Value.Item2;
                 var obj = new PaginationWrapperDTO<IEnumerable<T>>(
                     result.Value.Item2,
                     pageSize ?? Defaults.PageSize,
@@ -73,7 +72,7 @@ namespace competex_backend.API.Controllers
             return BadRequest(result.Error);
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateAsync(Guid id, T obj)
         {
             var result = await _genericService.UpdateAsync(id, obj);

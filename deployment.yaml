@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: competex-backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: competex-backend
+  template:
+    metadata:
+      labels:
+        app: competex-backend
+    spec:
+      containers:
+      - name: competex-backend
+        image: ilum1/competex-backend:latest # your-repository/competex-backend:latest  # Replace with your container registry URL
+        imagePullPolicy: Always  # Use "Always" to ensure the image is pulled from the registry # Alternative: use never if local
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ASPNETCORE_HTTP_PORTS
+          value: "8080"

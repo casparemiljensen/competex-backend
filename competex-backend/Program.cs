@@ -112,6 +112,14 @@ if (app.Environment.IsDevelopment())
         options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapse swagger on startup
     });
 }
+else // Right now we want to show Swagger UI in production. Remove this clause when that changes
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapse swagger on startup
+    });
+}
 
 app.UseHttpsRedirection();
 

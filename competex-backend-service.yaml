@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: competex-backend-service
+spec:
+  selector:
+    app: competex-backend
+  type: NodePort # Change the service type to NodePort
+  ports:
+  - protocol: TCP
+    name: http  # Unique name for the port
+    port: 8080
+    targetPort: 8080
+    nodePort: 32760 # Specify a static port for NodePort
+  - name: https # Another unique name for the second port
+    port: 8081
+    targetPort: 8081
+    nodePort: 32761

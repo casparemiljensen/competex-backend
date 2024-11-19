@@ -447,7 +447,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             ScoringSystems.AddRange([scoringSystem1]);
             #endregion
 
-
             #region Participants
 
             var team1 = new Team("Team1", new List<Member> { member1, member2 });
@@ -479,8 +478,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Description = "Assistant Judge"
             };
 
-            #endregion
+            Judges.AddRange([judge1, judge2]);
 
+            #endregion
 
             #region Matches
             var match1 = new Match
@@ -530,7 +530,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             #endregion
 
-
             #region Scores
 
             var score1a = new TimeScore(TimeSpan.FromMinutes(10), match1, match1.Participants[0]);
@@ -544,9 +543,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             Scores.AddRange([score1a, score1b, score2a, score2b, score3a, score3b]);
 
-            Matches[0].Scores.AddRange([score1a, score1b]);
-            Matches[1].Scores.AddRange([score2a, score2b]);
-            Matches[2].Scores.AddRange([score3a, score3b]);
+            //Matches[0].Scores.AddRange([score1a, score1b]);
+            //Matches[1].Scores.AddRange([score2a, score2b]);
+            //Matches[2].Scores.AddRange([score3a, score3b]);
 
 
             #endregion

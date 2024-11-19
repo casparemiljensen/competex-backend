@@ -41,7 +41,7 @@ namespace competex_backend
             CreateMap<EventDTO, Event>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<ClubMembershipDTO, ClubMembership>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore()); // Don't we need this?
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<AdminDTO, Admin>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<EntityDTO, Entity>()

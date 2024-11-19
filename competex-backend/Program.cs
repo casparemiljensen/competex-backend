@@ -1,4 +1,3 @@
-using competex_backend.API.Controllers;
 using competex_backend.DAL.Repositories.MockDataAccess;
 using competex_backend.DAL.Interfaces;
 using competex_backend;
@@ -7,7 +6,6 @@ using competex_backend.BLL.Interfaces;
 using competex_backend.API.DTOs;
 using competex_backend.Models;
 using competex_backend.Common.ErrorHandling;
-using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +35,9 @@ builder.Services.AddScoped<IGenericRepository<Location>, MockLocationRepository>
 builder.Services.AddScoped<IGenericRepository<Penalty>, MockPenaltyRepository>();
 builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRepository>();
 builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>();
+
 builder.Services.AddScoped<IGenericRepository<Judge>, MockJudgeRepository>();
+builder.Services.AddScoped<IGenericRepository<Match>, MockMatchRepository>();
 #endregion
 
 
@@ -58,7 +58,9 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IPenaltyService, PenaltyService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IScoringSystemService, ScoringSystemService>();
+
 builder.Services.AddScoped<IJudgeService, JudgeService>();
+builder.Services.AddScoped<IMatchService, MatchService>();
 # endregion
 
 #region Service DTO Mappings
@@ -78,7 +80,9 @@ builder.Services.AddScoped<ILocationRepository, MockLocationRepository>();
 builder.Services.AddScoped<IPenaltyRepository, MockPenaltyRepository>();
 builder.Services.AddScoped<IRegistrationRepository, MockRegistrationRepository>();
 builder.Services.AddScoped<IScoringSystemRepository, MockScoringSystemRepository>();
+
 builder.Services.AddScoped<IJudgeRepository, MockJudgeRepository>();
+builder.Services.AddScoped<IMatchRepository, MockMatchRepository>();
 #endregion
 
 # region IGenericService
@@ -100,7 +104,9 @@ builder.Services.AddScoped<IGenericService<PenaltyDTO>, GenericService<Penalty, 
 builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
 builder.Services.AddScoped<IGenericService<RegistrationDTO>, GenericService<Registration, RegistrationDTO>>();
 builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
+
 builder.Services.AddScoped<IGenericService<JudgeDTO>, GenericService<Judge, JudgeDTO>>();
+builder.Services.AddScoped<IGenericService<MatchDTO>, GenericService<Match, MatchDTO>>();
 # endregion
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);

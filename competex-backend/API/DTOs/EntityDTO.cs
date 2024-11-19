@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using competex_backend.Models;
+using System.ComponentModel.DataAnnotations;
 
-namespace competex_backend.Models
+namespace competex_backend.API.DTOs
 {
-    public class Entity : Identifiable
+    public class EntityDTO
     {
+        public Guid Id { get; init; }
         public EntityType Type { get; set; }
         public string Name { get; set; } = string.Empty;
         public DateTime BirthDate { get; set; }

@@ -9,11 +9,6 @@ namespace competex_backend.API.DTOs
         public ScoreType ScoreType { get; set; }
         public string ScoringRules { get; set; }
         public int Penalties { get; set; }
-        public Func<ScoreType, int, int> EvaluationMethod { get; set; }
 
-        public int GetScore()
-        {
-            return EvaluationMethod(ScoreType, Penalties);
-        }
     }
 }

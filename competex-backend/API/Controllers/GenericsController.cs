@@ -72,7 +72,7 @@ namespace competex_backend.API.Controllers
             return BadRequest(result.Error);
         }
 
-        [HttpPatch("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync(Guid id, T obj)
         {
             var result = await _genericService.UpdateAsync(id, obj);

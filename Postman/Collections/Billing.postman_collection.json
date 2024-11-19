@@ -1,0 +1,19 @@
+{
+	"info": {
+		"_postman_id": "26884971-bf25-4987-a7cc-4dc462c842f8",
+		"name": "Billing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39381475",
+		"_collection_link": "https://p7-competex.postman.co/workspace/CompeteX-Backend~4e42fa57-57a0-435a-821d-0d7af89d6326/collection/39434045-26884971-bf25-4987-a7cc-4dc462c842f8?action=share&source=collection_link&creator=39381475"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

@@ -8,7 +8,7 @@ services:
       - "32778:8080"  # Maps container's 8080 port to host's 32778 port 
       - "32779:8081"  # Maps container's 8081 port to host's 32779 port
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production #- ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_ENVIRONMENT=Development #- ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_HTTP_PORTS=8080
     networks:
       - competex-network

@@ -17,9 +17,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Entity> Entities { get; set; } = new();
         public List<Field> Fields { get; set; } = new();
         public List<Location> Locations { get; set; } = new();
-
         public List<Penalty> Penalties { get; set; } = new();
         public List<Registration> Registrations { get; set; } = [];
+        public List<ScoringSystem> ScoringSystems { get; set; } = new();
 
         public MockDatabaseManager()
         {
@@ -43,6 +43,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             if (typeof(T) == typeof(Location)) return (Locations as List<T>)!;
             if (typeof(T) == typeof(Penalty)) return (Penalties as List<T>)!;
             if (typeof(T) == typeof(Registration)) return (Registrations as List<T>)!;
+            if (typeof(T) == typeof(ScoringSystem)) return (ScoringSystems as List<T>)!;
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
 
@@ -168,10 +169,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 CompetitionType = new List<CompetitionType> { new CompetitionType() },
                 StartDate = new DateTime(2024, 5, 1),
                 EndDate = new DateTime(2024, 5, 10),
-                level = Level.Intermediate,
+                Level = Level.Intermediate,
                 Status = Status.Pending,
                 MinParticipants = 5,
-                MaxParticipants = 20
+                MaxParticipants = 20,
+                RegistrationPrice = 100
             };
 
             var comp2 = new Competition
@@ -180,10 +182,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 CompetitionType = new List<CompetitionType> { new CompetitionType { Id = new Guid("54cba910-da16-49ed-b4fc-865df9a2e47d"), Name = "Champions League Handball", ScoreType = ScoreType.Number, ScoreMethod = ScoreMethod.None } },
                 StartDate = new DateTime(2024, 7, 1),
                 EndDate = new DateTime(2024, 7, 3),
-                level = Level.Professional,
+                Level = Level.Professional,
                 Status = Status.Pending,
                 MinParticipants = 10,
-                MaxParticipants = 10
+                MaxParticipants = 10,
+                RegistrationPrice = 200
             };
 
             Competitions.AddRange([comp1, comp2]);
@@ -377,6 +380,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Locations.AddRange([location1, location2]);
             #endregion
 
+            #region penalties
+
             var penalty1 = new Penalty
             {
                 Id = Guid.NewGuid(),
@@ -399,8 +404,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             };
 
             SportTypes.AddRange([sportTypeOne, sportTypeTwo, sportTypeThree, sportTypeFour]);
-#endregion
-
+            #endregion
+    
             #region Registration
             var reg1 = new Registration
             {
@@ -408,6 +413,29 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 MemberId = member1.Id
             };
             Registrations.AddRange([reg1]);
+            #endregion
+
+            #region ScoringSystem
+            
+            var scoringSystem1 = new ScoringSystem
+            {
+                Id = Guid.NewGuid(),
+                Name = "ScoringSystemOne",
+                Description = "Scoring System One",
+                ScoreType = ScoreType.Number,
+                ScoringRules = "Scoring Rules One",
+                Penalties = 5,
+                EvaluationMethod = (scoreType, penalties) => scoreType switch
+                {
+                    ScoreType.Number => 10,
+                    ScoreType.Time => 20,
+                    ScoreType.Set => 30,
+                    _ => 0
+                }
+            };
+
+            ScoringSystems.AddRange([scoringSystem1]);
+
             #endregion
         }
     }

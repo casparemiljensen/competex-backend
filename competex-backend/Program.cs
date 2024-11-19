@@ -35,8 +35,8 @@ builder.Services.AddScoped<IGenericRepository<Entity>, MockEntityRepository>();
 builder.Services.AddScoped<IGenericRepository<Field>, MockFieldRepository>();
 builder.Services.AddScoped<IGenericRepository<Location>, MockLocationRepository>();
 builder.Services.AddScoped<IGenericRepository<Penalty>, MockPenaltyRepository>();
-builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>();
 builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRepository>();
+builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>();
 #endregion
 
 
@@ -55,8 +55,8 @@ builder.Services.AddScoped<IEntityService, EntityService>();
 builder.Services.AddScoped<IFieldService, FieldService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IPenaltyService, PenaltyService>();
-builder.Services.AddScoped<IScoringSystemService, ScoringSystemService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<IScoringSystemService, ScoringSystemService>();
 # endregion
 
 #region Service DTO Mappings
@@ -74,6 +74,8 @@ builder.Services.AddScoped<IEntityRepository, MockEntityRepository>();
 builder.Services.AddScoped<IFieldRepository, MockFieldRepository>();
 builder.Services.AddScoped<ILocationRepository, MockLocationRepository>();
 builder.Services.AddScoped<IPenaltyRepository, MockPenaltyRepository>();
+builder.Services.AddScoped<IRegistrationRepository, MockRegistrationRepository>();
+builder.Services.AddScoped<IScoringSystemRepository, MockScoringSystemRepository>();
 #endregion
 
 # region IGenericService
@@ -94,6 +96,7 @@ builder.Services.AddScoped<IGenericService<LocationDTO>, GenericService<Location
 builder.Services.AddScoped<IGenericService<PenaltyDTO>, GenericService<Penalty, PenaltyDTO>>();
 builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
 builder.Services.AddScoped<IGenericService<RegistrationDTO>, GenericService<Registration, RegistrationDTO>>();
+builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
 # endregion
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);

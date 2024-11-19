@@ -123,7 +123,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             SportTypes.AddRange([sportTypeOne, sportTypeTwo, sportTypeThree, sportTypeFour, sportTypeFive]);
             #endregion
 
-            #region CompetitionType
+            #region competitionType
             var competitionTypeOne = new CompetitionType
             {
                 Id = new Guid("5e6f7a8b-9c0d-1e2f-3a4b-5a6d7e8f9d0b"),
@@ -380,7 +380,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Locations.AddRange([location1, location2]);
             #endregion
 
-            #region penalties
+            #region Penalties
 
             var penalty1 = new Penalty
             {
@@ -403,7 +403,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 PenaltyValue = 2
             };
 
-            SportTypes.AddRange([sportTypeOne, sportTypeTwo, sportTypeThree, sportTypeFour]);
+            Penalties.AddRange([penalty1, penalty2, penalty3]);
             #endregion
     
             #region Registration
@@ -435,7 +435,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             };
 
             ScoringSystems.AddRange([scoringSystem1]);
-
             #endregion
         }
     }

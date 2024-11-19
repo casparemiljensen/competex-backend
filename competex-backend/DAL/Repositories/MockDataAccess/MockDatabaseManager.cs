@@ -16,6 +16,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<SportType> SportTypes { get; set; } = new();
         public List<Admin> Admins { get; set; } = new();
         public List<CompetitionType> CompetitionTypes { get; set; } = [];
+        public List<Registration> Registrations { get; set; } = [];
 
         public MockDatabaseManager()
         {
@@ -24,6 +25,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
         public List<T> GetEntities<T>() where T : class
         {
+            //Switch case?
             if (typeof(T) == typeof(Member)) return (Members as List<T>)!;
             if (typeof(T) == typeof(ClubMembership)) return (ClubMemberships as List<T>)!;
             if (typeof(T) == typeof(Entity)) return (Entities as List<T>)!;
@@ -34,6 +36,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             if (typeof(T) == typeof(Admin)) return (Admins as List<T>)!;
             if (typeof(T) == typeof(CompetitionType)) return (CompetitionTypes as List<T>)!;
             if (typeof(T) == typeof(Club)) return (Clubs as List<T>)!;
+            if (typeof(T) == typeof(Registration)) return (Registrations as List<T>)!;
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
 
@@ -42,8 +45,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             // Mock data
 
             #region members
-            var member1 = new Member() { FirstName = "Janni", LastName = "Karlsson", Id = Guid.NewGuid() };
-            var member2 = new Member() { FirstName = "Søren", LastName = "Pind", Id = Guid.NewGuid() };
+            var member1 = new Member() { FirstName = "Janni", LastName = "Karlsson", Id = new Guid("81a9d1b7-2d4c-4520-944c-36e129447c26") };
+            var member2 = new Member() { FirstName = "Søren", LastName = "Pind", Id = new Guid("98c5c539-6367-4d54-94c7-8a25d4b80986") };
             var member3 = new Member() { FirstName = "Caspar", LastName = "Emil Jensen", Id = new Guid("bec52019-b429-47bc-987e-47d13224d75e"), Birthday = new DateTime(1990, 1, 1), Email = "Caspar@uni.com", Phone = "12345890", Permissions = "Admin" };
             var member4 = new Member() { FirstName = "Thomas", LastName = "Ilum Andersen", Id = new Guid("cd4d665d-cd71-4aaa-9799-9f9c973ce19e"), Birthday = new DateTime(1985, 5, 23), Email = "Ilum@uni.com", Phone = "98763210", Permissions = "User" };
             var member5 = new Member() { FirstName = "Thomas", LastName = "Dam Nykjær", Id = new Guid("c7a53ea7-950a-4c8f-83c8-6262f2ec1571"), Birthday = new DateTime(1995, 10, 10), Email = "Dam@uni.com", Phone = "55555555", Permissions = "Judge" };
@@ -227,10 +230,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 CompetitionType = new List<CompetitionType> { new CompetitionType() },
                 StartDate = new DateTime(2024, 5, 1),
                 EndDate = new DateTime(2024, 5, 10),
-                level = Level.Intermediate,
+                Level = Level.Intermediate,
                 Status = Status.Pending,
                 MinParticipants = 5,
-                MaxParticipants = 20
+                MaxParticipants = 20,
+                RegistrationPrice = 20
             };
 
             var comp2 = new Competition
@@ -239,10 +243,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 CompetitionType = new List<CompetitionType> { new CompetitionType { Id = new Guid("54cba910-da16-49ed-b4fc-865df9a2e47d"), Name = "Champions League Handball", ScoreType = ScoreType.Number, ScoreMethod = ScoreMethod.None } },
                 StartDate = new DateTime(2024, 7, 1),
                 EndDate = new DateTime(2024, 7, 3),
-                level = Level.Professional,
+                Level = Level.Professional,
                 Status = Status.Pending,
                 MinParticipants = 10,
-                MaxParticipants = 10
+                MaxParticipants = 10,
+                RegistrationPrice = 5
             };
 
             Competitions.AddRange([comp1, comp2]);
@@ -346,6 +351,15 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             };
 
             SportTypes.AddRange([sportTypeOne, sportTypeTwo, sportTypeThree, sportTypeFour]);
+            #endregion
+
+            #region Registration
+            var reg1 = new Registration
+            {
+                CompetitionId = comp2.Id,
+                MemberId = member1.Id
+            };
+            Registrations.AddRange([reg1]);
             #endregion
         }
     }

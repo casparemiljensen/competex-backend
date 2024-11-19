@@ -12,11 +12,9 @@ namespace competex_backend.API.Controllers
     [ApiController]
     public class CompetitionTypeController : GenericsController<CompetitionTypeDTO>, ICompetitionTypeAPI
     {
-        private ICompetitionTypeService _competitionTypeService;
 
-        public CompetitionTypeController(IGenericService<CompetitionTypeDTO> service, ICompetitionTypeService competitionTypeService) : base(service)
+        public CompetitionTypeController(IGenericService<CompetitionTypeDTO> service) : base(service)
         {
-            _competitionTypeService = competitionTypeService;
         }
     }
 }

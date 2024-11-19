@@ -8,6 +8,13 @@
         Concluded
     }
 
+    public enum RegistrationStatus
+    {
+        PendingPayment,
+        Paid,
+        Accepted
+    }
+
     public enum MatchStatus
     {
         Pending,

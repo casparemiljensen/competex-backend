@@ -21,6 +21,7 @@ namespace competex_backend
             CreateMap<Field, FieldDTO>();
             CreateMap<Location, LocationDTO>();
             CreateMap<Penalty, PenaltyDTO>();
+            CreateMap<Registration, RegistrationDTO>();
 
             CreateMap<MemberDTO, Member>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
@@ -48,6 +49,9 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<PenaltyDTO, Penalty>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<RegistrationDTO, Registration>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
         }
     }
 }

@@ -27,7 +27,10 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         {
             // Get the list of Club IDs associated with the given memberId
             var clubIds = _entities
-                .Where(clubMember => clubMember.MemberId == memberId)
+                .Where(clubMember =>
+                {
+                    return clubMember.MemberId == memberId;
+                })
                 .Select(clubMember => clubMember.ClubId)
                 .ToList();
             // Create a filter with the retrieved club IDs

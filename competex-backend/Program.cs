@@ -6,6 +6,8 @@ using competex_backend.BLL.Services;
 using competex_backend.BLL.Interfaces;
 using competex_backend.API.DTOs;
 using competex_backend.Models;
+using competex_backend.Common.ErrorHandling;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,8 @@ builder.Services.AddScoped<IGenericRepository<Entity>, MockEntityRepository>();
 builder.Services.AddScoped<IGenericRepository<Field>, MockFieldRepository>();
 builder.Services.AddScoped<IGenericRepository<Location>, MockLocationRepository>();
 builder.Services.AddScoped<IGenericRepository<Penalty>, MockPenaltyRepository>();
+builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>();
+builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRepository>();
 #endregion
 
 
@@ -51,6 +55,8 @@ builder.Services.AddScoped<IEntityService, EntityService>();
 builder.Services.AddScoped<IFieldService, FieldService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IPenaltyService, PenaltyService>();
+builder.Services.AddScoped<IScoringSystemService, ScoringSystemService>();
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 # endregion
 
 #region Service DTO Mappings
@@ -86,6 +92,8 @@ builder.Services.AddScoped<IGenericService<EntityDTO>, GenericService<Entity, En
 builder.Services.AddScoped<IGenericService<FieldDTO>, GenericService<Field, FieldDTO>>();
 builder.Services.AddScoped<IGenericService<LocationDTO>, GenericService<Location, LocationDTO>>();
 builder.Services.AddScoped<IGenericService<PenaltyDTO>, GenericService<Penalty, PenaltyDTO>>();
+builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
+builder.Services.AddScoped<IGenericService<RegistrationDTO>, GenericService<Registration, RegistrationDTO>>();
 # endregion
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
@@ -105,6 +113,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.MapControllers();
 

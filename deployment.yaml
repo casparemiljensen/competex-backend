@@ -18,6 +18,7 @@ spec:
         imagePullPolicy: Always  # Use "Always" to ensure the image is pulled from the registry # Alternative: use never if local
         ports:
         - containerPort: 8080
+        - containerPort: 8081
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Production"

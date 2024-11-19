@@ -11,12 +11,6 @@ namespace competex_backend.BLL.Services
         private readonly IRoundRepository _roundRepository;
         private readonly IMapper _mapper;
 
-        //public MemberService(IMemberRepository memberRepository, IMapper mapper)
-        //{
-        //    _memberRepository = memberRepository;
-        //    _mapper = mapper;
-        //}
-
         public RoundService(IGenericRepository<Round> repository, IMapper mapper)
     : base(repository, mapper)
         {

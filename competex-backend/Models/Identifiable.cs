@@ -12,4 +12,9 @@ public class Identifiable : IIdentifiable
         }
         return false;
     }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
 }

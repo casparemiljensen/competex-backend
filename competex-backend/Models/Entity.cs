@@ -10,6 +10,5 @@ namespace competex_backend.Models
         public Level Level { get; set; }
         [Required]
         public Member Owner { get; set; }
-
     }
 }

@@ -7,15 +7,19 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
     {
         public List<Member> Members { get; set; } = new();
         public List<Club> Clubs { get; set; } = new();
-        public List<ClubMembership> ClubMemberships { get; set; } = new();
-        public List<Entity> Entities { get; set; } = new();
-        public List<Field> Fields { get; set; } = new();
         public List<Round> Rounds { get; set; } = new();
+        public List<SportType> SportTypes { get; set; } = new();
+        public List<CompetitionType> CompetitionTypes { get; set; } = [];
         public List<Competition> Competitions { get; set; } = new();
         public List<Event> Events { get; set; } = new();
-        public List<SportType> SportTypes { get; set; } = new();
+        public List<ClubMembership> ClubMemberships { get; set; } = new();
         public List<Admin> Admins { get; set; } = new();
-        public List<CompetitionType> CompetitionTypes { get; set; } = [];
+        public List<Entity> Entities { get; set; } = new();
+        public List<Field> Fields { get; set; } = new();
+        public List<Location> Locations { get; set; } = new();
+        public List<Penalty> Penalties { get; set; } = new();
+        public List<Registration> Registrations { get; set; } = [];
+        public List<ScoringSystem> ScoringSystems { get; set; } = new();
 
         public MockDatabaseManager()
         {
@@ -24,16 +28,22 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
         public List<T> GetEntities<T>() where T : class
         {
+            //Switch case?
             if (typeof(T) == typeof(Member)) return (Members as List<T>)!;
-            if (typeof(T) == typeof(ClubMembership)) return (ClubMemberships as List<T>)!;
-            if (typeof(T) == typeof(Entity)) return (Entities as List<T>)!;
+            if (typeof(T) == typeof(Club)) return (Clubs as List<T>)!;
             if (typeof(T) == typeof(Round)) return (Rounds as List<T>)!;
+            if (typeof(T) == typeof(SportType)) return (SportTypes as List<T>)!;
+            if (typeof(T) == typeof(CompetitionType)) return (CompetitionTypes as List<T>)!;
             if (typeof(T) == typeof(Competition)) return (Competitions as List<T>)!;
             if (typeof(T) == typeof(Event)) return (Events as List<T>)!;
-            if (typeof(T) == typeof(SportType)) return (SportTypes as List<T>)!;
+            if (typeof(T) == typeof(ClubMembership)) return (ClubMemberships as List<T>)!;
             if (typeof(T) == typeof(Admin)) return (Admins as List<T>)!;
-            if (typeof(T) == typeof(CompetitionType)) return (CompetitionTypes as List<T>)!;
-            if (typeof(T) == typeof(Club)) return (Clubs as List<T>)!;
+            if (typeof(T) == typeof(Entity)) return (Entities as List<T>)!;
+            if (typeof(T) == typeof(Field)) return (Fields as List<T>)!;
+            if (typeof(T) == typeof(Location)) return (Locations as List<T>)!;
+            if (typeof(T) == typeof(Penalty)) return (Penalties as List<T>)!;
+            if (typeof(T) == typeof(Registration)) return (Registrations as List<T>)!;
+            if (typeof(T) == typeof(ScoringSystem)) return (ScoringSystems as List<T>)!;
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
 
@@ -42,8 +52,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             // Mock data
 
             #region members
-            var member1 = new Member() { FirstName = "Janni", LastName = "Karlsson", Id = Guid.NewGuid() };
-            var member2 = new Member() { FirstName = "Søren", LastName = "Pind", Id = Guid.NewGuid() };
+            var member1 = new Member() { FirstName = "Janni", LastName = "Karlsson", Id = new Guid("81a9d1b7-2d4c-4520-944c-36e129447c26") };
+            var member2 = new Member() { FirstName = "Søren", LastName = "Pind", Id = new Guid("98c5c539-6367-4d54-94c7-8a25d4b80986") };
             var member3 = new Member() { FirstName = "Caspar", LastName = "Emil Jensen", Id = new Guid("bec52019-b429-47bc-987e-47d13224d75e"), Birthday = new DateTime(1990, 1, 1), Email = "Caspar@uni.com", Phone = "12345890", Permissions = "Admin" };
             var member4 = new Member() { FirstName = "Thomas", LastName = "Ilum Andersen", Id = new Guid("cd4d665d-cd71-4aaa-9799-9f9c973ce19e"), Birthday = new DateTime(1985, 5, 23), Email = "Ilum@uni.com", Phone = "98763210", Permissions = "User" };
             var member5 = new Member() { FirstName = "Thomas", LastName = "Dam Nykjær", Id = new Guid("c7a53ea7-950a-4c8f-83c8-6262f2ec1571"), Birthday = new DateTime(1995, 10, 10), Email = "Dam@uni.com", Phone = "55555555", Permissions = "Judge" };
@@ -60,17 +70,162 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Clubs.AddRange([club1, club2, club3, club4, club5, club6]);
             #endregion
 
+            #region rounds
+            var round1 = new Round { Name = "TestRoundOne", Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac") };
+            var round2 = new Round { Name = "TestRoundTwo", CompetitionId = new Guid("596462f8-2e32-4a21-921a-b5768c6b0d86") };
+            var round3 = new Round { Id = Guid.NewGuid(), Name = "TestRoundThree" };
+            var round4 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFour" };
+            var round5 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFive" };
+            Rounds.AddRange([round1, round2, round3, round4, round5]);
+            #endregion
+
             #region sporttypes
 
-            var sportType1 = new SportType
+            var sportTypeOne = new SportType
+            {
+                Id = new Guid("3a2b1a0d-9e8f-7d6c-5b4a-3f2e1d0c9b8a"),
+                Name = "SportTypeTestOne",
+                EntityType = EntityType.Rabbit,
+                EventAttributes = ["EventAttributeOne"],
+            };
+            var sportTypeTwo = new SportType
+            {
+                Id = new Guid("8b9d1a2c-3f4e-5d6b-7c8a-9e0f1d2a3b4c"),
+                Name = "SportTypeTestTwo",
+                EntityType = EntityType.Horse,
+                EventAttributes = ["EventAttributeTwo", "EventAttributeThree"],
+            };
+
+            var sportTypeThree = new SportType
+            {
+                Id = new Guid("2e3f4d5b-6a7c-8d9e-0f1a-2b3c4d5e6f7a"),
+                Name = "SportTypeTestThree",
+                EntityType = EntityType.Rabbit,
+                EventAttributes = ["EventAttributeFour"],
+            };
+
+            var sportTypeFour = new SportType
+            {
+                Id = new Guid("7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d1e2f"),
+                Name = "SportTypeTestFour",
+                EntityType = EntityType.Horse,
+                EventAttributes = ["EventAttributeFive", "EventAttributeSix"],
+            };
+
+            var sportTypeFive = new SportType
             {
                 Id = new Guid("1035c83a-1899-49cb-bfd6-bcefc1aafffb"),
                 Name = "Handball",
                 EventAttributes = new List<string> { "Indoor", "Ball" },
                 EntityType = EntityType.None
             };
-            SportTypes.AddRange([sportType1]);
 
+            SportTypes.AddRange([sportTypeOne, sportTypeTwo, sportTypeThree, sportTypeFour, sportTypeFive]);
+            #endregion
+
+            #region competitionType
+            var competitionTypeOne = new CompetitionType
+            {
+                Id = new Guid("5e6f7a8b-9c0d-1e2f-3a4b-5a6d7e8f9d0b"),
+                Name = "CompetitionTypeOne",
+                CompetitionAttributes = ["AttributeOne", "AttributeTwo"],
+                ScoreMethod = ScoreMethod.C2,
+                ScoreType = ScoreType.Time
+            };
+            var competitionTypeTwo = new CompetitionType
+            {
+                Id = new Guid("9c8b7a6d-5f4e-3a2d-1b0a-9d8c7b6f5a4e"),
+                Name = "CompetitionTypeTwo",
+                CompetitionAttributes = ["AttributeThree", "AttributeFour"],
+                ScoreMethod = ScoreMethod.D1,
+                ScoreType = ScoreType.Set
+            };
+
+            var competitionTypeThree = new CompetitionType
+            {
+                Id = new Guid("6f7e8d9c-4b3a-2c1d-0e9f-8a7b6c5d4e3f"),
+                Name = "CompetitionTypeThree",
+                CompetitionAttributes = ["AttributeFive", "AttributeSix"],
+                ScoreMethod = ScoreMethod.C2,
+                ScoreType = ScoreType.Number
+            };
+
+            var competitionTypeFour = new CompetitionType
+            {
+                Id = new Guid("3a2b1c0d-9e8f-7d6c-5b4a-3f2e1d0c9b8a"),
+                Name = "CompetitionTypeFour",
+                CompetitionAttributes = ["AttributeSeven", "AttributeEight"],
+                ScoreMethod = ScoreMethod.D1,
+                ScoreType = ScoreType.TimeAndPenalty
+            };
+
+            CompetitionTypes.AddRange([competitionTypeOne, competitionTypeTwo, competitionTypeThree, competitionTypeFour]);
+            #endregion
+
+            #region competitions
+            var comp1 = new Competition
+            {
+                Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"),
+                CompetitionType = new List<CompetitionType> { new CompetitionType() },
+                StartDate = new DateTime(2024, 5, 1),
+                EndDate = new DateTime(2024, 5, 10),
+                Level = Level.Intermediate,
+                Status = Status.Pending,
+                MinParticipants = 5,
+                MaxParticipants = 20,
+                RegistrationPrice = 100
+            };
+
+            var comp2 = new Competition
+            {
+                Id = new Guid("42fff518-0815-4148-b826-33a4a1686dc0"),
+                CompetitionType = new List<CompetitionType> { new CompetitionType { Id = new Guid("54cba910-da16-49ed-b4fc-865df9a2e47d"), Name = "Champions League Handball", ScoreType = ScoreType.Number, ScoreMethod = ScoreMethod.None } },
+                StartDate = new DateTime(2024, 7, 1),
+                EndDate = new DateTime(2024, 7, 3),
+                Level = Level.Professional,
+                Status = Status.Pending,
+                MinParticipants = 10,
+                MaxParticipants = 10,
+                RegistrationPrice = 200
+            };
+
+            Competitions.AddRange([comp1, comp2]);
+            #endregion
+
+            #region events
+            var mockEvent = new Event
+            {
+                Id = new Guid("27d4f28f-bd77-4bdc-865b-f13f7bbf71df"),
+                Title = "Champions League Håndbold",
+                Description = "Handball Finals",
+                StartDate = new DateTime(2024, 6, 15, 9, 0, 0),
+                EndDate = new DateTime(2024, 6, 15, 18, 0, 0),
+                Location = new Location
+                {
+                    Name = "Sparekassen Danmark Arena",
+                    Address = "Willy Brandts Vej 31",
+                    Zip = "9000",
+                    City = "Aalborg",
+                    Country = "Denmark"
+                },
+                RegistrationStartDate = new DateTime(2024, 6, 10),
+                RegistrationEndDate = new DateTime(2024, 6, 20),
+                Status = Status.Pending,
+                Organizer = Guid.Parse("aa57885f-cab9-48da-85d6-57a671c7d664"), // Mock ClubId as Organizer
+                SportType = sportTypeFive,
+                Competitions = new List<Competition>() { comp2 }
+            };
+            Events.Add(mockEvent);
+            #endregion
+
+            #region clubmembers
+            var clubMember1 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club1.Id, MemberId = member1.Id, JoinDate = new DateTime(2011, 4, 20) };
+            var clubMember2 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club1.Id, MemberId = member2.Id, JoinDate = new DateTime(2024, 1, 13) };
+            var clubMember3 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club1.Id, MemberId = member3.Id, JoinDate = new DateTime(2015, 6, 17) };
+            var clubMember4 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club2.Id, MemberId = member4.Id, JoinDate = new DateTime(2001, 8, 31) };
+            var clubMember5 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club2.Id, MemberId = member5.Id, JoinDate = DateTime.UtcNow };
+
+            ClubMemberships.AddRange([clubMember1, clubMember2, clubMember3, clubMember4, clubMember5]);
             #endregion
 
             #region admins
@@ -83,21 +238,10 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Email = member3.Email,
                 Phone = member3.Phone,
                 Permissions = member3.Permissions,
-                SportTypes = new List<SportType> { sportType1 }
+                SportTypes = new List<SportType> { sportTypeFive }
             };
             Admins.AddRange([admin]);
 
-            #endregion
-
-            #region clubmembers
-            var clubMember1 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club1.Id, MemberId = member1.Id, JoinDate = new DateTime(2011, 4, 20) };
-            var clubMember2 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club1.Id, MemberId = member2.Id, JoinDate = new DateTime(2024, 1, 13) };
-            var clubMember3 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club1.Id, MemberId = member3.Id, JoinDate = new DateTime(2015, 6, 17) };
-            var clubMember4 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club2.Id, MemberId = member4.Id, JoinDate = new DateTime(2001, 8, 31) };
-            var clubMember5 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club2.Id, MemberId = member5.Id, JoinDate = DateTime.UtcNow };
-            var clubMember6 = new ClubMembership { Id = Guid.NewGuid(), ClubId = club3.Id, MemberId = member3.Id, JoinDate = DateTime.UtcNow };
-
-            ClubMemberships.AddRange([clubMember1, clubMember2, clubMember3, clubMember4, clubMember5, clubMember6]);
             #endregion
 
             #region entities
@@ -153,15 +297,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Entities.AddRange([entity1, entity2, entity3, entity4, entity5]);
             #endregion
 
-            #region rounds
-            var round1 = new Round { Name = "TestRoundOne", Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac") };
-            var round2 = new Round { Name = "TestRoundTwo", CompetitionId = new Guid("596462f8-2e32-4a21-921a-b5768c6b0d86") };
-            var round3 = new Round { Id = Guid.NewGuid(), Name = "TestRoundThree" };
-            var round4 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFour" };
-            var round5 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFive" };
-            Rounds.AddRange([round1, round2, round3, round4, round5]);
-            #endregion
-
             #region fields
             var field1 = new Field()
             {
@@ -210,7 +345,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             var field6 = new Field
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 Name = "Bane 1",
                 Location = "Hal 1",
                 Capacity = 2000,
@@ -220,132 +355,86 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Fields.AddRange([field1, field2, field3, field4, field5, field6]);
             #endregion
 
-            #region competitions
-            var comp1 = new Competition
+            #region Location
+
+            var location1 = new Location
             {
-                Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"),
-                CompetitionType = new List<CompetitionType> { new CompetitionType() },
-                StartDate = new DateTime(2024, 5, 1),
-                EndDate = new DateTime(2024, 5, 10),
-                level = Level.Intermediate,
-                Status = Status.Pending,
-                MinParticipants = 5,
-                MaxParticipants = 20
+                Id = Guid.NewGuid(),
+                Name = "Vejle Stadion",
+                Address = "Vejlevej 1",
+                Zip = "7100",
+                City = "Vejle",
+                Country = "Denmark"
             };
 
-            var comp2 = new Competition
+            var location2 = new Location
             {
-                Id = new Guid("42fff518-0815-4148-b826-33a4a1686dc0"),
-                CompetitionType = new List<CompetitionType> { new CompetitionType { Id = new Guid("54cba910-da16-49ed-b4fc-865df9a2e47d"), Name = "Champions League Handball", ScoreType = ScoreType.Number, ScoreMethod = ScoreMethod.None } },
-                StartDate = new DateTime(2024, 7, 1),
-                EndDate = new DateTime(2024, 7, 3),
-                level = Level.Professional,
-                Status = Status.Pending,
-                MinParticipants = 10,
-                MaxParticipants = 10
+                Id = Guid.NewGuid(),
+                Name = "Aalborg Stadion",
+                Address = "Aalborgvej 1",
+                Zip = "9000",
+                City = "Aalborg",
+                Country = "Denmark"
             };
 
-            Competitions.AddRange([comp1, comp2]);
+            Locations.AddRange([location1, location2]);
             #endregion
 
-            #region events
-            var mockEvent = new Event
+            #region Penalties
+
+            var penalty1 = new Penalty
             {
-                Id = new Guid("27d4f28f-bd77-4bdc-865b-f13f7bbf71df"),
-                Title = "Champions League Håndbold",
-                Description = "Handball Finals",
-                StartDate = new DateTime(2024, 6, 15, 9, 0, 0),
-                EndDate = new DateTime(2024, 6, 15, 18, 0, 0),
-                Location = new Location
+                Id = Guid.NewGuid(),
+                PenaltyType = PenaltyType.Time,
+                PenaltyValue = 10
+            };
+
+            var penalty2 = new Penalty
+            {
+                Id = Guid.NewGuid(),
+                PenaltyType = PenaltyType.Distance,
+                PenaltyValue = 5
+            };
+
+            var penalty3 = new Penalty
+            {
+                Id = Guid.NewGuid(),
+                PenaltyType = PenaltyType.Points,
+                PenaltyValue = 2
+            };
+
+            Penalties.AddRange([penalty1, penalty2, penalty3]);
+            #endregion
+    
+            #region Registration
+            var reg1 = new Registration
+            {
+                CompetitionId = comp2.Id,
+                MemberId = member1.Id
+            };
+            Registrations.AddRange([reg1]);
+            #endregion
+
+            #region ScoringSystem
+            
+            var scoringSystem1 = new ScoringSystem
+            {
+                Id = Guid.NewGuid(),
+                Name = "ScoringSystemOne",
+                Description = "Scoring System One",
+                ScoreType = ScoreType.Number,
+                ScoringRules = "Scoring Rules One",
+                Penalties = 5,
+                EvaluationMethod = (scoreType, penalties) => scoreType switch
                 {
-                    Name = "Sparekassen Danmark Arena",
-                    Address = "Willy Brandts Vej 31",
-                    Zip = "9000",
-                    City = "Aalborg",
-                    Country = "Denmark"
-                },
-                RegistrationStartDate = new DateTime(2024, 6, 10),
-                RegistrationEndDate = new DateTime(2024, 6, 20),
-                Status = Status.Pending,
-                Organizer = Guid.Parse("aa57885f-cab9-48da-85d6-57a671c7d664"), // Mock ClubId as Organizer
-                SportType = sportType1,
-                Competitions = new List<Competition>() { comp2 }
-            };
-            Events.Add(mockEvent);
-            #endregion
-
-            #region CompetitionType
-            var competitionTypeOne = new CompetitionType
-            {
-                Id = new Guid("5e6f7a8b-9c0d-1e2f-3a4b-5a6d7e8f9d0b"),
-                Name = "CompetitionTypeOne",
-                CompetitionAttributes = ["AttributeOne", "AttributeTwo"],
-                ScoreMethod = ScoreMethod.C2,
-                ScoreType = ScoreType.Time
-            };
-            var competitionTypeTwo = new CompetitionType
-            {
-                Id = new Guid("9c8b7a6d-5f4e-3a2d-1b0a-9d8c7b6f5a4e"),
-                Name = "CompetitionTypeTwo",
-                CompetitionAttributes = ["AttributeThree", "AttributeFour"],
-                ScoreMethod = ScoreMethod.D1,
-                ScoreType = ScoreType.Set
+                    ScoreType.Number => 10,
+                    ScoreType.Time => 20,
+                    ScoreType.Set => 30,
+                    _ => 0
+                }
             };
 
-            var competitionTypeThree = new CompetitionType
-            {
-                Id = new Guid("6f7e8d9c-4b3a-2c1d-0e9f-8a7b6c5d4e3f"),
-                Name = "CompetitionTypeThree",
-                CompetitionAttributes = ["AttributeFive", "AttributeSix"],
-                ScoreMethod = ScoreMethod.C2,
-                ScoreType = ScoreType.Number
-            };
-
-            var competitionTypeFour = new CompetitionType
-            {
-                Id = new Guid("3a2b1c0d-9e8f-7d6c-5b4a-3f2e1d0c9b8a"),
-                Name = "CompetitionTypeFour",
-                CompetitionAttributes = ["AttributeSeven", "AttributeEight"],
-                ScoreMethod = ScoreMethod.D1,
-                ScoreType = ScoreType.TimeAndPenalty
-            };
-
-            CompetitionTypes.AddRange([competitionTypeOne, competitionTypeTwo, competitionTypeThree, competitionTypeFour]);
-            #endregion
-
-            #region SportType
-            var sportTypeOne = new SportType
-            {
-                Id = new Guid("3a2b1a0d-9e8f-7d6c-5b4a-3f2e1d0c9b8a"),
-                Name = "SportTypeTestOne",
-                EntityType = EntityType.Rabbit,
-                EventAttributes = ["EventAttributeOne"],
-            };
-            var sportTypeTwo = new SportType
-            {
-                Id = new Guid("8b9d1a2c-3f4e-5d6b-7c8a-9e0f1d2a3b4c"),
-                Name = "SportTypeTestTwo",
-                EntityType = EntityType.Horse,
-                EventAttributes = ["EventAttributeTwo", "EventAttributeThree"],
-            };
-
-            var sportTypeThree = new SportType
-            {
-                Id = new Guid("2e3f4d5b-6a7c-8d9e-0f1a-2b3c4d5e6f7a"),
-                Name = "SportTypeTestThree",
-                EntityType = EntityType.Rabbit,
-                EventAttributes = ["EventAttributeFour"],
-            };
-
-            var sportTypeFour = new SportType
-            {
-                Id = new Guid("7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d1e2f"),
-                Name = "SportTypeTestFour",
-                EntityType = EntityType.Horse,
-                EventAttributes = ["EventAttributeFive", "EventAttributeSix"],
-            };
-
-            SportTypes.AddRange([sportTypeOne, sportTypeTwo, sportTypeThree, sportTypeFour]);
+            ScoringSystems.AddRange([scoringSystem1]);
             #endregion
         }
     }

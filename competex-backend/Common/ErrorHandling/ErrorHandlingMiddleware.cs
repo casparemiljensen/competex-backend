@@ -18,10 +18,22 @@ namespace competex_backend.Common.ErrorHandling
             {
                 await _next(context);
             }
+            catch (ApiException ex) 
+            {
+                await HandleExceptionAsync(context, ex);
+            }
             catch (Exception ex)
             {
                 await HandleExceptionAsync(context, ex);
             }
+        }
+
+        private static Task HandleExceptionAsync(HttpContext context, ApiException exception)
+        {
+            var result = JsonSerializer.Serialize(new { error = exception.Message });
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = exception.StatusCode;
+            return context.Response.WriteAsync(result);
         }
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
@@ -30,7 +42,8 @@ namespace competex_backend.Common.ErrorHandling
             var result = JsonSerializer.Serialize(new { error = "An unexpected error occurred." });
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
-            return context.Response.WriteAsync(result);
+            context.Response.WriteAsync(result);
+            throw exception;
         }
     }
 

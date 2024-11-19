@@ -3,9 +3,8 @@ using competex_backend.Models;
 namespace competex_backend.API.DTOs
 {
     //@APIModel
-    public class RoundDTO
+    public class RoundDTO : Identifiable
     {
-        public Guid Id { get; init; }
         public required string Name { get; set; }
         public uint SequenceNumber { get; set; }
         public RoundType RoundType { get; set; }

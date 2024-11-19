@@ -48,10 +48,10 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             List<T> filtertedEntities = await Task.Run(() => _entities);
             if (filters == null)
             {
-                filtertedEntities = _entities; 
+                filtertedEntities = _entities;
             }
             else
-            {   
+            {
                 foreach (var filter in filters)
                 {
                     List<T> orList = [];
@@ -83,7 +83,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                     else
                     {
                         //Unrecognised type gets handed to the void
-                        Console.WriteLine(typeof(Guid).IsAssignableTo(typeof(string)));
                         throw new ApiException(500, $"Type not found {filter.Value}");
                     }
                     //Set orList to filteredEntities for potentially more "and" properties

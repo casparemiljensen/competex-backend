@@ -44,7 +44,6 @@ public static class PaginationHelper
         {
             var result = await repo.SearchAllAsync(2, pageNr, searchParams);
 
-            Console.WriteLine(result.Value.Item2.Count());
             if (!result.IsSuccess)
             {
                 throw new ApiException(500, "Failed to access DataBase");
@@ -61,7 +60,6 @@ public static class PaginationHelper
             }
             pageNr++;
         }
-        Console.WriteLine(output.ToList().Count);
         return output.ToList();
     }
 }

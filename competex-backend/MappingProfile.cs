@@ -23,6 +23,8 @@ namespace competex_backend
             CreateMap<Penalty, PenaltyDTO>();
             CreateMap<Registration, RegistrationDTO>();
             CreateMap<ScoringSystem, ScoringSystemDTO>();
+            CreateMap<Judge, JudgeDTO>();
+            CreateMap<Match, MatchDTO>();
 
             CreateMap<MemberDTO, Member>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
@@ -53,6 +55,10 @@ namespace competex_backend
             CreateMap<RegistrationDTO, Registration>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<ScoringSystemDTO, ScoringSystem>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<JudgeDTO, Judge>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<MatchDTO, Match>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
         }
     }

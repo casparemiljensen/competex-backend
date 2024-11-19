@@ -13,6 +13,5 @@
         // public ICollection<ClubMember> ClubMembers { get; set; } = new List<ClubMember>();
 
         // No club implementation yet. 
-
     }
 }

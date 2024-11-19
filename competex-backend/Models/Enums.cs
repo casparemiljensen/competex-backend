@@ -90,4 +90,10 @@
         Ongoing,
         Ended
     }
+
+    public enum JudgeType
+    {
+        Main,
+        Assistant
+    }
 }

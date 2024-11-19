@@ -37,6 +37,7 @@ builder.Services.AddScoped<IGenericRepository<Location>, MockLocationRepository>
 builder.Services.AddScoped<IGenericRepository<Penalty>, MockPenaltyRepository>();
 builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRepository>();
 builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>();
+builder.Services.AddScoped<IGenericRepository<Judge>, MockJudgeRepository>();
 #endregion
 
 
@@ -57,6 +58,7 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IPenaltyService, PenaltyService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IScoringSystemService, ScoringSystemService>();
+builder.Services.AddScoped<IJudgeService, JudgeService>();
 # endregion
 
 #region Service DTO Mappings
@@ -76,6 +78,7 @@ builder.Services.AddScoped<ILocationRepository, MockLocationRepository>();
 builder.Services.AddScoped<IPenaltyRepository, MockPenaltyRepository>();
 builder.Services.AddScoped<IRegistrationRepository, MockRegistrationRepository>();
 builder.Services.AddScoped<IScoringSystemRepository, MockScoringSystemRepository>();
+builder.Services.AddScoped<IJudgeRepository, MockJudgeRepository>();
 #endregion
 
 # region IGenericService
@@ -97,6 +100,7 @@ builder.Services.AddScoped<IGenericService<PenaltyDTO>, GenericService<Penalty, 
 builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
 builder.Services.AddScoped<IGenericService<RegistrationDTO>, GenericService<Registration, RegistrationDTO>>();
 builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
+builder.Services.AddScoped<IGenericService<JudgeDTO>, GenericService<Judge, JudgeDTO>>();
 # endregion
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);

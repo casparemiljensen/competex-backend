@@ -32,6 +32,7 @@ builder.Services.AddScoped<IGenericRepository<Admin>, MockAdminRepository>();
 builder.Services.AddScoped<IGenericRepository<Entity>, MockEntityRepository>();
 builder.Services.AddScoped<IGenericRepository<Field>, MockFieldRepository>();
 builder.Services.AddScoped<IGenericRepository<Location>, MockLocationRepository>();
+builder.Services.AddScoped<IGenericRepository<Penalty>, MockPenaltyRepository>();
 #endregion
 
 
@@ -49,6 +50,7 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IEntityService, EntityService>();
 builder.Services.AddScoped<IFieldService, FieldService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<IPenaltyService, PenaltyService>();
 # endregion
 
 #region Service DTO Mappings
@@ -65,6 +67,7 @@ builder.Services.AddScoped<IAdminRepository, MockAdminRepository>();
 builder.Services.AddScoped<IEntityRepository, MockEntityRepository>();
 builder.Services.AddScoped<IFieldRepository, MockFieldRepository>();
 builder.Services.AddScoped<ILocationRepository, MockLocationRepository>();
+builder.Services.AddScoped<IPenaltyRepository, MockPenaltyRepository>();
 #endregion
 
 # region IGenericService
@@ -82,8 +85,7 @@ builder.Services.AddScoped<IGenericService<AdminDTO>, GenericService<Admin, Admi
 builder.Services.AddScoped<IGenericService<EntityDTO>, GenericService<Entity, EntityDTO>>();
 builder.Services.AddScoped<IGenericService<FieldDTO>, GenericService<Field, FieldDTO>>();
 builder.Services.AddScoped<IGenericService<LocationDTO>, GenericService<Location, LocationDTO>>();
-
-
+builder.Services.AddScoped<IGenericService<PenaltyDTO>, GenericService<Penalty, PenaltyDTO>>();
 # endregion
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);

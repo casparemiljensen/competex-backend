@@ -18,6 +18,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Field> Fields { get; set; } = new();
         public List<Location> Locations { get; set; } = new();
 
+        public List<Penalty> Penalties { get; set; } = new();
+
         public MockDatabaseManager()
         {
             SeedData();
@@ -37,6 +39,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             if (typeof(T) == typeof(Entity)) return (Entities as List<T>)!;
             if (typeof(T) == typeof(Field)) return (Fields as List<T>)!;
             if (typeof(T) == typeof(Location)) return (Locations as List<T>)!;
+            if (typeof(T) == typeof(Penalty)) return (Penalties as List<T>)!;
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
 
@@ -371,6 +374,28 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Locations.AddRange([location1, location2]);
             #endregion
 
+            var penalty1 = new Penalty
+            {
+                Id = Guid.NewGuid(),
+                PenaltyType = PenaltyType.Time,
+                PenaltyValue = 10
+            };
+
+            var penalty2 = new Penalty
+            {
+                Id = Guid.NewGuid(),
+                PenaltyType = PenaltyType.Distance,
+                PenaltyValue = 5
+            };
+
+            var penalty3 = new Penalty
+            {
+                Id = Guid.NewGuid(),
+                PenaltyType = PenaltyType.Points,
+                PenaltyValue = 2
+            };
+
+            Penalties.AddRange([penalty1, penalty2, penalty3]);
         }
     }
 }

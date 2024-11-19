@@ -1,0 +1,373 @@
+{
+	"info": {
+		"_postman_id": "306e6d97-186f-4793-a6ba-64fefb58b5b1",
+		"name": "CRUD Operations",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39381475",
+		"_collection_link": "https://p7-competex.postman.co/workspace/CompeteX-Backend~4e42fa57-57a0-435a-821d-0d7af89d6326/collection/39381475-306e6d97-186f-4793-a6ba-64fefb58b5b1?action=share&source=collection_link&creator=39381475"
+	},
+	"item": [
+		{
+			"name": "GetAll",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/{{Endpoint}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"{{Endpoint}}"
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": []
+		},
+		{
+			"name": "GetById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/{{Endpoint}}/bec52019-b429-47bc-987e-47d13224d75e",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"{{Endpoint}}",
+						"bec52019-b429-47bc-987e-47d13224d75e"
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": [
+				{
+					"name": "Get Caspar By Id",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/Members/bec52019-b429-47bc-987e-47d13224d75e",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"Members",
+								"bec52019-b429-47bc-987e-47d13224d75e"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 30 Oct 2024 15:10:20 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"memberId\": \"bec52019-b429-47bc-987e-47d13224d75e\",\n    \"firstName\": \"Caspar\",\n    \"lastName\": \"Emil Jensen\",\n    \"birthday\": \"1990-01-01T00:00:00\",\n    \"email\": \"Caspar@uni.com\",\n    \"phone\": \"12345890\",\n    \"permissions\": \"Admin\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Post data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Charlotte\",\n  \"lastName\": \"Elleby\",\n  \"birthday\": \"2024-10-30T15:06:36.788Z\",\n  \"email\": \"celleby@kaninmail.com\",\n  \"phone\": \"29019384\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/{{Endpoint}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"{{Endpoint}}"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": [
+				{
+					"name": "Create Member",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Charlotte\",\n  \"lastName\": \"Elleby\",\n  \"birthday\": \"2024-10-30T15:06:36.788Z\",\n  \"email\": \"celleby@kaninmail.com\",\n  \"phone\": \"29019384\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/Members",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"Members"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 01 Nov 2024 13:05:04 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "\"bffb9bf2-3318-4206-8968-c2eaec06e08e\""
+				}
+			]
+		},
+		{
+			"name": "Update data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"bec52019-b429-47bc-987e-47d13224d75e\",\n  \"firstName\": \"Caspar\",\n  \"lastName\": \"Emil Jensen Nykjær\",\n  \"birthday\": \"2024-10-30T15:13:58.869Z\",\n  \"email\": \"Caspar@uni.com\",\n  \"phone\": \"02319974\",\n  \"permissions\": \"Admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/{{Endpoint}}/bec52019-b429-47bc-987e-47d13224d75e",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"{{Endpoint}}",
+						"bec52019-b429-47bc-987e-47d13224d75e"
+					]
+				},
+				"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+			},
+			"response": [
+				{
+					"name": "Member not found",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"memberId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"firstName\": \"string\",\n  \"lastName\": \"string\",\n  \"birthday\": \"2024-10-30T15:13:58.869Z\",\n  \"email\": \"string\",\n  \"phone\": \"string\",\n  \"permissions\": \"string\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/Members/3fa85f64-5717-4562-b3fc-2c963f66afa6",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"Members",
+								"3fa85f64-5717-4562-b3fc-2c963f66afa6"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 30 Oct 2024 15:15:01 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": \"MemberNotFound\",\n    \"description\": \"Member with ID 3fa85f64-5717-4562-b3fc-2c963f66afa6 does not exist.\",\n    \"errorType\": 1\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete data Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful DELETE request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/{{Endpoint}}/c7a53ea7-950a-4c8f-83c8-6262f2ec1571",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"{{Endpoint}}",
+						"c7a53ea7-950a-4c8f-83c8-6262f2ec1571"
+					]
+				},
+				"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Endpoint",
+			"value": "Member",
+			"type": "string"
+		}
+	]
+}

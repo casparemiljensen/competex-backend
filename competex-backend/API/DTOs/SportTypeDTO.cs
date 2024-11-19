@@ -3,9 +3,8 @@ using competex_backend.Models;
 namespace competex_backend.API.DTOs
 {
     //@APIModel
-    public class SportTypeDTO
+    public class SportTypeDTO : Identifiable
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public List<string> EventAttributes { get; set; } = new List<string>();
         //public required IEnumerable<Club> Clubs { get; set; }

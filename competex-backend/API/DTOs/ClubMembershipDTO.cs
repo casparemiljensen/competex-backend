@@ -3,9 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace competex_backend.API.DTOs
 {
-    public class ClubMembershipDTO
+    public class ClubMembershipDTO : Identifiable
     {
-        public Guid Id { get; init; }
         public Guid ClubId { get; set; }
         public Guid MemberId { get; set; }
         public DateTime JoinDate { get; set; }

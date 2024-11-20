@@ -1,8 +1,8 @@
 ﻿using competex_backend.Models;
 
-namespace competex_backend.Models
+namespace competex_backend.API.DTOs
 {
-    public class Match : Identifiable
+    public class MatchDTO : Identifiable
     {
         public Guid RoundId { get; set; }
         public List<Participant>? Participants { get; set; }
@@ -11,6 +11,6 @@ namespace competex_backend.Models
         public DateTime EndTime { get; set; }
         public Field? Field { get; set; }
         public Judge? Judge { get; set; }
-        public List<Score> Scores { get; set; } = new List<Score>();
+        public Score? Score { get; set; }
     }
 }

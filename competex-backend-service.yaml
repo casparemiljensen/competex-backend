@@ -3,16 +3,23 @@ kind: Service
 metadata:
   name: competex-backend-service
 spec:
+  # The Service connects to Pods with the specified labels.
   selector:
     app: competex-backend
-  type: NodePort # Change the service type to NodePort
+  # ClusterIP makes the service accessible only within the cluster.
+  type: ClusterIP
   ports:
   - protocol: TCP
-    name: http  # Unique name for the port
+    # Name for the HTTP port (must be unique within the service).
+    name: http
+    # The port that the service exposes inside the cluster.
     port: 8080
+    # The port on the Pod that receives traffic.
     targetPort: 8080
-    nodePort: 32760 # Specify a static port for NodePort
-  - name: https # Another unique name for the second port
+  - protocol: TCP
+    # Name for the HTTPS port (must be unique within the service).
+    name: https
+    # The port that the service exposes inside the cluster.
     port: 8081
+    # The port on the Pod that receives traffic.
     targetPort: 8081
-    nodePort: 32761

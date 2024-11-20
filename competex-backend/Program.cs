@@ -6,9 +6,7 @@ using competex_backend.BLL.Interfaces;
 using competex_backend.API.DTOs;
 using competex_backend.Models;
 using competex_backend.Common.ErrorHandling;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Hosting;
-using competex_backend.Common.Helpers;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

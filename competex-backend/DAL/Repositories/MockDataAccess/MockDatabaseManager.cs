@@ -469,11 +469,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var ekvipage2 = new Ekvipage("ekvipage2", member5, entity2);
             ekvipage2.Id = Guid.NewGuid();
 
-            // TODO: Uncomment!
+            Participants.AddRange([team1, team2, single1, single2, ekvipage1, ekvipage2]);
 
-            //Participants.AddRange([team1, team2, single1, single2, ekvipage1, ekvipage2]);
-            Participants.AddRange([single1, single2]);
-         
             #endregion
 
             #region Judges
@@ -512,36 +509,35 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             };
 
 
-            //var match2 = new Match
-            //{
-            //    RoundId = Guid.NewGuid(),
-            //    Participants = new List<Participant>
-            //    {
-            //        Participants[2], Participants[3]
-            //    },
-            //    Status = MatchStatus.Concluded,
-            //    StartTime = DateTime.Now,
-            //    EndTime = DateTime.Now.AddHours(1),
-            //    Field = field2,
-            //    Judge = judge2,
-            //};
+            var match2 = new Match
+            {
+                RoundId = Guid.NewGuid(),
+                Participants = new List<Participant>
+                {
+                    Participants[2], Participants[3]
+                },
+                Status = MatchStatus.Concluded,
+                StartTime = DateTime.Now,
+                EndTime = DateTime.Now.AddHours(1),
+                Field = field2,
+                Judge = judge2,
+            };
 
-            //var match3 = new Match
-            //{
-            //    RoundId = Guid.NewGuid(),
-            //    Participants = new List<Participant>
-            //    {
-            //        Participants[4], Participants[5]
-            //    },
-            //    Status = MatchStatus.Concluded,
-            //    StartTime = DateTime.Now,
-            //    EndTime = DateTime.Now.AddHours(1),
-            //    Field = field2,
-            //    Judge = judge2,
-            //};
+            var match3 = new Match
+            {
+                RoundId = Guid.NewGuid(),
+                Participants = new List<Participant>
+                {
+                    Participants[4], Participants[5]
+                },
+                Status = MatchStatus.Concluded,
+                StartTime = DateTime.Now,
+                EndTime = DateTime.Now.AddHours(1),
+                Field = field2,
+                Judge = judge2,
+            };
 
-            //Matches.AddRange([match1, match2, match3]);
-            Matches.AddRange([match1]);
+            Matches.AddRange([match1, match2, match3]);
 
 
             #endregion
@@ -551,17 +547,14 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var score1a = new TimeScore(TimeSpan.FromMinutes(10), match1, match1.Participants[0]);
             var score1b = new TimeScore(TimeSpan.FromMinutes(9), match1, match1.Participants[1]);
 
-            //var score2a = new SetScore(2, match2, match2.Participants[0]);
-            //var score2b = new SetScore(3, match2, match2.Participants[1]);
+            var score2a = new SetScore(2, match2, match2.Participants[0]);
+            var score2b = new SetScore(3, match2, match2.Participants[1]);
 
-            //var score3a = new PointScore(10, match3, match3.Participants[0]);
-            //var score3b = new PointScore(9, match3, match3.Participants[1]);
+            var score3a = new PointScore(10, match3, match3.Participants[0]);
+            var score3b = new PointScore(9, match3, match3.Participants[1]);
 
 
-            // TODO: Uncomment!
-
-            //Scores.AddRange([score1a, score1b, score2a, score2b, score3a, score3b]);
-            Scores.AddRange([score1a, score1b]);
+            Scores.AddRange([score1a, score1b, score2a, score2b, score3a, score3b]);
 
 
             //Matches[0].Scores.AddRange([score1a, score1b]);

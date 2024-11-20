@@ -28,8 +28,7 @@ namespace competex_backend
             CreateMap<Participant, ParticipantDTO>()
                 .Include<Team, TeamDTO>()
                 .Include<Models.Single, SingleDTO>()
-                .Include<Ekvipage, EkvipageDTO>()
-                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
+                .Include<Ekvipage, EkvipageDTO>();
             CreateMap<Team, TeamDTO>()
                 .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.Members));
             CreateMap<Models.Single, SingleDTO>();

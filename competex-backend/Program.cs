@@ -16,13 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-//builder.Services.AddControllers().AddJsonOptions(options =>
-//{
-//    options.JsonSerializerOptions.Converters.Add(new ParticipantDTOJsonConverter());
-//});
-
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -65,7 +59,6 @@ builder.Services.AddScoped<IGenericRepository<Participant>, MockParticipantRepos
 builder.Services.AddScoped<IGenericRepository<Judge>, MockJudgeRepository>();
 builder.Services.AddScoped<IGenericRepository<Match>, MockMatchRepository>();
 #endregion
-
 
 # region Services 
 // Registers services specific to each model's business logic (such as IMemberService for Member, IClubService for Club, etc.).
@@ -153,7 +146,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-//app.UseMiddleware<ErrorHandlingMiddleware>();
+// Outcomment for debugging purposes
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.MapControllers();
 

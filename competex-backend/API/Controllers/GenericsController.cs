@@ -74,7 +74,7 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, T obj)
+        public virtual async Task<IActionResult> UpdateAsync(Guid id, T obj)
         {
             var result = await _genericService.UpdateAsync(id, obj);
             if (result.IsSuccess)

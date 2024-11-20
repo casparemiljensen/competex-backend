@@ -17,49 +17,53 @@ namespace competex_backend.API.Controllers
         }
 
 
-        [HttpPost("custom")]
+        [HttpPost()]
         public override async Task<IActionResult> CreateAsync([FromBody] ParticipantDTO participant)
         {
-
-            ParticipantDTO processedParticipant = participant.Type switch
-            {
-                "Team" => participant is TeamDTO teamParticipant
-                    ? new TeamDTO()
-                    {
-                        Name = teamParticipant.Name,
-                        Members = teamParticipant.Members ?? new List<MemberDTO>() // Default to empty list if null
-                    }
-                    : throw new InvalidCastException("Participant is not of type TeamDTO"),
-
-                "Single" => participant is SingleDTO singleParticipant
-                    ? new SingleDTO
-                    {
-                        Name = singleParticipant.Name,
-                        Member = singleParticipant.Member
-                            ?? throw new InvalidOperationException("Single participant must have a member.")
-                    }
-                    : throw new InvalidCastException("Participant is not of type SingleDTO"),
-
-                "Ekvipage" => participant is EkvipageDTO ekvipageParticipant
-                    ? new EkvipageDTO
-                    {
-                        Name = ekvipageParticipant.Name,
-                        Member = ekvipageParticipant.Member
-                            ?? throw new InvalidOperationException("Ekvipage must have a member."),
-                        Entity = ekvipageParticipant.Entity
-                            ?? throw new InvalidOperationException("Ekvipage must have an entity.")
-                    }
-                    : throw new InvalidCastException("Participant is not of type EkvipageDTO"),
-
-                _ => throw new ArgumentException($"Invalid participant type: {participant.Type}")
-            };
+            var processedParticipant = ProcessParticipant(participant);
+            if (processedParticipant == null)
+                return BadRequest("Invalid participant type.");
 
             var result = await _participantService.CreateAsync(processedParticipant);
-            if (result.IsSuccess)
+            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+        }
+
+        [HttpPut("{id}")]
+        public override async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] ParticipantDTO participant)
+        {
+            var processedParticipant = ProcessParticipant(participant);
+            if (processedParticipant == null)
+                return BadRequest("Invalid participant type.");
+
+            var result = await _participantService.UpdateAsync(id, processedParticipant);
+            return result.IsSuccess ? NoContent() : BadRequest(result.Error);
+        }
+
+        private ParticipantDTO? ProcessParticipant(ParticipantDTO participant)
+        {
+            return participant switch
             {
-                return Ok(result.Value);
-            }
-            return BadRequest(result.Error);
+                TeamDTO teamParticipant => new TeamDTO
+                {
+                    Name = teamParticipant.Name,
+                    Members = teamParticipant.Members ?? new List<MemberDTO>() // Default to empty list if null
+                },
+                SingleDTO singleParticipant => new SingleDTO
+                {
+                    Name = singleParticipant.Name,
+                    Member = singleParticipant.Member
+                        ?? throw new InvalidOperationException("Single participant must have a member.")
+                },
+                EkvipageDTO ekvipageParticipant => new EkvipageDTO
+                {
+                    Name = ekvipageParticipant.Name,
+                    Member = ekvipageParticipant.Member
+                        ?? throw new InvalidOperationException("Ekvipage must have a member."),
+                    Entity = ekvipageParticipant.Entity
+                        ?? throw new InvalidOperationException("Ekvipage must have an entity.")
+                },
+                _ => null // Invalid type
+            };
         }
     }
 }

@@ -6,15 +6,41 @@ using competex_backend.BLL.Interfaces;
 using competex_backend.API.DTOs;
 using competex_backend.Models;
 using competex_backend.Common.ErrorHandling;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Hosting;
+using competex_backend.Common.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+//builder.Services.AddControllers().AddJsonOptions(options =>
+//{
+//    options.JsonSerializerOptions.Converters.Add(new ParticipantDTOJsonConverter());
+//});
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    // Enable support for "allOf" (shared properties) and "oneOf" (polymorphism)
+    c.UseAllOfForInheritance();
+    c.UseOneOfForPolymorphism();
+
+    // Dynamically discover subtypes of the base type
+    c.SelectSubTypesUsing(baseType =>
+    {
+        // Ensure we're only selecting non-abstract types that inherit from the base type
+        return typeof(ParticipantDTO).Assembly.GetTypes()
+            .Where(type => type.IsSubclassOf(baseType) && !type.IsAbstract);
+    });
+
+    // Optionally enable annotations for inheritance and polymorphism
+    c.EnableAnnotations(enableAnnotationsForInheritance: true, enableAnnotationsForPolymorphism: true);
+});
 
 builder.Services.AddSingleton<MockDatabaseManager>();
 
@@ -127,7 +153,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseMiddleware<ErrorHandlingMiddleware>();
+//app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.MapControllers();
 

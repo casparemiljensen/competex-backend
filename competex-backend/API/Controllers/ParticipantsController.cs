@@ -1,8 +1,6 @@
 ﻿using competex_backend.API.DTOs;
 using competex_backend.API.Interfaces;
 using competex_backend.BLL.Interfaces;
-using competex_backend.BLL.Services;
-using competex_backend.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace competex_backend.API.Controllers
@@ -19,19 +17,41 @@ namespace competex_backend.API.Controllers
         }
 
 
-        [HttpPost()]
+        [HttpPost("custom")]
         public override async Task<IActionResult> CreateAsync([FromBody] ParticipantDTO participant)
         {
-            // Perform custom logic here
-            var type = participant.Type;
 
-            // Example logic for processing participant
-            ParticipantDTO processedParticipant = type switch
+            ParticipantDTO processedParticipant = participant.Type switch
             {
-                "Team" => new TeamDTO { /* Assign values */ },
-                "Single" => new SingleDTO { /* Assign values */ },
-                "Ekvipage" => new EkvipageDTO { /* Assign values */ },
-                _ => throw new ArgumentException($"Invalid participant type: {type}")
+                "Team" => participant is TeamDTO teamParticipant
+                    ? new TeamDTO()
+                    {
+                        Name = teamParticipant.Name,
+                        Members = teamParticipant.Members ?? new List<MemberDTO>() // Default to empty list if null
+                    }
+                    : throw new InvalidCastException("Participant is not of type TeamDTO"),
+
+                "Single" => participant is SingleDTO singleParticipant
+                    ? new SingleDTO
+                    {
+                        Name = singleParticipant.Name,
+                        Member = singleParticipant.Member
+                            ?? throw new InvalidOperationException("Single participant must have a member.")
+                    }
+                    : throw new InvalidCastException("Participant is not of type SingleDTO"),
+
+                "Ekvipage" => participant is EkvipageDTO ekvipageParticipant
+                    ? new EkvipageDTO
+                    {
+                        Name = ekvipageParticipant.Name,
+                        Member = ekvipageParticipant.Member
+                            ?? throw new InvalidOperationException("Ekvipage must have a member."),
+                        Entity = ekvipageParticipant.Entity
+                            ?? throw new InvalidOperationException("Ekvipage must have an entity.")
+                    }
+                    : throw new InvalidCastException("Participant is not of type EkvipageDTO"),
+
+                _ => throw new ArgumentException($"Invalid participant type: {participant.Type}")
             };
 
             var result = await _participantService.CreateAsync(processedParticipant);

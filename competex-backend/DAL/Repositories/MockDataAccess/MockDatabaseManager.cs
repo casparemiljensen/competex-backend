@@ -449,14 +449,25 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             #region Participants
 
+            // TODO: Reconsider the contructor of the Participant classes
+
             var team1 = new Team("Team1", new List<Member> { member1, member2 });
+            team1.Id = Guid.NewGuid();
+
             var team2 = new Team("Team2", new List<Member> { member3, member4 });
+            team2.Id = Guid.NewGuid();
 
             var single1 = new Single("Single1", member3);
+            single1.Id = Guid.NewGuid();
+
             var single2 = new Single("Single2", member4);
+            single2.Id = Guid.NewGuid();
 
             var ekvipage1 = new Ekvipage("ekvipage", member4, entity1);
+            ekvipage1.Id = Guid.NewGuid();
+
             var ekvipage2 = new Ekvipage("ekvipage2", member5, entity2);
+            ekvipage2.Id = Guid.NewGuid();
 
             Participants.AddRange([team1, team2, single1, single2, ekvipage1, ekvipage2]);
 

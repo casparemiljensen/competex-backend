@@ -35,7 +35,7 @@ builder.Services.AddScoped<IGenericRepository<Location>, MockLocationRepository>
 builder.Services.AddScoped<IGenericRepository<Penalty>, MockPenaltyRepository>();
 builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRepository>();
 builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>();
-
+builder.Services.AddScoped<IGenericRepository<Participant>, MockParticipantRepository>();
 builder.Services.AddScoped<IGenericRepository<Judge>, MockJudgeRepository>();
 builder.Services.AddScoped<IGenericRepository<Match>, MockMatchRepository>();
 #endregion
@@ -58,7 +58,7 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IPenaltyService, PenaltyService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IScoringSystemService, ScoringSystemService>();
-
+builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IJudgeService, JudgeService>();
 builder.Services.AddScoped<IMatchService, MatchService>();
 # endregion
@@ -80,7 +80,7 @@ builder.Services.AddScoped<ILocationRepository, MockLocationRepository>();
 builder.Services.AddScoped<IPenaltyRepository, MockPenaltyRepository>();
 builder.Services.AddScoped<IRegistrationRepository, MockRegistrationRepository>();
 builder.Services.AddScoped<IScoringSystemRepository, MockScoringSystemRepository>();
-
+builder.Services.AddScoped<IParticipantRepository, MockParticipantRepository>();
 builder.Services.AddScoped<IJudgeRepository, MockJudgeRepository>();
 builder.Services.AddScoped<IMatchRepository, MockMatchRepository>();
 #endregion
@@ -104,7 +104,7 @@ builder.Services.AddScoped<IGenericService<PenaltyDTO>, GenericService<Penalty, 
 builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
 builder.Services.AddScoped<IGenericService<RegistrationDTO>, GenericService<Registration, RegistrationDTO>>();
 builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
-
+builder.Services.AddScoped<IGenericService<ParticipantDTO>, GenericService<Participant, ParticipantDTO>>();
 builder.Services.AddScoped<IGenericService<JudgeDTO>, GenericService<Judge, JudgeDTO>>();
 builder.Services.AddScoped<IGenericService<MatchDTO>, GenericService<Match, MatchDTO>>();
 # endregion

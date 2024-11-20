@@ -25,6 +25,17 @@ namespace competex_backend
             CreateMap<ScoringSystem, ScoringSystemDTO>();
             CreateMap<Judge, JudgeDTO>();
             CreateMap<Match, MatchDTO>();
+            CreateMap<Participant, ParticipantDTO>()
+                .Include<Team, TeamDTO>()
+                .Include<Models.Single, SingleDTO>()
+                .Include<Ekvipage, EkvipageDTO>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
+            CreateMap<Team, TeamDTO>()
+                .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.Members));
+            CreateMap<Models.Single, SingleDTO>();
+            CreateMap<Ekvipage, EkvipageDTO>();
+
+
 
             CreateMap<MemberDTO, Member>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
@@ -60,6 +71,19 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<MatchDTO, Match>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<ParticipantDTO, Participant>()
+                .Include<TeamDTO, Team>()
+                .Include<SingleDTO, Models.Single>()
+                .Include<EkvipageDTO, Ekvipage>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<TeamDTO, Team>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<SingleDTO, Models.Single>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<EkvipageDTO, Ekvipage>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            
+            // TODO: Use reversemap!
         }
     }
 }

@@ -16,7 +16,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     ports:
-      - 15433:80
+      - 82:80
     env_file:
       - .env
     depends_on:
@@ -26,6 +26,16 @@ services:
     volumes:
       - ./pgadmin-data/:/var/lib/pgadmin/
       - ./servers.json:/pgadmin4/servers.json
+
+  adminer:
+    image: ghcr.io/shyim/adminerevo:latest
+    restart: always
+    depends_on:
+      - database
+    ports:
+      - 81:8080
+    networks:
+      - postgres-network
 
 networks:
   postgres-network:

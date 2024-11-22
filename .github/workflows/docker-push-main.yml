@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
             context: .
-            dockerfile: ./competex-backend/Dockerfile
+            file: ./competex-backend/Dockerfile
             push: true
             tags: ilum1/competex-backend:latest
             platforms: linux/amd64,linux/arm64

@@ -2,9 +2,8 @@
 
 namespace competex_backend.API.DTOs
 {
-    public class CompetitionDTO
+    public class CompetitionDTO : Identifiable
     {
-        public Guid Id { get; init; }
         public required IEnumerable<CompetitionType> CompetitionType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

@@ -8,6 +8,13 @@
         Concluded
     }
 
+    public enum RegistrationStatus
+    {
+        PendingPayment,
+        Paid,
+        Accepted
+    }
+
     public enum MatchStatus
     {
         Pending,
@@ -82,5 +89,11 @@
         Starting,
         Ongoing,
         Ended
+    }
+
+    public enum JudgeType
+    {
+        Main,
+        Assistant
     }
 }

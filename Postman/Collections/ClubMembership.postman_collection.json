@@ -1,0 +1,162 @@
+{
+	"info": {
+		"_postman_id": "6f6870ff-2b57-4bca-aeac-178421b15f93",
+		"name": "ClubMembership",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39381475",
+		"_collection_link": "https://p7-competex.postman.co/workspace/CompeteX-Backend~4e42fa57-57a0-435a-821d-0d7af89d6326/collection/39381475-6f6870ff-2b57-4bca-aeac-178421b15f93?action=share&source=collection_link&creator=39381475"
+	},
+	"item": [
+		{
+			"name": "GetMembersOfClub",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/ClubMembership/members/23bfd5cb-9ee9-48c0-b1ae-8a9550223dcd",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"ClubMembership",
+						"members",
+						"23bfd5cb-9ee9-48c0-b1ae-8a9550223dcd"
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": [
+				{
+					"name": "GetMembersOfClub",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/ClubMembership/members/23bfd5cb-9ee9-48c0-b1ae-8a9550223dcd",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ClubMembership",
+								"members",
+								"23bfd5cb-9ee9-48c0-b1ae-8a9550223dcd"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 13 Nov 2024 14:39:44 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"values\": [\n        {\n            \"id\": \"578b989c-f8dc-4de4-96fc-302a6151333a\",\n            \"firstName\": \"Janni\",\n            \"lastName\": \"Karlsson\",\n            \"birthday\": \"0001-01-01T00:00:00\",\n            \"email\": \"\",\n            \"phone\": \"\",\n            \"permissions\": \"\"\n        },\n        {\n            \"id\": \"73636f4a-2f21-478c-b354-9c687e9f7fdc\",\n            \"firstName\": \"Søren\",\n            \"lastName\": \"Pind\",\n            \"birthday\": \"0001-01-01T00:00:00\",\n            \"email\": \"\",\n            \"phone\": \"\",\n            \"permissions\": \"\"\n        },\n        {\n            \"id\": \"bec52019-b429-47bc-987e-47d13224d75e\",\n            \"firstName\": \"Caspar\",\n            \"lastName\": \"Emil Jensen\",\n            \"birthday\": \"1990-01-01T00:00:00\",\n            \"email\": \"Caspar@uni.com\",\n            \"phone\": \"12345890\",\n            \"permissions\": \"Admin\"\n        }\n    ],\n    \"pageInfo\": {\n        \"pageNumber\": 10,\n        \"pageSize\": 10,\n        \"totalPages\": 1\n    }\n}"
+				},
+				{
+					"name": "GetMembersOfClubKubernetes",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/ClubMembership/members/23bfd5cb-9ee9-48c0-b1ae-8a9550223dcd",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ClubMembership",
+								"members",
+								"23bfd5cb-9ee9-48c0-b1ae-8a9550223dcd"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 15 Nov 2024 13:48:04 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"values\": [\n        {\n            \"id\": \"8aaf7760-8189-43bd-9c3d-8c2af8c73578\",\n            \"firstName\": \"Janni\",\n            \"lastName\": \"Karlsson\",\n            \"birthday\": \"0001-01-01T00:00:00\",\n            \"email\": \"\",\n            \"phone\": \"\",\n            \"permissions\": \"\"\n        },\n        {\n            \"id\": \"cbf7141e-20f2-4d99-803b-0f2a8afb01a8\",\n            \"firstName\": \"Søren\",\n            \"lastName\": \"Pind\",\n            \"birthday\": \"0001-01-01T00:00:00\",\n            \"email\": \"\",\n            \"phone\": \"\",\n            \"permissions\": \"\"\n        },\n        {\n            \"id\": \"bec52019-b429-47bc-987e-47d13224d75e\",\n            \"firstName\": \"Caspar\",\n            \"lastName\": \"Emil Jensen\",\n            \"birthday\": \"1990-01-01T00:00:00\",\n            \"email\": \"Caspar@uni.com\",\n            \"phone\": \"12345890\",\n            \"permissions\": \"Admin\"\n        }\n    ],\n    \"pageInfo\": {\n        \"pageNumber\": 10,\n        \"pageSize\": 10,\n        \"totalPages\": 1\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "GetClubsOfMember",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/ClubMembership/clubs/bec52019-b429-47bc-987e-47d13224d75e",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"ClubMembership",
+						"clubs",
+						"bec52019-b429-47bc-987e-47d13224d75e"
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": []
+		}
+	]
+}

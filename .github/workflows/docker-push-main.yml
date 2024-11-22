@@ -1,4 +1,4 @@
-name: Docker CI - Master & Pylint
+name: Docker CI - Master
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
             context: .
-            dockerfile: ./competex-backend/Dockerfile
+            file: ./competex-backend/Dockerfile
             push: true
             tags: ilum1/competex-backend:latest
-            platforms: linux/amd64,linux/arm64
+            platforms: linux/amd64

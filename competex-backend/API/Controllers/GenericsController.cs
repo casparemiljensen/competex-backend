@@ -62,7 +62,8 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(T obj)
+        // TODO: add virtual in other methods, in necessary.
+        public virtual async Task<IActionResult> CreateAsync(T obj)
         {
             var result = await _genericService.CreateAsync(obj);
             if (result.IsSuccess)
@@ -73,7 +74,7 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, T obj)
+        public virtual async Task<IActionResult> UpdateAsync(Guid id, T obj)
         {
             var result = await _genericService.UpdateAsync(id, obj);
             if (result.IsSuccess)

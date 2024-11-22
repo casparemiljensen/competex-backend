@@ -1,17 +1,19 @@
 ﻿using competex_backend.API.DTOs;
 using competex_backend.API.Interfaces;
 using competex_backend.BLL.Interfaces;
-using competex_backend.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace competex_backend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ScoringSystemController : GenericsController<ScoringSystemDTO>
+    public class ScoringSystemController : GenericsController<ScoringSystemDTO>, IScoringSystemAPI
     {
-        public ScoringSystemController(IGenericService<ScoringSystemDTO> service) : base(service) { }
+        private IScoringSystemService _scoringSystemService;
 
+        public ScoringSystemController(IGenericService<ScoringSystemDTO> service, IScoringSystemService scoringSystemService) : base(service) 
+        {
+            _scoringSystemService = scoringSystemService;
+        }
     }
 }

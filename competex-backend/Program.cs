@@ -1,4 +1,3 @@
-using competex_backend.API.Controllers;
 using competex_backend.DAL.Repositories.MockDataAccess;
 using competex_backend.DAL.Interfaces;
 using competex_backend;
@@ -7,16 +6,33 @@ using competex_backend.BLL.Interfaces;
 using competex_backend.API.DTOs;
 using competex_backend.Models;
 using competex_backend.Common.ErrorHandling;
-using Microsoft.AspNetCore.Builder;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    // Enable support for "allOf" (shared properties) and "oneOf" (polymorphism)
+    c.UseAllOfForInheritance();
+    c.UseOneOfForPolymorphism();
+
+    // Dynamically discover subtypes of the base type
+    c.SelectSubTypesUsing(baseType =>
+    {
+        // Ensure we're only selecting non-abstract types that inherit from the base type
+        return typeof(ParticipantDTO).Assembly.GetTypes()
+            .Where(type => type.IsSubclassOf(baseType) && !type.IsAbstract);
+    });
+
+    // Optionally enable annotations for inheritance and polymorphism
+    c.EnableAnnotations(enableAnnotationsForInheritance: true, enableAnnotationsForPolymorphism: true);
+});
 
 builder.Services.AddSingleton<MockDatabaseManager>();
 
@@ -37,8 +53,10 @@ builder.Services.AddScoped<IGenericRepository<Location>, MockLocationRepository>
 builder.Services.AddScoped<IGenericRepository<Penalty>, MockPenaltyRepository>();
 builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRepository>();
 builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>();
+builder.Services.AddScoped<IGenericRepository<Participant>, MockParticipantRepository>();
+builder.Services.AddScoped<IGenericRepository<Judge>, MockJudgeRepository>();
+builder.Services.AddScoped<IGenericRepository<Match>, MockMatchRepository>();
 #endregion
-
 
 # region Services 
 // Registers services specific to each model's business logic (such as IMemberService for Member, IClubService for Club, etc.).
@@ -57,6 +75,9 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IPenaltyService, PenaltyService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IScoringSystemService, ScoringSystemService>();
+builder.Services.AddScoped<IParticipantService, ParticipantService>();
+builder.Services.AddScoped<IJudgeService, JudgeService>();
+builder.Services.AddScoped<IMatchService, MatchService>();
 # endregion
 
 #region Service DTO Mappings
@@ -76,6 +97,9 @@ builder.Services.AddScoped<ILocationRepository, MockLocationRepository>();
 builder.Services.AddScoped<IPenaltyRepository, MockPenaltyRepository>();
 builder.Services.AddScoped<IRegistrationRepository, MockRegistrationRepository>();
 builder.Services.AddScoped<IScoringSystemRepository, MockScoringSystemRepository>();
+builder.Services.AddScoped<IParticipantRepository, MockParticipantRepository>();
+builder.Services.AddScoped<IJudgeRepository, MockJudgeRepository>();
+builder.Services.AddScoped<IMatchRepository, MockMatchRepository>();
 #endregion
 
 # region IGenericService
@@ -97,6 +121,9 @@ builder.Services.AddScoped<IGenericService<PenaltyDTO>, GenericService<Penalty, 
 builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
 builder.Services.AddScoped<IGenericService<RegistrationDTO>, GenericService<Registration, RegistrationDTO>>();
 builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
+builder.Services.AddScoped<IGenericService<ParticipantDTO>, GenericService<Participant, ParticipantDTO>>();
+builder.Services.AddScoped<IGenericService<JudgeDTO>, GenericService<Judge, JudgeDTO>>();
+builder.Services.AddScoped<IGenericService<MatchDTO>, GenericService<Match, MatchDTO>>();
 # endregion
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
@@ -125,6 +152,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+// Outcomment for debugging purposes
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.MapControllers();

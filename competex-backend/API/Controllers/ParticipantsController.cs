@@ -43,24 +43,21 @@ namespace competex_backend.API.Controllers
         {
             return participant switch
             {
-                TeamDTO teamParticipant => new TeamDTO
+                TeamCreateUpdateDTO teamParticipant => new TeamCreateUpdateDTO
                 {
                     Name = teamParticipant.Name,
-                    Members = teamParticipant.Members ?? new List<MemberDTO>() // Default to empty list if null
+                    MemberIds = teamParticipant.MemberIds?? new List<Guid>() // Default to empty list if null
                 },
-                SingleDTO singleParticipant => new SingleDTO
+                SingleCreateUpdateDTO singleParticipant => new SingleCreateUpdateDTO
                 {
                     Name = singleParticipant.Name,
-                    Member = singleParticipant.Member
-                        ?? throw new InvalidOperationException("Single participant must have a member.")
+                    MemberId = singleParticipant.MemberId
                 },
-                EkvipageDTO ekvipageParticipant => new EkvipageDTO
+                EkvipageCreateUpdateDTO ekvipageParticipant => new EkvipageCreateUpdateDTO
                 {
                     Name = ekvipageParticipant.Name,
-                    Member = ekvipageParticipant.Member
-                        ?? throw new InvalidOperationException("Ekvipage must have a member."),
-                    Entity = ekvipageParticipant.Entity
-                        ?? throw new InvalidOperationException("Ekvipage must have an entity.")
+                    MemberId = ekvipageParticipant.MemberId,
+                    EntityId = ekvipageParticipant.EntityId
                 },
                 _ => null // Invalid type
             };

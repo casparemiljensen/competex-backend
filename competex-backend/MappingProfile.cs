@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using competex_backend.API.DTOs;
+using competex_backend.Common.Helpers;
 using competex_backend.Models;
 
 namespace competex_backend
@@ -26,13 +27,15 @@ namespace competex_backend
             CreateMap<Judge, JudgeDTO>();
             CreateMap<Match, MatchDTO>();
             CreateMap<Participant, ParticipantDTO>()
-                .Include<Team, TeamDTO>()
-                .Include<Models.Single, SingleDTO>()
-                .Include<Ekvipage, EkvipageDTO>();
-            CreateMap<Team, TeamDTO>()
-                .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.Members));
-            CreateMap<Models.Single, SingleDTO>();
-            CreateMap<Ekvipage, EkvipageDTO>();
+                .Include<Team, TeamDetailDTO>()
+                .Include<Models.Single, SingleDetailDTO>()
+                .Include<Ekvipage, EkvipageDetailDTO>();
+            //CreateMap<Team, TeamDetailDTO>()
+            //    .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.MemberIds));
+            CreateMap<Team, TeamDetailDTO>()
+                .ForMember(dest => dest.Members, opt => opt.MapFrom<TeamMembersResolver>());
+            CreateMap<Models.Single, SingleDetailDTO>();
+            CreateMap<Ekvipage, EkvipageDetailDTO>();
 
 
 
@@ -71,15 +74,15 @@ namespace competex_backend
             CreateMap<MatchDTO, Match>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<ParticipantDTO, Participant>()
-                .Include<TeamDTO, Team>()
-                .Include<SingleDTO, Models.Single>()
-                .Include<EkvipageDTO, Ekvipage>()
+                .Include<TeamCreateUpdateDTO, Team>()
+                .Include<SingleCreateUpdateDTO, Models.Single>()
+                .Include<EkvipageCreateUpdateDTO, Ekvipage>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<TeamDTO, Team>()
+            CreateMap<TeamCreateUpdateDTO, Team>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<SingleDTO, Models.Single>()
+            CreateMap<SingleCreateUpdateDTO, Models.Single>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<EkvipageDTO, Ekvipage>()
+            CreateMap<EkvipageCreateUpdateDTO, Ekvipage>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             
             // TODO: Use reversemap!

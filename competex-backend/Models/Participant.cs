@@ -12,30 +12,30 @@
 
     public class Team : Participant
     {
-        public List<Member> Members { get; set; }
-        public Team(string name, List<Member> members) : base(name)
+        public List<Guid> MemberIds { get; set; }
+        public Team(string name, List<Guid> memberIds) : base(name)
         {
-            Members = members;
+            MemberIds = memberIds;
         }
     }
 
     public class Single : Participant
     {
-        public Member Member { get; set; }
-        public Single(string name, Member member) : base(name)
+        public Guid MemberId { get; set; }
+        public Single(string name, Guid memberId) : base(name)
         {
-            Member = member;
+            MemberId = memberId;
         }
     }
 
     public class Ekvipage : Participant
     {
-        public Member Member { get; set; }
-        public Entity Entity { get; set; }
-        public Ekvipage(string name, Member member, Entity entity) : base(name)
+        public Guid MemberId { get; set; }
+        public Guid EntityId { get; set; }
+        public Ekvipage(string name, Guid memberId, Guid entityId) : base(name)
         {
-            Member = member;
-            Entity = entity;
+            MemberId = memberId;
+            EntityId = entityId;
         }
     }
 }

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: competex-backend-deployment
 spec:
-  replicas: 1
+  replicas: 6
   selector:
     matchLabels:
       app: competex-backend

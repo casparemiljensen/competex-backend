@@ -43,17 +43,17 @@ namespace competex_backend.API.Controllers
         {
             return participant switch
             {
-                TeamCreateUpdateDTO teamParticipant => new TeamCreateUpdateDTO
+                TeamDTO teamParticipant => new TeamDTO
                 {
                     Name = teamParticipant.Name,
                     MemberIds = teamParticipant.MemberIds?? new List<Guid>() // Default to empty list if null
                 },
-                SingleCreateUpdateDTO singleParticipant => new SingleCreateUpdateDTO
+                SingleDTO singleParticipant => new SingleDTO
                 {
                     Name = singleParticipant.Name,
                     MemberId = singleParticipant.MemberId
                 },
-                EkvipageCreateUpdateDTO ekvipageParticipant => new EkvipageCreateUpdateDTO
+                EkvipageDTO ekvipageParticipant => new EkvipageDTO
                 {
                     Name = ekvipageParticipant.Name,
                     MemberId = ekvipageParticipant.MemberId,

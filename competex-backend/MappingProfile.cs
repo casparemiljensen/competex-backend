@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using competex_backend.API.DTOs;
+using competex_backend.BLL.Interfaces;
 using competex_backend.Common.Helpers;
 using competex_backend.Models;
 
@@ -26,16 +27,20 @@ namespace competex_backend
             CreateMap<ScoringSystem, ScoringSystemDTO>();
             CreateMap<Judge, JudgeDTO>();
             CreateMap<Match, MatchDTO>();
+
+            CreateMap<Guid, MemberDTO>().ConvertUsing<GuidToMemberDTOConverter>();
+            CreateMap<Guid, EntityDTO>().ConvertUsing<GuidToEntityDTOConverter>();
             CreateMap<Participant, ParticipantDTO>()
-                .Include<Team, TeamDetailDTO>()
-                .Include<Models.Single, SingleDetailDTO>()
-                .Include<Ekvipage, EkvipageDetailDTO>();
-            //CreateMap<Team, TeamDetailDTO>()
-            //    .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.MemberIds));
-            CreateMap<Team, TeamDetailDTO>()
-                .ForMember(dest => dest.Members, opt => opt.MapFrom<TeamMembersResolver>());
-            CreateMap<Models.Single, SingleDetailDTO>();
-            CreateMap<Ekvipage, EkvipageDetailDTO>();
+                .Include<Team, TeamDTO>()
+                .Include<Models.Single, SingleDTO>()
+                .Include<Ekvipage, EkvipageDTO>();
+            CreateMap<Team, TeamDTO>()
+                .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.MemberIds));
+            CreateMap<Models.Single, SingleDTO>()
+                .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId));
+            CreateMap<Ekvipage, EkvipageDTO>()
+                .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
+                .ForMember(dest => dest.Entity, opt => opt.MapFrom(src => src.EntityId));
 
 
 
@@ -74,18 +79,51 @@ namespace competex_backend
             CreateMap<MatchDTO, Match>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<ParticipantDTO, Participant>()
-                .Include<TeamCreateUpdateDTO, Team>()
-                .Include<SingleCreateUpdateDTO, Models.Single>()
-                .Include<EkvipageCreateUpdateDTO, Ekvipage>()
+                .Include<TeamDTO, Team>()
+                .Include<SingleDTO, Models.Single>()
+                .Include<EkvipageDTO, Ekvipage>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<TeamCreateUpdateDTO, Team>()
+            CreateMap<TeamDTO, Team>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<SingleCreateUpdateDTO, Models.Single>()
+            CreateMap<SingleDTO, Models.Single>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<EkvipageCreateUpdateDTO, Ekvipage>()
+            CreateMap<EkvipageDTO, Ekvipage>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             
             // TODO: Use reversemap!
+
+        }
+
+        public class GuidToMemberDTOConverter : ITypeConverter<Guid, MemberDTO>
+        {
+            private readonly IMemberService _memberService;
+
+            public GuidToMemberDTOConverter(IMemberService memberService)
+            {
+                _memberService = memberService;
+            }
+
+            public MemberDTO Convert(Guid source, MemberDTO destination, ResolutionContext context)
+            {
+                var member = _memberService.GetByIdAsync(source).GetAwaiter().GetResult();
+                return member != null && member.IsSuccess ? member.Value : null;
+            }
+        }
+
+        public class GuidToEntityDTOConverter : ITypeConverter<Guid, EntityDTO>
+        {
+            private readonly IEntityService _entityService;
+
+            public GuidToEntityDTOConverter(IEntityService entityService)
+            {
+                _entityService = entityService;
+            }
+
+            public EntityDTO Convert(Guid source, EntityDTO destination, ResolutionContext context)
+            {
+                var entity = _entityService.GetByIdAsync(source).GetAwaiter().GetResult();
+                return entity != null && entity.IsSuccess ? entity.Value : null;
+            }
         }
     }
 }

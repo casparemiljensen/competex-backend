@@ -69,6 +69,17 @@ builder.Services.AddScoped<IGenericService<ClubMembershipDTO>, GenericService<Cl
 //builder.Services.AddScoped<IClubRepository, MockClubRepository>();
 //builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
 //builder.Services.AddScoped<IClubMemberRepository, MockClubMemberRepository>();
+var MyAllowSpecificOriginsName = "idkman";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOriginsName,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost",
+                                              "https://localhost");
+                      });
+});
 
 // Register MockDatabaseManager as a singleton
 //builder.Services.AddSingleton<IDatabaseManager, MockDatabaseManager>();
@@ -83,6 +94,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(MyAllowSpecificOriginsName);
 
 app.UseHttpsRedirection();
 

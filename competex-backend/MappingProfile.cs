@@ -3,6 +3,7 @@ using competex_backend.API.DTOs;
 using competex_backend.BLL.Interfaces;
 using competex_backend.Common.Helpers;
 using competex_backend.Models;
+using static competex_backend.MappingProfile;
 
 namespace competex_backend
 {
@@ -10,26 +11,78 @@ namespace competex_backend
     {
         public MappingProfile()
         {
+            // Needed?
+
+            //CreateMap<Guid, TeamDTO>().ConvertUsing<GuidToObjectConverter<TeamDTO>>();
+            //CreateMap<Guid, Models.SingleDTO>().ConvertUsing<GuidToObjectConverter<Models.SingleDTO>>();
+            //CreateMap<Guid, EkvipageDTO>().ConvertUsing<GuidToObjectConverter<EkvipageDTO>>();
+
+            CreateMap<Guid, CompetitionDTO>().ConvertUsing<GuidToObjectConverter<CompetitionDTO>>();
+            CreateMap<Guid, MemberDTO>().ConvertUsing<GuidToObjectConverter<MemberDTO>>();
+            CreateMap<Guid, EntityDTO>().ConvertUsing<GuidToObjectConverter<EntityDTO>>();
+            CreateMap<Guid, LocationDTO>().ConvertUsing<GuidToObjectConverter<LocationDTO>>();
+            CreateMap<Guid, SportTypeDTO>().ConvertUsing<GuidToObjectConverter<SportTypeDTO>>();
+            CreateMap<Guid, ClubDTO>().ConvertUsing<GuidToObjectConverter<ClubDTO>>();
+            CreateMap<Guid, CompetitionTypeDTO>().ConvertUsing<GuidToObjectConverter<CompetitionTypeDTO>>();
+            CreateMap<Guid, EventDTO>().ConvertUsing<GuidToObjectConverter<EventDTO>>();
+            CreateMap<Guid, ClubMembershipDTO>().ConvertUsing<GuidToObjectConverter<ClubMembershipDTO>>();
+            CreateMap<Guid, AdminDTO>().ConvertUsing<GuidToObjectConverter<AdminDTO>>();
+            CreateMap<Guid, FieldDTO>().ConvertUsing<GuidToObjectConverter<FieldDTO>>();
+            CreateMap<Guid, RegistrationDTO>().ConvertUsing<GuidToObjectConverter<RegistrationDTO>>();
+            CreateMap<Guid, ScoringSystemDTO>().ConvertUsing<GuidToObjectConverter<ScoringSystemDTO>>();
+            CreateMap<Guid, JudgeDTO>().ConvertUsing<GuidToObjectConverter<JudgeDTO>>();
+            CreateMap<Guid, MatchDTO>().ConvertUsing<GuidToObjectConverter<MatchDTO>>();
+
+
+            // Definely needed
+            CreateMap<Guid, RoundDTO>().ConvertUsing<GuidToObjectConverter<RoundDTO>>();
+            CreateMap<Guid, ParticipantDTO>().ConvertUsing<GuidToObjectConverter<ParticipantDTO>>();
+            CreateMap<Guid, PenaltyDTO>().ConvertUsing<GuidToObjectConverter<PenaltyDTO>>();
+
+
+
             CreateMap<Member, MemberDTO>();
             CreateMap<Club, ClubDTO>();
-            CreateMap<Round, RoundDTO>();
+            CreateMap<Round, RoundDTO>()
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => src.CompetitionId));
             CreateMap<SportType, SportTypeDTO>();
             CreateMap<CompetitionType, CompetitionTypeDTO>();
-            CreateMap<Competition, CompetitionDTO>();
-            CreateMap<Event, EventDTO>();
+            CreateMap<Competition, CompetitionDTO>()
+                .ForMember(dest => dest.CompetitionType, opt => opt.MapFrom(src => src.CompetitionTypeIds));
+            CreateMap<Event, EventDTO>()
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src =>
+                    src.LocationId.HasValue ? src.LocationId.Value : Guid.Empty)) // Maps only if LocationId is present
+                .ForMember(dest => dest.SportType, opt => opt.MapFrom(src => src.SportTypeId))
+                .ForMember(dest => dest.Competitions, opt => opt.MapFrom(src => src.CompetitionIds));
+
             CreateMap<ClubMembership, ClubMembershipDTO>();
-            CreateMap<Admin, AdminDTO>();
-            CreateMap<Entity, EntityDTO>();
+
+            CreateMap<Admin, AdminDTO>()
+                .ForMember(dest => dest.SportTypes, opt => opt.MapFrom(src => src.SportTypeIds));
+
+            CreateMap<Entity, EntityDTO>()
+                .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.OwnerId));
+
             CreateMap<Field, FieldDTO>();
             CreateMap<Location, LocationDTO>();
             CreateMap<Penalty, PenaltyDTO>();
-            CreateMap<Registration, RegistrationDTO>();
-            CreateMap<ScoringSystem, ScoringSystemDTO>();
-            CreateMap<Judge, JudgeDTO>();
-            CreateMap<Match, MatchDTO>();
 
-            CreateMap<Guid, MemberDTO>().ConvertUsing<GuidToMemberDTOConverter>();
-            CreateMap<Guid, EntityDTO>().ConvertUsing<GuidToEntityDTOConverter>();
+            CreateMap<Registration, RegistrationDTO>()
+                .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => src.CompetitionId));
+
+            CreateMap<ScoringSystem, ScoringSystemDTO>() // Cannot map penalties somehow.
+                .ForMember(dest => dest.Penalties, opt => opt.MapFrom(src => src.PenaltyIds));
+
+            CreateMap<Judge, JudgeDTO>()
+                .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId));
+            CreateMap<Match, MatchDTO>()
+                .ForMember(dest => dest.Round, opt => opt.MapFrom(src => src.RoundId))
+                .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src.ParticipantIds))
+                .ForMember(dest => dest.Field, opt => opt.MapFrom(src => src.FieldId))
+                .ForMember(dest => dest.Judge, opt => opt.MapFrom(src => src.JudgeId))
+                .ForMember(dest => dest.Scores, opt => opt.MapFrom(src => src.ScoreIds));
+
             CreateMap<Participant, ParticipantDTO>()
                 .Include<Team, TeamDTO>()
                 .Include<Models.Single, SingleDTO>()
@@ -43,6 +96,7 @@ namespace competex_backend
                 .ForMember(dest => dest.Entity, opt => opt.MapFrom(src => src.EntityId));
 
 
+            // Reverse mappings
 
             CreateMap<MemberDTO, Member>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
@@ -89,41 +143,44 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<EkvipageDTO, Ekvipage>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            
+            // TODO: Update these again!
             
             // TODO: Use reversemap!
+            
 
         }
 
-        public class GuidToMemberDTOConverter : ITypeConverter<Guid, MemberDTO>
+
+        public class GuidToObjectConverter<T> : ITypeConverter<Guid, T> where T : class
         {
-            private readonly IMemberService _memberService;
+            private readonly IGenericService<T> _service;
 
-            public GuidToMemberDTOConverter(IMemberService memberService)
+            public GuidToObjectConverter(IGenericService<T> service)
             {
-                _memberService = memberService;
+                _service = service;
             }
 
-            public MemberDTO Convert(Guid source, MemberDTO destination, ResolutionContext context)
+            public T Convert(Guid source, T destination, ResolutionContext context)
             {
-                var member = _memberService.GetByIdAsync(source).GetAwaiter().GetResult();
-                return member != null && member.IsSuccess ? member.Value : null;
-            }
-        }
+                if (source == Guid.Empty)
+                {
+                    Console.WriteLine($"Empty Guid received for {typeof(T).Name}");
+                    return default; // Return null for reference types
+                }
 
-        public class GuidToEntityDTOConverter : ITypeConverter<Guid, EntityDTO>
-        {
-            private readonly IEntityService _entityService;
+                var result = _service.GetByIdAsync(source).GetAwaiter().GetResult();
+                if (result == null || !result.IsSuccess)
+                {
+                    Console.WriteLine($"Failed to resolve {typeof(T).Name} for Guid: {source}");
+                    return default;
+                }
 
-            public GuidToEntityDTOConverter(IEntityService entityService)
-            {
-                _entityService = entityService;
+                Console.WriteLine($"Successfully resolved {typeof(T).Name} for Guid: {source}");
+                return result.Value;
             }
 
-            public EntityDTO Convert(Guid source, EntityDTO destination, ResolutionContext context)
-            {
-                var entity = _entityService.GetByIdAsync(source).GetAwaiter().GetResult();
-                return entity != null && entity.IsSuccess ? entity.Value : null;
-            }
         }
     }
 }

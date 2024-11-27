@@ -11,7 +11,7 @@ public class Round : Identifiable
     public RoundStatus Status { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
-    public IEnumerable<Guid> Matches { get; set; }
+    //public IEnumerable<Guid> MatchIds { get; set; } = new List<Guid>();
 
 
     public override string ToString()

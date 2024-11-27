@@ -2,16 +2,12 @@
 {
     public class ScoringSystem : Identifiable
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public ScoreType ScoreType { get; set; }
-        public string ScoringRules { get; set; }
-        public int Penalties { get; set; }
+        public string ScoringRules { get; set; } = string.Empty;
+        public List<Guid> PenaltyIds { get; set; } = new List<Guid>();
         public Func<ScoreType, int, int> EvaluationMethod { get; set; }
 
-        public int GetScore()
-        {
-            return EvaluationMethod(ScoreType, Penalties);
-        }
     }
 }

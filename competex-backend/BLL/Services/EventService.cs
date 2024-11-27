@@ -45,7 +45,10 @@ namespace competex_backend.BLL.Services
 
         public async Task<ResultT<int>> GetMembersOwedAmount(Guid memberId, Guid eventId)
         {
-            var selectedEvent = await _eventRepository.GetByIdAsync(eventId);
+            //var selectedEvent = await _eventRepository.GetByIdAsync(eventId);
+
+            var selectedEvent = await GetByIdAsync(eventId);
+
             if (!selectedEvent.IsSuccess)
             {
                 return ResultT<int>.Failure(selectedEvent.Error!);
@@ -66,7 +69,7 @@ namespace competex_backend.BLL.Services
                 competitionPrices[competition.Id] = competition.RegistrationPrice;
             }
 
-            return registrations.Aggregate(0, (sum, registration) => sum + competitionPrices[registration.CompetitionId]) + selectedEvent.Value.EntryFee;
+            return registrations.Aggregate(0, (sum, registration) => sum + competitionPrices[registration.Competition.Id]) + selectedEvent.Value.EntryFee;
         }
     }
 }

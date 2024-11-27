@@ -4,8 +4,6 @@ using competex_backend.BLL.Interfaces;
 using competex_backend.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace competex_backend.API.Controllers
 {
     [Route("api/[controller]")]
@@ -43,7 +41,12 @@ namespace competex_backend.API.Controllers
             var result = await _clubMembershipService.GetClubsOfMemberAsync(memberId, pageSize, pageNumber);
             if (result.IsSuccess)
             {
-                return Ok(result.Value);
+                var obj = new PaginationWrapperDTO<IEnumerable<ClubDTO>>(
+                    result.Value.Item2,
+                    pageSize ?? Defaults.PageSize,
+                    pageNumber ?? Defaults.PageNumber,
+                    result.Value.Item1);
+                return Ok(obj);
             }
             return NotFound(result.Error); // Return NotFound with error details if no clubs found
         }

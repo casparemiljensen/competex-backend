@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+db/db-data/
+db/pgadmin-data/
+
+
 # User-specific files
 *.rsuser
 *.suo
@@ -388,6 +392,14 @@ FodyWeavers.xsd
 
 # Local History for Visual Studio Code
 .history/
+
+# Windows Installer files from build outputs
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
 
 # Windows Installer files from build outputs
 *.cab

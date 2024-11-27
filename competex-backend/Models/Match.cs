@@ -11,6 +11,6 @@ namespace competex_backend.Models
         public DateTime EndTime { get; set; }
         public Field? Field { get; set; }
         public Judge? Judge { get; set; }
-        public Score? Score { get; set; }
+        public List<Score> Scores { get; set; } = new List<Score>();
     }
 }

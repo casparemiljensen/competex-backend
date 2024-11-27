@@ -1,0 +1,18 @@
+services:
+  competex-backend:
+    build:
+      context: .  # Set the build context to the root of your project
+      dockerfile: ./competex-backend/Dockerfile  # Specify the path to your Dockerfile
+    image: competex-backend  # Tag the built image with 'competex-backend'
+    ports:
+      - "32778:8080"  # Maps container's 8080 port to host's 32778 port 
+      - "32779:8081"  # Maps container's 8081 port to host's 32779 port
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development #- ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_HTTP_PORTS=8080
+    networks:
+      - competex-network
+
+networks:
+  competex-network:
+    driver: bridge

@@ -69,7 +69,6 @@ namespace competex_backend
                 .ForMember(dest => dest.Field, opt => opt.MapFrom(src => src.FieldId))
                 .ForMember(dest => dest.Judge, opt => opt.MapFrom(src => src.JudgeId))
                 .ForMember(dest => dest.Scores, opt => opt.MapFrom(src => src.ScoreIds));
-
             CreateMap<Participant, ParticipantDTO>()
                 .Include<Team, TeamDTO>()
                 .Include<Models.Single, SingleDTO>()
@@ -81,7 +80,6 @@ namespace competex_backend
             CreateMap<Ekvipage, EkvipageDTO>()
                 .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
                 .ForMember(dest => dest.Entity, opt => opt.MapFrom(src => src.EntityId));
-
             CreateMap<Score, ScoreDTO>()
                 .ForMember(dest => dest.Match, opt => opt.MapFrom(src => src.MatchId))
                 .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
@@ -134,7 +132,6 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<MatchDTO, Match>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-
             CreateMap<ParticipantDTO, Participant>()
                 .Include<TeamDTO, Team>()
                 .Include<SingleDTO, Models.Single>()
@@ -146,7 +143,6 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<EkvipageDTO, Ekvipage>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-
             CreateMap<ScoreDTO, Score>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .Include<TimeScoreDTO, TimeScore>()
@@ -158,10 +154,6 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<PointScoreDTO, PointScore>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());         
-            // TODO: Update these again!
-            
-            // TODO: Use reversemap!
-
         }
 
 

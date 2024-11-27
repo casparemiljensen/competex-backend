@@ -18,17 +18,9 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    // Enable support for "allOf" (shared properties) and "oneOf" (polymorphism)
     c.UseAllOfForInheritance();
     c.UseOneOfForPolymorphism();
 
-    //// Dynamically discover subtypes of the base type
-    //c.SelectSubTypesUsing(baseType =>
-    //{
-    //    // Ensure we're only selecting non-abstract types that inherit from the base type
-    //    return typeof(ParticipantDTO).Assembly.GetTypes()
-    //        .Where(type => type.IsSubclassOf(baseType) && !type.IsAbstract);
-    //});
     // Dynamically discover subtypes for any base type (e.g., ParticipantDTO, ScoreDTO)
     c.SelectSubTypesUsing(baseType =>
     {
@@ -37,7 +29,6 @@ builder.Services.AddSwaggerGen(c =>
             .Where(type => type.IsSubclassOf(baseType) && !type.IsAbstract);
     });
 
-    // Optionally enable annotations for inheritance and polymorphism
     c.EnableAnnotations(enableAnnotationsForInheritance: true, enableAnnotationsForPolymorphism: true);
 });
 

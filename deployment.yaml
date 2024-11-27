@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: competex-backend
-        image: ilum1/competex-backend:latest # your-repository/competex-backend:latest  # Replace with your container registry URL
+        image: ilum1/competex:master_backend # your-repository/competex-backend:latest  # Replace with your container registry URL
         imagePullPolicy: Always  # Use "Always" to ensure the image is pulled from the registry # Alternative: use never if local
         ports:
         - containerPort: 8080

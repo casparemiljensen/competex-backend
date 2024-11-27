@@ -96,4 +96,13 @@
         Main,
         Assistant
     }
+
+    [Flags]
+    public enum Permissions
+    {
+        User = 1,
+        Member = 2,
+        Admin = 4,
+        Owner = 8
+    }
 }

@@ -6,6 +6,7 @@ using competex_backend.BLL.Interfaces;
 using competex_backend.API.DTOs;
 using competex_backend.Models;
 using competex_backend.Common.ErrorHandling;
+using competex_backend.DAL.Repositories.PostgressDataAccess;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,7 +39,8 @@ builder.Services.AddSingleton<MockDatabaseManager>();
 
 # region IGenericRepository
 //Registers IGenericRepository<T> with specific implementations (MockMemberRepository, MockClubRepository, etc.) for each model type.
-builder.Services.AddScoped<IGenericRepository<Member>, MockMemberRepository>();
+//builder.Services.AddScoped<IGenericRepository<Member>, MockMemberRepository>();
+builder.Services.AddScoped<IGenericRepository<Member>, PostgresMemberRepository>();
 builder.Services.AddScoped<IGenericRepository<Club>, MockClubRepository>();
 builder.Services.AddScoped<IGenericRepository<Round>, MockRoundRepository>();
 builder.Services.AddScoped<IGenericRepository<SportType>, MockSportTypeRepository>();
@@ -82,7 +84,8 @@ builder.Services.AddScoped<IMatchService, MatchService>();
 
 #region Service DTO Mappings
 // Registers services with DTO mappings for each model type.
-builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
+//builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
+builder.Services.AddScoped<IMemberRepository, PostgresMemberRepository>();
 builder.Services.AddScoped<IClubRepository, MockClubRepository>();
 builder.Services.AddScoped<IRoundRepository, MockRoundRepository>();
 builder.Services.AddScoped<ISportTypeRepository, MockSportTypeRepository>();
@@ -176,5 +179,7 @@ app.UseAuthorization();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.MapControllers();
+
+PostgresConnection.Connect();
 
 app.Run();

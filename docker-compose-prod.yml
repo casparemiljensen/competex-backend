@@ -1,6 +1,6 @@
 services:
   competex-backend:
-    image: ilum1/competex-backend:latest  # Tag the built image with 'competex-backend'
+    image: ilum1/competex:master_backend  # Tag the built image with 'competex-backend'
     ports:
       - "32778:8080"  # Maps container's 8080 port to host's 32778 port 
       - "32779:8081"  # Maps container's 8081 port to host's 32779 port

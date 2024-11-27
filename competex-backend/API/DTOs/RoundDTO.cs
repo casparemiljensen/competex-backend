@@ -8,11 +8,13 @@ namespace competex_backend.API.DTOs
         public required string Name { get; set; }
         public uint SequenceNumber { get; set; }
         public RoundType RoundType { get; set; }
-        public Guid CompetitionId { get; init; }
+        public CompetitionDTO? Competition { get; set; }
+        public Guid? CompetitionId { get; init; }
         public RoundStatus Status { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public required IEnumerable<Guid> Matches { get; set; }
+        //public IEnumerable<MatchDTO>? Matches { get; set; }
+        //public IEnumerable<Guid>? MatchIds { get; set; }
     }
 }
 

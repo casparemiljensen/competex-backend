@@ -9,6 +9,6 @@ namespace competex_backend.Models
         public DateTime BirthDate { get; set; }
         public Level Level { get; set; }
         [Required]
-        public Member Owner { get; set; }
+        public Guid OwnerId { get; set; }
     }
 }

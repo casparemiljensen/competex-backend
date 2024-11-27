@@ -7,18 +7,18 @@ namespace competex_backend.Models
         public string Description { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public Location? Location { get; set; }
+        public Guid? LocationId { get; set; }
         public DateTime RegistrationStartDate { get; set; }
         public DateTime RegistrationEndDate { get; set; }
         public Status Status { get; set; } = Status.Pending;
         public required Guid Organizer { get; set; } // ClubId
-        public required SportType SportType { get; set; }
-        public List<Competition> Competitions { get; set; } = [];
+        public required Guid SportTypeId { get; set; }
+        public List<Guid> CompetitionIds { get; set; } = [];
         public int EntryFee { get; set; } = 0;
 
-        public Result AddCompetition(Competition competition)
+        public Result AddCompetition(Guid competitionId)
         {
-            Competitions.Add(competition);
+            CompetitionIds.Add(competitionId);
             return Result.Success();
         }
     }

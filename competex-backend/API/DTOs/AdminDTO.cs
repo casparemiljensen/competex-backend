@@ -2,9 +2,9 @@
 
 namespace competex_backend.API.DTOs
 {
-    public class AdminDTO
+    public class AdminDTO : Identifiable
     {
-        public Guid Id { get; set; }
-        public required List<SportType> SportTypes { get; set; }
+        public List<SportType>? SportTypes { get; set; }
+        public List<Guid>? SportTypeIds { get; set; }
     }
 }

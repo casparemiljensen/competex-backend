@@ -1,10 +1,12 @@
-﻿namespace competex_backend.API.DTOs
+﻿using competex_backend.Models;
+
+namespace competex_backend.API.DTOs
 {
     public class JudgeDTO : Identifiable
     {
-        public string Name { get; set; } = string.Empty;
-        public string ContactInfo { get; set; } = string.Empty;
-        public Guid UserId { get; set; }
-        public List<MatchDTO>? Matches { get; set; } // Not sure if this should be MatchDTO or Match
+        public JudgeType JudgeType { get; set; }
+        public MemberDTO? Member { get; set; }
+        public Guid? MemberId { get; set; }
+        public string Description { get; set; } = string.Empty;
     }
 }

@@ -15,27 +15,5 @@ namespace competex_backend.API.Controllers
         {
             _memberService = memberService;
         }
-
-        [HttpGet("GetByName")]
-        public IActionResult GetByName(string firstName)
-        {
-            var res = _memberService.GetByName(firstName);
-            if (res != null)
-            {
-                return Ok(res);
-            }
-            return BadRequest("An error occured");
-        }
-
-        [HttpGet("GetNumber")]
-        public IActionResult GetNumber()
-        {
-            var res = _memberService.CheckNumber();
-            if (res)
-            {
-                return Ok();
-            }
-            return BadRequest("An error occured");
-        }
     }
 }

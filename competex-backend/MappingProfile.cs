@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using competex_backend.API.DTOs;
+using competex_backend.BLL.Interfaces;
+using competex_backend.Common.Helpers;
 using competex_backend.Models;
 
 namespace competex_backend
@@ -25,14 +27,20 @@ namespace competex_backend
             CreateMap<ScoringSystem, ScoringSystemDTO>();
             CreateMap<Judge, JudgeDTO>();
             CreateMap<Match, MatchDTO>();
+
+            CreateMap<Guid, MemberDTO>().ConvertUsing<GuidToMemberDTOConverter>();
+            CreateMap<Guid, EntityDTO>().ConvertUsing<GuidToEntityDTOConverter>();
             CreateMap<Participant, ParticipantDTO>()
                 .Include<Team, TeamDTO>()
                 .Include<Models.Single, SingleDTO>()
                 .Include<Ekvipage, EkvipageDTO>();
             CreateMap<Team, TeamDTO>()
-                .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.Members));
-            CreateMap<Models.Single, SingleDTO>();
-            CreateMap<Ekvipage, EkvipageDTO>();
+                .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.MemberIds));
+            CreateMap<Models.Single, SingleDTO>()
+                .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId));
+            CreateMap<Ekvipage, EkvipageDTO>()
+                .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
+                .ForMember(dest => dest.Entity, opt => opt.MapFrom(src => src.EntityId));
 
 
 
@@ -83,6 +91,39 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             
             // TODO: Use reversemap!
+
+        }
+
+        public class GuidToMemberDTOConverter : ITypeConverter<Guid, MemberDTO>
+        {
+            private readonly IMemberService _memberService;
+
+            public GuidToMemberDTOConverter(IMemberService memberService)
+            {
+                _memberService = memberService;
+            }
+
+            public MemberDTO Convert(Guid source, MemberDTO destination, ResolutionContext context)
+            {
+                var member = _memberService.GetByIdAsync(source).GetAwaiter().GetResult();
+                return member != null && member.IsSuccess ? member.Value : null;
+            }
+        }
+
+        public class GuidToEntityDTOConverter : ITypeConverter<Guid, EntityDTO>
+        {
+            private readonly IEntityService _entityService;
+
+            public GuidToEntityDTOConverter(IEntityService entityService)
+            {
+                _entityService = entityService;
+            }
+
+            public EntityDTO Convert(Guid source, EntityDTO destination, ResolutionContext context)
+            {
+                var entity = _entityService.GetByIdAsync(source).GetAwaiter().GetResult();
+                return entity != null && entity.IsSuccess ? entity.Value : null;
+            }
         }
     }
 }

@@ -152,8 +152,11 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-// Outcomment for debugging purposes
-app.UseMiddleware<ErrorHandlingMiddleware>();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseMiddleware<ErrorHandlingMiddleware>();
+}
 
 app.MapControllers();
 

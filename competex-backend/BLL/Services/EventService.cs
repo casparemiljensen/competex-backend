@@ -69,7 +69,7 @@ namespace competex_backend.BLL.Services
                 competitionPrices[competition.Id] = competition.RegistrationPrice;
             }
 
-            return registrations.Aggregate(0, (sum, registration) => sum + competitionPrices[registration.Competition.Id]) + selectedEvent.Value.EntryFee;
+            return registrations.Aggregate(0, (sum, registration) => sum + competitionPrices[registration.CompetitionId]) + selectedEvent.Value.EntryFee;
         }
     }
 }

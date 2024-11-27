@@ -1,4 +1,4 @@
-﻿using competex_backend.Dtos;
+﻿using competex_backend.API.DTOs;
 using competex_backend.Models;
 
 namespace competex_backend.API.DTOs

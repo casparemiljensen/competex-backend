@@ -11,12 +11,8 @@ namespace competex_backend
     {
         public MappingProfile()
         {
-            // Needed?
 
-            //CreateMap<Guid, TeamDTO>().ConvertUsing<GuidToObjectConverter<TeamDTO>>();
-            //CreateMap<Guid, Models.SingleDTO>().ConvertUsing<GuidToObjectConverter<Models.SingleDTO>>();
-            //CreateMap<Guid, EkvipageDTO>().ConvertUsing<GuidToObjectConverter<EkvipageDTO>>();
-
+            // TODO: Do we need all of these?
             CreateMap<Guid, CompetitionDTO>().ConvertUsing<GuidToObjectConverter<CompetitionDTO>>();
             CreateMap<Guid, MemberDTO>().ConvertUsing<GuidToObjectConverter<MemberDTO>>();
             CreateMap<Guid, EntityDTO>().ConvertUsing<GuidToObjectConverter<EntityDTO>>();
@@ -31,15 +27,13 @@ namespace competex_backend
             CreateMap<Guid, RegistrationDTO>().ConvertUsing<GuidToObjectConverter<RegistrationDTO>>();
             CreateMap<Guid, ScoringSystemDTO>().ConvertUsing<GuidToObjectConverter<ScoringSystemDTO>>();
             CreateMap<Guid, JudgeDTO>().ConvertUsing<GuidToObjectConverter<JudgeDTO>>();
-            CreateMap<Guid, MatchDTO>().ConvertUsing<GuidToObjectConverter<MatchDTO>>();
 
 
-            // Definely needed
+            // TODO: Definely needed
             CreateMap<Guid, RoundDTO>().ConvertUsing<GuidToObjectConverter<RoundDTO>>();
             CreateMap<Guid, ParticipantDTO>().ConvertUsing<GuidToObjectConverter<ParticipantDTO>>();
             CreateMap<Guid, PenaltyDTO>().ConvertUsing<GuidToObjectConverter<PenaltyDTO>>();
-
-
+            CreateMap<Guid, MatchDTO>().ConvertUsing<GuidToObjectConverter<MatchDTO>>();
 
             CreateMap<Member, MemberDTO>();
             CreateMap<Club, ClubDTO>();
@@ -54,26 +48,19 @@ namespace competex_backend
                     src.LocationId.HasValue ? src.LocationId.Value : Guid.Empty)) // Maps only if LocationId is present
                 .ForMember(dest => dest.SportType, opt => opt.MapFrom(src => src.SportTypeId))
                 .ForMember(dest => dest.Competitions, opt => opt.MapFrom(src => src.CompetitionIds));
-
             CreateMap<ClubMembership, ClubMembershipDTO>();
-
             CreateMap<Admin, AdminDTO>()
                 .ForMember(dest => dest.SportTypes, opt => opt.MapFrom(src => src.SportTypeIds));
-
             CreateMap<Entity, EntityDTO>()
                 .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.OwnerId));
-
             CreateMap<Field, FieldDTO>();
             CreateMap<Location, LocationDTO>();
             CreateMap<Penalty, PenaltyDTO>();
-
             CreateMap<Registration, RegistrationDTO>()
-                .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
+                .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => src.CompetitionId));
-
             CreateMap<ScoringSystem, ScoringSystemDTO>() // Cannot map penalties somehow.
                 .ForMember(dest => dest.Penalties, opt => opt.MapFrom(src => src.PenaltyIds));
-
             CreateMap<Judge, JudgeDTO>()
                 .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId));
             CreateMap<Match, MatchDTO>()
@@ -95,9 +82,24 @@ namespace competex_backend
                 .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
                 .ForMember(dest => dest.Entity, opt => opt.MapFrom(src => src.EntityId));
 
+            CreateMap<Score, ScoreDTO>()
+                .ForMember(dest => dest.Match, opt => opt.MapFrom(src => src.MatchId))
+                .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
+                .ForMember(dest => dest.ScoreValue, opt => opt.MapFrom(src => src.ScoreValue)) // Do not know how to handle this...
+                .ForMember(dest => dest.Penalties, opt => opt.MapFrom(src => src.PenaltyIds))
+                .Include<TimeScore, TimeScoreDTO>()
+                .Include<SetScore, SetScoreDTO>()
+                .Include<PointScore, PointScoreDTO>();
+            CreateMap<TimeScore, TimeScoreDTO>()
+                .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.ScoreValue));
+            CreateMap<SetScore, SetScoreDTO>()
+                .ForMember(dest => dest.SetsWon, opt => opt.MapFrom(src => src.ScoreValue));
+            CreateMap<PointScore, PointScoreDTO>()
+                .ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.ScoreValue));
+
+
 
             // Reverse mappings
-
             CreateMap<MemberDTO, Member>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id during mapping
             CreateMap<ClubDTO, Club>()
@@ -132,6 +134,7 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<MatchDTO, Match>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
+
             CreateMap<ParticipantDTO, Participant>()
                 .Include<TeamDTO, Team>()
                 .Include<SingleDTO, Models.Single>()
@@ -144,11 +147,20 @@ namespace competex_backend
             CreateMap<EkvipageDTO, Ekvipage>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
 
-            
+            CreateMap<ScoreDTO, Score>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .Include<TimeScoreDTO, TimeScore>()
+                .Include<SetScoreDTO, SetScore>()
+                .Include<PointScoreDTO, PointScore>();
+            CreateMap<TimeScoreDTO, TimeScore>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<SetScoreDTO, SetScore>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<PointScoreDTO, PointScore>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());         
             // TODO: Update these again!
             
             // TODO: Use reversemap!
-            
 
         }
 
@@ -180,7 +192,6 @@ namespace competex_backend
                 Console.WriteLine($"Successfully resolved {typeof(T).Name} for Guid: {source}");
                 return result.Value;
             }
-
         }
     }
 }

@@ -12,6 +12,7 @@ namespace competex_backend.API.DTOs
     [SwaggerSubType(typeof(TeamDTO), DiscriminatorValue = "Team")]
     [SwaggerSubType(typeof(SingleDTO), DiscriminatorValue = "Single")]
     [SwaggerSubType(typeof(EkvipageDTO), DiscriminatorValue = "Ekvipage")]
+
     public abstract class ParticipantDTO : Identifiable
     {
         public string Name { get; set; }

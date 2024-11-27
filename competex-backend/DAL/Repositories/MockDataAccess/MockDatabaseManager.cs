@@ -423,16 +423,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Penalties.AddRange([penalty1, penalty2, penalty3]);
             #endregion
 
-            #region Registration
-            var reg1 = new Registration
-            {
-                Id = Guid.NewGuid(),
-                CompetitionId = comp2.Id,
-                MemberId = member1.Id
-            };
-            Registrations.AddRange([reg1]);
-            #endregion
-
             #region ScoringSystem
 
             var scoringSystem1 = new ScoringSystem
@@ -479,6 +469,16 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             Participants.AddRange([team1, team2, single1, single2, ekvipage1, ekvipage2]);
 
+            #endregion
+
+            #region Registration
+            var reg1 = new Registration
+            {
+                Id = Guid.NewGuid(),
+                CompetitionId = comp2.Id,
+                ParticipantId = single1.Id
+            };
+            Registrations.AddRange([reg1]);
             #endregion
 
             #region Judges
@@ -557,17 +557,38 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             #region Scores
 
-            var score1a = new TimeScore(TimeSpan.FromMinutes(10), match1.Id, match1.ParticipantIds[0]);
-            var score1b = new TimeScore(TimeSpan.FromMinutes(9), match1.Id, match1.ParticipantIds[1]);
-
-            var score2a = new SetScore(2, match2.Id, match2.ParticipantIds[0]);
-            var score2b = new SetScore(3, match2.Id, match2.ParticipantIds[1]);
-
-            var score3a = new PointScore(10, match3.Id, match3.ParticipantIds[0]);
-            var score3b = new PointScore(9, match3.Id, match3.ParticipantIds[1]);
+            // TODO: Reconsider the contructor of the Score classes
 
 
-            Scores.AddRange([score1a, score1b, score2a, score2b, score3a, score3b]);
+            //var score1a = new TimeScore(TimeSpan.FromMinutes(10), match1.Id, match1.ParticipantIds[0]);
+            //score1a.Id = Guid.NewGuid();
+
+            //var score1b = new TimeScore(TimeSpan.FromMinutes(9), match1.Id, match1.ParticipantIds[1]);
+            //score1b.Id = Guid.NewGuid();
+
+            //var score2a = new SetScore(2, match2.Id, match2.ParticipantIds[0]);
+            //score2a.Id = Guid.NewGuid();
+
+            //var score2b = new SetScore(3, match2.Id, match2.ParticipantIds[1]);
+            //score2b.Id = Guid.NewGuid();
+
+            //var score3a = new PointScore(10, match3.Id, match3.ParticipantIds[0]);
+            //score3a.Id = Guid.NewGuid();
+
+            //var score3b = new PointScore(9, match3.Id, match3.ParticipantIds[1]);
+            //score3b.Id = Guid.NewGuid();
+
+            var score4 = new TimeScore(TimeSpan.FromMinutes(10), Guid.Empty, Guid.Empty);
+            score4.Id = Guid.NewGuid();
+
+            var score5 = new PointScore(10, Guid.Empty, Guid.Empty);
+            score5.Id = Guid.NewGuid();
+
+            var score6 = new SetScore(2, Guid.Empty, Guid.Empty);
+            score6.Id = Guid.NewGuid();
+
+            //Scores.AddRange([score1a, score1b, score2a, score2b, score3a, score3b, score4]);
+            Scores.AddRange([score4, score5, score6]);
 
 
             //Matches[0].Scores.AddRange([score1a, score1b]);

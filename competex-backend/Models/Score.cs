@@ -2,20 +2,18 @@
 {
     public abstract class Score : Identifiable
     {
-
         public Guid MatchId { get; set; }
         public Guid ParticipantId { get; set; }
-        public ScoreType ScoreType { get; set; }
+        //public ScoreType ScoreType { get; set; }
         // Keeping ScoreValue as a protected abstract property for derived classes
         public abstract object ScoreValue { get; set; }
         //public Judge? JudgedBy { get; set; }
         public List<Guid> PenaltyIds { get; set; } = new List<Guid>();
 
-        public Score(Guid matchId, Guid participantId, ScoreType scoreType)
+        public Score(Guid matchId, Guid participantId)
         {
             MatchId = matchId;
             ParticipantId = participantId;
-            ScoreType = scoreType;
         }
     }
 
@@ -23,7 +21,7 @@
     public class TimeScore : Score
     {
         public TimeSpan Time { get; set; }
-        public TimeScore(TimeSpan time, Guid matchId, Guid participantId) : base(matchId, participantId, ScoreType.Time)
+        public TimeScore(TimeSpan time, Guid matchId, Guid participantId) : base(matchId, participantId)
         {
             Time = time;
         }
@@ -41,7 +39,7 @@
         public int SetsWon { get; set; }
 
         // Constructor
-        public SetScore(int setsWon, Guid matchId, Guid participantId) : base(matchId, participantId, ScoreType.Set)
+        public SetScore(int setsWon, Guid matchId, Guid participantId) : base(matchId, participantId)
         {
             this.SetsWon = setsWon;
         }
@@ -57,7 +55,7 @@
     public class PointScore : Score
     {
         public int Points { get; set; }
-        public PointScore(int points, Guid matchId, Guid participantId) : base(matchId, participantId, ScoreType.Number)
+        public PointScore(int points, Guid matchId, Guid participantId) : base(matchId, participantId)
         {
             Points = points;
         }

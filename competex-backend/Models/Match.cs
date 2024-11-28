@@ -5,12 +5,12 @@ namespace competex_backend.Models
     public class Match : Identifiable
     {
         public Guid RoundId { get; set; }
-        public List<Participant>? Participants { get; set; }
+        public List<Guid>? ParticipantIds { get; set; }
         public MatchStatus Status { get; set; } = MatchStatus.Pending;
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public Field? Field { get; set; }
-        public Judge? Judge { get; set; }
-        public List<Score> Scores { get; set; } = new List<Score>();
+        public Guid? FieldId { get; set; }
+        public Guid? JudgeId { get; set; }
+        public List<Guid>? ScoreIds { get; set; } = new List<Guid>();
     }
 }

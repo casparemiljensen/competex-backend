@@ -45,7 +45,10 @@ namespace competex_backend.BLL.Services
 
         public async Task<ResultT<int>> GetMembersOwedAmount(Guid memberId, Guid eventId)
         {
-            var selectedEvent = await _eventRepository.GetByIdAsync(eventId);
+            //var selectedEvent = await _eventRepository.GetByIdAsync(eventId);
+
+            var selectedEvent = await GetByIdAsync(eventId);
+
             if (!selectedEvent.IsSuccess)
             {
                 return ResultT<int>.Failure(selectedEvent.Error!);

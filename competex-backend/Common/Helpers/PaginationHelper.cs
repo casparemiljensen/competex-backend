@@ -36,6 +36,17 @@ public static class PaginationHelper
         return (int)Math.Ceiling((double)(numberOfLines / (pageSize ?? Defaults.PageSize)) + 1);
     }
 
+    public static ResultT<Tuple<int, IEnumerable<T>>> PaginationWrapper<T>(IEnumerable<T> list, int? pageSize, int? pageNumber)
+    {
+        return ResultT<Tuple<int, IEnumerable<T>>>
+            .Success(
+                new Tuple<int, IEnumerable<T>>(
+                GetTotalPages(pageSize, pageNumber, list.Count()),
+                list
+            )
+        );
+    }
+
     public async static Task<IEnumerable<T>> GetAll<T, TRepo>(TRepo repo, Dictionary<string, object>? searchParams) where TRepo : IGenericRepository<T> where T : class
     {
         List<T> output = [];

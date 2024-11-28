@@ -4,7 +4,7 @@ using Npgsql;
 namespace competex_backend.Models
 
 {
-    public class Member : Identifiable
+    public class Member : Identifiable, IMappable<Member>
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
@@ -12,12 +12,12 @@ namespace competex_backend.Models
         public DateTime Birthday { get; set; }
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
-        public Enum Permissions { get; set; } = default; //Set to correct type when we figure out how to handle permissions
+        public Permissions Permissions { get; set; } = 0; //Set to correct type when we figure out how to handle permissions
         // public ICollection<ClubMember> ClubMembers { get; set; } = new List<ClubMember>();
 
         // No club implementation yet. 
 
-        public static Member MapMember(NpgsqlDataReader reader)
+        public static Member Map(NpgsqlDataReader reader)
         {
             return new Member()
             {

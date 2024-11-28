@@ -176,7 +176,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 // Outcomment for debugging purposes
-app.UseMiddleware<ErrorHandlingMiddleware>();
+//app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.MapControllers();
 

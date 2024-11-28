@@ -6,6 +6,7 @@ using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace competex_backend.DAL.Repositories.PostgressDataAccess
 {
@@ -58,12 +59,12 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
         {
             string tableName = GetTableName();
 
-            using var cmd = new NpgsqlCommand($"SELECT * FROM member WHERE id = '58a01cc0-1a49-455b-998c-1500b3db0dca'", PostgresConnection.conn)
-            //using var cmd = new NpgsqlCommand($"SELECT * FROM \"{tableName}\" WHERE \"Id\" = ($1)", PostgresConnection.conn)
+            //using var cmd = new NpgsqlCommand($"SELECT * FROM member WHERE id = '58a01cc0-1a49-455b-998c-1500b3db0dca'", PostgresConnection.conn)
+            await using var cmd = new NpgsqlCommand($"SELECT * FROM {tableName} WHERE \"id\" = ($1)", PostgresConnection.conn)
             {
                 Parameters =
                 {
-                    new() { Value = id},
+                    new() { Value = id, NpgsqlDbType = NpgsqlDbType.Uuid},
                 }
             };
 

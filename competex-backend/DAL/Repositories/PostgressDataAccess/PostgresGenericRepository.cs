@@ -1,10 +1,10 @@
 
 
+using Common.ResultPattern;
 using competex_backend.Common.ErrorHandling;
 using competex_backend.Common.Helpers;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -16,7 +16,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
         {
             string tableName = GetTableName();
 
-            await using var command = new NpgsqlCommand($"SELECT * FROM \"{tableName}\";", PostgresConnection.conn);
+            await using var command = new NpgsqlCommand($"SELECT * FROM {tableName};", PostgresConnection.conn);
 
             await using var reader = await command.ExecuteReaderAsync();
 
@@ -26,6 +26,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
         private static async Task<object> CallAccordingToType(NpgsqlDataReader reader, int? pageSize, int? pageNumber, bool isSingle = true)
         {
+            await reader.ReadAsync();
             switch (Activator.CreateInstance<T>())
             {
                 case Member:
@@ -48,10 +49,11 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
         private async static Task<List<T>> IterateOverReader(NpgsqlDataReader reader)
         {
             List<T> items = [];
-            while (await reader.ReadAsync())
+            do
             {
                 items.Add(T.Map(reader));
             }
+            while (await reader.ReadAsync());
             return items;
         }
 
@@ -70,7 +72,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
             await using var reader = await cmd.ExecuteReaderAsync();
 
-            return ((await CallAccordingToType(reader, null, null, true)) as ResultT<T>)!;
+            return ResultT<T>.Success(((await CallAccordingToType(reader, null, null, true)) as T)!);
         }
 
         public Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)

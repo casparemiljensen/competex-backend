@@ -1,20 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: competex-backend-deployment
+  name: competex-frontend-deployment
+  namespace: competex-frontend
 spec:
-  replicas: 6
+  replicas: 2
   selector:
     matchLabels:
-      app: competex-backend
+      app: competex-frontend
   template:
     metadata:
       labels:
-        app: competex-backend
+        app: competex-frontend
     spec:
+      tolerations: # Ensure pods are scheduled on appropriate nodes
+      - key: "competex-frontend"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
       containers:
-      - name: competex-backend
-        image: ilum1/competex:master_backend # your-repository/competex-backend:latest  # Replace with your container registry URL
+      - name: competex-frontend
+        image: ilum1/competex:master_frontend # your-repository/competex-backend:latest  # Replace with your container registry URL
         imagePullPolicy: Always  # Use "Always" to ensure the image is pulled from the registry # Alternative: use never if local
         ports:
         - containerPort: 8080

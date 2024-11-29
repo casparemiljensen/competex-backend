@@ -2,9 +2,8 @@
 
 namespace competex_backend.API.DTOs
 {
-    public class PenaltyDTO
+    public class PenaltyDTO : Identifiable
     {
-        public Guid Id { get; set; }
         public PenaltyType PenaltyType { get; set; }
         public object? PenaltyValue { get; set; }
     }

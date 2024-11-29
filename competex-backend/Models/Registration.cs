@@ -2,7 +2,7 @@
 {
     public class Registration : Identifiable
     {
-        public Guid MemberId { get; set; }
+        public Guid ParticipantId { get; set; }
         public Guid CompetitionId { get; set; }
         public DateTime RegistrationDate { get; set; }
         public RegistrationStatus Status { get; set; }

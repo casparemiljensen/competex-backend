@@ -11,6 +11,19 @@ using competex_backend.Common.ErrorHandling;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:4200",
+                                             "http://127.0.0.1:8080",
+                                              "http://127.0.0.1:8080");
+                      });
+});
+
 
 builder.Services.AddControllers();
 
@@ -18,19 +31,17 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    // Enable support for "allOf" (shared properties) and "oneOf" (polymorphism)
     c.UseAllOfForInheritance();
     c.UseOneOfForPolymorphism();
 
-    // Dynamically discover subtypes of the base type
+    // Dynamically discover subtypes for any base type (e.g., ParticipantDTO, ScoreDTO)
     c.SelectSubTypesUsing(baseType =>
     {
-        // Ensure we're only selecting non-abstract types that inherit from the base type
-        return typeof(ParticipantDTO).Assembly.GetTypes()
+        // Use the assembly of the provided base type to find its subtypes
+        return baseType.Assembly.GetTypes()
             .Where(type => type.IsSubclassOf(baseType) && !type.IsAbstract);
     });
 
-    // Optionally enable annotations for inheritance and polymorphism
     c.EnableAnnotations(enableAnnotationsForInheritance: true, enableAnnotationsForPolymorphism: true);
 });
 
@@ -56,6 +67,7 @@ builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemR
 builder.Services.AddScoped<IGenericRepository<Participant>, MockParticipantRepository>();
 builder.Services.AddScoped<IGenericRepository<Judge>, MockJudgeRepository>();
 builder.Services.AddScoped<IGenericRepository<Match>, MockMatchRepository>();
+builder.Services.AddScoped<IGenericRepository<Score>, MockScoreRepository>();
 #endregion
 
 # region Services 
@@ -78,6 +90,7 @@ builder.Services.AddScoped<IScoringSystemService, ScoringSystemService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IJudgeService, JudgeService>();
 builder.Services.AddScoped<IMatchService, MatchService>();
+builder.Services.AddScoped<IScoreService, ScoreService>();
 # endregion
 
 #region Service DTO Mappings
@@ -100,6 +113,7 @@ builder.Services.AddScoped<IScoringSystemRepository, MockScoringSystemRepository
 builder.Services.AddScoped<IParticipantRepository, MockParticipantRepository>();
 builder.Services.AddScoped<IJudgeRepository, MockJudgeRepository>();
 builder.Services.AddScoped<IMatchRepository, MockMatchRepository>();
+builder.Services.AddScoped<IScoreRepository, MockScoreRepository>();
 #endregion
 
 # region IGenericService
@@ -124,6 +138,7 @@ builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<Sco
 builder.Services.AddScoped<IGenericService<ParticipantDTO>, GenericService<Participant, ParticipantDTO>>();
 builder.Services.AddScoped<IGenericService<JudgeDTO>, GenericService<Judge, JudgeDTO>>();
 builder.Services.AddScoped<IGenericService<MatchDTO>, GenericService<Match, MatchDTO>>();
+builder.Services.AddScoped<IGenericService<ScoreDTO>, GenericService<Score, ScoreDTO>>();
 # endregion
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
@@ -131,27 +146,21 @@ builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
+// Right now we want to show Swagger UI in production. Remove this clause when that changes
+    if (app.Environment.IsDevelopment() || true)
     {
-        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapse swagger on startup
-    });
-}
-else // Right now we want to show Swagger UI in production. Remove this clause when that changes
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapse swagger on startup
-    });
-}
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
+        {
+            options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapse swagger on startup
+        });
+    }
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseCors(MyAllowSpecificOrigins);
 
 if (!app.Environment.IsDevelopment())
 {

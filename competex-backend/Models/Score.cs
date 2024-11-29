@@ -2,20 +2,18 @@
 {
     public abstract class Score : Identifiable
     {
-
-        public Match Match { get; set; }
-        public Participant Participant { get; set; }
-        public ScoreType ScoreType { get; set; }
+        public Guid MatchId { get; set; }
+        public Guid ParticipantId { get; set; }
+        //public ScoreType ScoreType { get; set; }
         // Keeping ScoreValue as a protected abstract property for derived classes
         public abstract object ScoreValue { get; set; }
         //public Judge? JudgedBy { get; set; }
-        public List<Penalty> Penalties { get; set; } = new List<Penalty>();
+        public List<Guid> PenaltyIds { get; set; } = new List<Guid>();
 
-        public Score(Match match, Participant participant, ScoreType scoreType)
+        public Score(Guid matchId, Guid participantId)
         {
-            Match = match;
-            Participant = participant;
-            ScoreType = scoreType;
+            MatchId = matchId;
+            ParticipantId = participantId;
         }
     }
 
@@ -23,7 +21,7 @@
     public class TimeScore : Score
     {
         public TimeSpan Time { get; set; }
-        public TimeScore(TimeSpan time, Match match, Participant participant) : base(match, participant, ScoreType.Time)
+        public TimeScore(TimeSpan time, Guid matchId, Guid participantId) : base(matchId, participantId)
         {
             Time = time;
         }
@@ -41,7 +39,7 @@
         public int SetsWon { get; set; }
 
         // Constructor
-        public SetScore(int setsWon, Match match, Participant participant) : base(match, participant, ScoreType.Set)
+        public SetScore(int setsWon, Guid matchId, Guid participantId) : base(matchId, participantId)
         {
             this.SetsWon = setsWon;
         }
@@ -57,7 +55,7 @@
     public class PointScore : Score
     {
         public int Points { get; set; }
-        public PointScore(int points, Match match, Participant participant) : base(match, participant, ScoreType.Number)
+        public PointScore(int points, Guid matchId, Guid participantId) : base(matchId, participantId)
         {
             Points = points;
         }

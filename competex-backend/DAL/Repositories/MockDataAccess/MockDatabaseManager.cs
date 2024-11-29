@@ -80,15 +80,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Clubs.AddRange([club1, club2, club3, club4, club5, club6]);
             #endregion
 
-            #region Rounds
-            var round1 = new Round { Name = "TestRoundOne", Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac") };
-            var round2 = new Round { Name = "TestRoundTwo", CompetitionId = new Guid("596462f8-2e32-4a21-921a-b5768c6b0d86") };
-            var round3 = new Round { Id = Guid.NewGuid(), Name = "TestRoundThree" };
-            var round4 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFour" };
-            var round5 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFive" };
-            Rounds.AddRange([round1, round2, round3, round4, round5]);
-            #endregion
-
             #region Sporttypes
 
             var sportTypeOne = new SportType
@@ -176,7 +167,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var comp1 = new Competition
             {
                 Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"),
-                CompetitionType = new List<CompetitionType> { new CompetitionType() },
+                CompetitionTypeIds = new List<Guid> { competitionTypeOne.Id },
                 StartDate = new DateTime(2024, 5, 1),
                 EndDate = new DateTime(2024, 5, 10),
                 Level = Level.Intermediate,
@@ -189,7 +180,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var comp2 = new Competition
             {
                 Id = new Guid("42fff518-0815-4148-b826-33a4a1686dc0"),
-                CompetitionType = new List<CompetitionType> { new CompetitionType { Id = new Guid("54cba910-da16-49ed-b4fc-865df9a2e47d"), Name = "Champions League Handball", ScoreType = ScoreType.Number, ScoreMethod = ScoreMethod.None } },
+                CompetitionTypeIds = new List<Guid> { competitionTypeTwo.Id },
                 StartDate = new DateTime(2024, 7, 1),
                 EndDate = new DateTime(2024, 7, 3),
                 Level = Level.Professional,
@@ -202,6 +193,50 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Competitions.AddRange([comp1, comp2]);
             #endregion
 
+            #region Rounds
+            var round1 = new Round { Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"), Name = "TestRoundOne", CompetitionId = comp1.Id };
+            var round2 = new Round { Id = Guid.NewGuid(), Name = "TestRoundTwo", CompetitionId = comp1.Id };
+            var round3 = new Round { Id = Guid.NewGuid(), Name = "TestRoundThree", CompetitionId = comp1.Id };
+            var round4 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFour", CompetitionId = comp2.Id };
+            var round5 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFive", CompetitionId = comp2.Id };
+            Rounds.AddRange([round1, round2, round3, round4, round5]);
+            #endregion
+
+            #region Locations
+
+            var location1 = new Location
+            {
+                Id = Guid.NewGuid(),
+                Name = "Vejle Stadion",
+                Address = "Vejlevej 1",
+                Zip = "7100",
+                City = "Vejle",
+                Country = "Denmark"
+            };
+
+            var location2 = new Location
+            {
+                Id = Guid.NewGuid(),
+                Name = "Aalborg Stadion",
+                Address = "Aalborgvej 1",
+                Zip = "9000",
+                City = "Aalborg",
+                Country = "Denmark"
+            };
+
+            var location3 = new Location
+            {
+                Id = Guid.NewGuid(),
+                Name = "Sparekassen Danmark Arena",
+                Address = "Willy Brandts Vej 31",
+                Zip = "9000",
+                City = "Aalborg",
+                Country = "Denmark"
+            };
+
+            Locations.AddRange([location1, location2, location3]);
+            #endregion
+
             #region Events
             var mockEvent = new Event
             {
@@ -210,20 +245,13 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Description = "Handball Finals",
                 StartDate = new DateTime(2024, 6, 15, 9, 0, 0),
                 EndDate = new DateTime(2024, 6, 15, 18, 0, 0),
-                Location = new Location
-                {
-                    Name = "Sparekassen Danmark Arena",
-                    Address = "Willy Brandts Vej 31",
-                    Zip = "9000",
-                    City = "Aalborg",
-                    Country = "Denmark"
-                },
+                LocationId = location3.Id,
                 RegistrationStartDate = new DateTime(2024, 6, 10),
                 RegistrationEndDate = new DateTime(2024, 6, 20),
                 Status = Status.Pending,
                 Organizer = Guid.Parse("aa57885f-cab9-48da-85d6-57a671c7d664"), // Mock ClubId as Organizer
-                SportType = sportTypeFive,
-                Competitions = new List<Competition>() { comp2 }
+                SportTypeId = sportTypeFive.Id,
+                CompetitionIds = new List<Guid>() { comp1.Id }
             };
             Events.Add(mockEvent);
             #endregion
@@ -248,7 +276,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Email = member3.Email,
                 Phone = member3.Phone,
                 Permissions = member3.Permissions,
-                SportTypes = new List<SportType> { sportTypeFive }
+                SportTypeIds = new List<Guid> { sportTypeFive.Id }
             };
             Admins.AddRange([admin]);
 
@@ -258,7 +286,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var entity1 = new Entity
             {
                 Id = new Guid("01b89faf-55f5-4707-bc2c-502484e7ed4a"),
-                Owner = member3,
+                OwnerId = member3.Id,
                 Type = EntityType.Rabbit,
                 Name = "Thumper",
                 BirthDate = new DateTime(2021, 4, 15),
@@ -268,7 +296,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var entity2 = new Entity
             {
                 Id = new Guid("0b3c2028-ce7a-45c2-9fd4-da81f9f3c269"),
-                Owner = member4,
+                OwnerId = member4.Id,
                 Type = EntityType.Rabbit,
                 Name = "Cotton",
                 BirthDate = new DateTime(2020, 8, 3),
@@ -278,7 +306,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var entity3 = new Entity
             {
                 Id = new Guid("3cd7caa4-378d-4336-914e-c29d3ff40d85"),
-                Owner = member3,
+                OwnerId = member3.Id,
                 Type = EntityType.Rabbit,
                 Name = "Pepper",
                 BirthDate = new DateTime(2022, 1, 20),
@@ -287,7 +315,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             var entity4 = new Entity
             {
-                Owner = member4,
+                Id = Guid.NewGuid(),
+                OwnerId = member4.Id,
                 Type = EntityType.Rabbit,
                 Name = "Snowball",
                 BirthDate = new DateTime(2019, 11, 25),
@@ -296,7 +325,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             var entity5 = new Entity
             {
-                Owner = member5,
+                Id = Guid.NewGuid(),
+                OwnerId = member5.Id,
                 Type = EntityType.Rabbit,
                 Name = "Flopsy",
                 BirthDate = new DateTime(2021, 6, 10),
@@ -365,30 +395,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Fields.AddRange([field1, field2, field3, field4, field5, field6]);
             #endregion
 
-            #region Locations
-
-            var location1 = new Location
-            {
-                Id = Guid.NewGuid(),
-                Name = "Vejle Stadion",
-                Address = "Vejlevej 1",
-                Zip = "7100",
-                City = "Vejle",
-                Country = "Denmark"
-            };
-
-            var location2 = new Location
-            {
-                Id = Guid.NewGuid(),
-                Name = "Aalborg Stadion",
-                Address = "Aalborgvej 1",
-                Zip = "9000",
-                City = "Aalborg",
-                Country = "Denmark"
-            };
-
-            Locations.AddRange([location1, location2]);
-            #endregion
+           
 
             #region Penalties
 
@@ -416,15 +423,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Penalties.AddRange([penalty1, penalty2, penalty3]);
             #endregion
 
-            #region Registration
-            var reg1 = new Registration
-            {
-                CompetitionId = comp2.Id,
-                MemberId = member1.Id
-            };
-            Registrations.AddRange([reg1]);
-            #endregion
-
             #region ScoringSystem
 
             var scoringSystem1 = new ScoringSystem
@@ -434,7 +432,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Description = "Scoring System One",
                 ScoreType = ScoreType.Number,
                 ScoringRules = "Scoring Rules One",
-                Penalties = 5,
+                PenaltyIds = new List<Guid> { penalty3.Id },
                 EvaluationMethod = (scoreType, penalties) => scoreType switch
                 {
                     ScoreType.Number => 10,
@@ -473,19 +471,31 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             #endregion
 
+            #region Registration
+            var reg1 = new Registration
+            {
+                Id = Guid.NewGuid(),
+                CompetitionId = comp2.Id,
+                ParticipantId = single1.Id
+            };
+            Registrations.AddRange([reg1]);
+            #endregion
+
             #region Judges
 
             var judge1 = new Judge
             {
+                Id = Guid.NewGuid(),
                 JudgeType = JudgeType.Main,
-                Member = member1,
+                MemberId = member1.Id,
                 Description = "Main Judge"
             };
 
             var judge2 = new Judge
             {
+                Id = Guid.NewGuid(),
                 JudgeType = JudgeType.Assistant,
-                Member = member2,
+                MemberId = member2.Id,
                 Description = "Assistant Judge"
             };
 
@@ -496,45 +506,48 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #region Matches
             var match1 = new Match
             {
-                RoundId = Guid.NewGuid(),
-                Participants = new List<Participant>
+                Id = Guid.NewGuid(),
+                RoundId = round1.Id,
+                ParticipantIds = new List<Guid>
                 {
-                    Participants[0], Participants[1]
+                    Participants[0].Id, Participants[1].Id
                 },
                 Status = MatchStatus.Pending,
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now.AddHours(1),
-                Field = field1,
-                Judge = judge1,
+                FieldId = field1.Id,
+                JudgeId = judge1.Id,
             };
 
 
             var match2 = new Match
             {
-                RoundId = Guid.NewGuid(),
-                Participants = new List<Participant>
+                Id = Guid.NewGuid(),
+                RoundId = round1.Id,
+                ParticipantIds = new List<Guid>
                 {
-                    Participants[2], Participants[3]
+                    Participants[2].Id, Participants[3].Id
                 },
                 Status = MatchStatus.Concluded,
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now.AddHours(1),
-                Field = field2,
-                Judge = judge2,
+                FieldId = field2.Id,
+                JudgeId = judge2.Id,
             };
 
             var match3 = new Match
             {
-                RoundId = Guid.NewGuid(),
-                Participants = new List<Participant>
+                Id = Guid.NewGuid(),
+                RoundId = round2.Id,
+                ParticipantIds = new List<Guid>
                 {
-                    Participants[4], Participants[5]
+                    Participants[4].Id, Participants[5].Id
                 },
                 Status = MatchStatus.Concluded,
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now.AddHours(1),
-                Field = field2,
-                Judge = judge2,
+                FieldId = field2.Id,
+                JudgeId = judge2.Id,
             };
 
             Matches.AddRange([match1, match2, match3]);
@@ -544,17 +557,38 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             #region Scores
 
-            var score1a = new TimeScore(TimeSpan.FromMinutes(10), match1, match1.Participants[0]);
-            var score1b = new TimeScore(TimeSpan.FromMinutes(9), match1, match1.Participants[1]);
-
-            var score2a = new SetScore(2, match2, match2.Participants[0]);
-            var score2b = new SetScore(3, match2, match2.Participants[1]);
-
-            var score3a = new PointScore(10, match3, match3.Participants[0]);
-            var score3b = new PointScore(9, match3, match3.Participants[1]);
+            // TODO: Reconsider the contructor of the Score classes
 
 
-            Scores.AddRange([score1a, score1b, score2a, score2b, score3a, score3b]);
+            //var score1a = new TimeScore(TimeSpan.FromMinutes(10), match1.Id, match1.ParticipantIds[0]);
+            //score1a.Id = Guid.NewGuid();
+
+            //var score1b = new TimeScore(TimeSpan.FromMinutes(9), match1.Id, match1.ParticipantIds[1]);
+            //score1b.Id = Guid.NewGuid();
+
+            //var score2a = new SetScore(2, match2.Id, match2.ParticipantIds[0]);
+            //score2a.Id = Guid.NewGuid();
+
+            //var score2b = new SetScore(3, match2.Id, match2.ParticipantIds[1]);
+            //score2b.Id = Guid.NewGuid();
+
+            //var score3a = new PointScore(10, match3.Id, match3.ParticipantIds[0]);
+            //score3a.Id = Guid.NewGuid();
+
+            //var score3b = new PointScore(9, match3.Id, match3.ParticipantIds[1]);
+            //score3b.Id = Guid.NewGuid();
+
+            var score4 = new TimeScore(TimeSpan.FromMinutes(10), Guid.Empty, Guid.Empty);
+            score4.Id = Guid.NewGuid();
+
+            var score5 = new PointScore(10, Guid.Empty, Guid.Empty);
+            score5.Id = Guid.NewGuid();
+
+            var score6 = new SetScore(2, Guid.Empty, Guid.Empty);
+            score6.Id = Guid.NewGuid();
+
+            //Scores.AddRange([score1a, score1b, score2a, score2b, score3a, score3b, score4]);
+            Scores.AddRange([score4, score5, score6]);
 
 
             //Matches[0].Scores.AddRange([score1a, score1b]);

@@ -2,7 +2,6 @@ using competex_backend.Models;
 
 namespace competex_backend.API.DTOs
 {
-    //@APIModel
     public class CompetitionTypeDTO : Identifiable
     {
         public string Name { get; set; } = string.Empty;

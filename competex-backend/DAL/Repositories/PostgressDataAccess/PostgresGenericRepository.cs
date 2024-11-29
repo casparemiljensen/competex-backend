@@ -16,23 +16,11 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
         {
             string tableName = GetTableName();
 
-            await using var command = new NpgsqlCommand($"SELECT * FROM {tableName};", PostgresConnection.conn);
+            await using var command = new NpgsqlCommand($"SELECT * FROM \"{tableName}\";", PostgresConnection.conn);
 
             await using var reader = await command.ExecuteReaderAsync();
 
-            return ((await CallAccordingToType(reader, pageSize, pageNumber, false)) as ResultT<Tuple<int, IEnumerable<T>>>)!;
-
-        }
-
-        private static async Task<object> CallAccordingToType(NpgsqlDataReader reader, int? pageSize, int? pageNumber, bool isSingle = true)
-        {
-            await reader.ReadAsync();
-            switch (Activator.CreateInstance<T>())
-            {
-                case Member:
-                    return isSingle ? T.Map(reader) : PaginationHelper.PaginationWrapper(await IterateOverReader(reader), pageSize, pageNumber);
-            }
-            throw new ApiException(400, "Invalid request, Type not found");
+            return PaginationHelper.PaginationWrapper<T>(await IterateOverReader(reader), pageSize, pageNumber);
         }
 
         private static string GetTableName()
@@ -49,11 +37,11 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
         private async static Task<List<T>> IterateOverReader(NpgsqlDataReader reader)
         {
             List<T> items = [];
-            do
+            //do
+            while (await reader.ReadAsync())
             {
                 items.Add(T.Map(reader));
             }
-            while (await reader.ReadAsync());
             return items;
         }
 
@@ -62,7 +50,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             string tableName = GetTableName();
 
             //using var cmd = new NpgsqlCommand($"SELECT * FROM member WHERE id = '58a01cc0-1a49-455b-998c-1500b3db0dca'", PostgresConnection.conn)
-            await using var cmd = new NpgsqlCommand($"SELECT * FROM {tableName} WHERE \"id\" = ($1)", PostgresConnection.conn)
+            await using var cmd = new NpgsqlCommand($"SELECT * FROM \"{tableName}\" WHERE \"Id\" = ($1)", PostgresConnection.conn)
             {
                 Parameters =
                 {
@@ -72,7 +60,12 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
             await using var reader = await cmd.ExecuteReaderAsync();
 
-            return ResultT<T>.Success(((await CallAccordingToType(reader, null, null, true)) as T)!);
+            if(!await reader.ReadAsync())
+            {
+                return ResultT<T>.Failure(Error.NotFound("400", "Item with given id not found"));
+            }
+
+            return ResultT<T>.Success(T.Map(reader));
         }
 
         public Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
@@ -90,9 +83,21 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             throw new NotImplementedException();
         }
 
-        public Task<Result> DeleteAsync(Guid id)
+        public async Task<Result> DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            string tableName = GetTableName();
+
+            await using var cmd = new NpgsqlCommand($"SELECT * FROM \"{tableName}\" WHERE \"Id\" = ($1)", PostgresConnection.conn)
+            {
+                Parameters =
+                {
+                    new() { Value = id, NpgsqlDbType = NpgsqlDbType.Uuid},
+                }
+            };
+
+
+
+            return Result.Success(); // TODO: Fix
         }
     }
 }

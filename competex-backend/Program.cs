@@ -11,6 +11,19 @@ using competex_backend.Common.ErrorHandling;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:4200",
+                                             "http://127.0.0.1:8080",
+                                              "http://127.0.0.1:8080");
+                      });
+});
+
 
 builder.Services.AddControllers();
 
@@ -133,27 +146,21 @@ builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
+// Right now we want to show Swagger UI in production. Remove this clause when that changes
+    if (app.Environment.IsDevelopment() || true)
     {
-        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapse swagger on startup
-    });
-}
-else // Right now we want to show Swagger UI in production. Remove this clause when that changes
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapse swagger on startup
-    });
-}
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
+        {
+            options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapse swagger on startup
+        });
+    }
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseCors(MyAllowSpecificOrigins);
 
 if (!app.Environment.IsDevelopment())
 {

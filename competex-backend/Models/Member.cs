@@ -1,5 +1,6 @@
 ﻿using competex_backend.Helpers;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace competex_backend.Models
 
@@ -28,6 +29,31 @@ namespace competex_backend.Models
                 Phone = reader.GetString(5),
                 Permissions = EnumMapper.MapEnumValueTo<Permissions>(reader.GetInt16(6)).GetValueOrDefault()
             };
+        }
+
+        public Tuple<List<string>, List<NpgsqlParameter>> GetInsertSQLObject()
+        {
+            var parameters = new List<NpgsqlParameter>
+            {
+                new NpgsqlParameter { Value = FirstName, NpgsqlDbType = NpgsqlDbType.Text },
+                new NpgsqlParameter { Value = LastName, NpgsqlDbType = NpgsqlDbType.Text },
+                new NpgsqlParameter { Value = Birthday, NpgsqlDbType = NpgsqlDbType.TimestampTz },
+                new NpgsqlParameter { Value = Email, NpgsqlDbType = NpgsqlDbType.Text },
+                new NpgsqlParameter { Value = Phone, NpgsqlDbType = NpgsqlDbType.Text },
+                new NpgsqlParameter { Value = (short)Permissions, NpgsqlDbType = NpgsqlDbType.Smallint }
+            };
+
+            var dbColumnNames = new List<string>
+            {
+                "FirstName",
+                "LastName",
+                "Birthday",
+                "Email",
+                "Phone",
+                "Permissions"
+            };
+
+            return new Tuple<List<string>, List<NpgsqlParameter>>(dbColumnNames, parameters);
         }
     }
 }

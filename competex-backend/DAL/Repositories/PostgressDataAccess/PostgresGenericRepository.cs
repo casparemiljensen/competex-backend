@@ -5,8 +5,11 @@ using competex_backend.Common.ErrorHandling;
 using competex_backend.Common.Helpers;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
+using Newtonsoft.Json.Linq;
 using Npgsql;
 using NpgsqlTypes;
+using System.Numerics;
+using System.Text.Json;
 
 namespace competex_backend.DAL.Repositories.PostgressDataAccess
 {
@@ -23,7 +26,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             return PaginationHelper.PaginationWrapper<T>(await IterateOverReader(reader), pageSize, pageNumber);
         }
 
-        private static string GetTableName()
+        internal static string GetTableName()
         {
             switch (Activator.CreateInstance<T>())
             {
@@ -68,26 +71,152 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             return ResultT<T>.Success(T.Map(reader));
         }
 
-        public Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
+        public async Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
         {
-            throw new NotImplementedException();
+            var tableName = GetTableName();
+
+            var (query, parameters) = BuildSearchQuery(tableName, filters ?? []);
+
+            await using var cmd = new NpgsqlCommand(query, PostgresConnection.conn);
+
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                cmd.Parameters.Add(parameters[i]);
+            }
+
+            await cmd.ExecuteReaderAsync();
+
+            return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(1, []));
         }
 
-        public Task<ResultT<Guid>> InsertAsync(T obj)
+        public (string query, List<NpgsqlParameter> parameters) BuildSearchQuery(string tableName, Dictionary<string, object> filters)
         {
-            throw new NotImplementedException();
+            var conditions = new List<string>();
+            var parameters = new List<NpgsqlParameter>();
+            int paramIndex = 1;
+            int queryIndex = 1;
+            /*
+            foreach (var filter in filters)
+            {
+                string queryBuilder = "";
+                List<NpgsqlParameter> paramList = [];
+                if (filter.Value is JsonElement jsonElement)
+                {
+                    if (jsonElement.ValueKind == JsonValueKind.Array)
+                    {
+                        int arrayLength = jsonElement.GetArrayLength();
+                        int i = 0;
+                        foreach (var filterEntity in jsonElement.EnumerateArray())
+                        {
+                            if (!(i == 0 || i == arrayLength - 1))
+                            {
+                                queryBuilder += " or ";
+                            }
+                            queryBuilder += $"${queryIndex}";
+                            paramList.Add(new NpgsqlParameter() { Value = filterEntity });
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        //orList = GetAllMatching(filter.Key, filter.Value, filtertedEntities).ToList();
+                    }
+                }
+                else if (filter.Value is IEnumerable enumerable)
+                {
+                    foreach (var filterEntity in enumerable)
+                    {
+                        //orList.AddRange(GetAllMatching(filter.Key, filterEntity, filtertedEntities));
+                    }
+                }
+                else if (filter.Value.GetType().IsAssignableTo(typeof(string)) || filter.Value is Guid)
+                {
+                    //orList.AddRange(GetAllMatching(filter.Key, filter.Value, filtertedEntities));
+                }
+                else
+                {
+                    //Unrecognised type gets handed to the void
+                    throw new ApiException(500, $"Type not found {filter.Value}");
+                }               
+            }*/
+
+            // Combine conditions with AND
+            string whereClause = conditions.Count > 0 ? $"WHERE {string.Join(" AND ", conditions)}" : "";
+            string query = $"SELECT * FROM \"{tableName}\" {whereClause};";
+
+            return (query, parameters);
         }
 
-        public Task<Result> UpdateAsync(Guid id, T obj)
+        public async Task<ResultT<Guid>> InsertAsync(T obj)
         {
-            throw new NotImplementedException();
+            string tableName = GetTableName();
+            var internalGuid = Guid.Empty;
+            var (columns, values) = obj.GetInsertSQLObject();
+
+            var columnsNames = String.Join("\", \"", columns);
+
+            var valuePlaceholders = string.Join(", ", Enumerable.Range(1, columns.Count).Select(i => $"${i}"));
+
+            await using var cmd = new NpgsqlCommand($"INSERT INTO \"{tableName}\" (\"{columnsNames}\") VALUES ({valuePlaceholders}) RETURNING \"Id\";", PostgresConnection.conn);
+
+            for (int i = 0; i < values.Count; i++)
+            {
+                cmd.Parameters.Add(values[i]);
+            }
+
+            var res = await cmd.ExecuteScalarAsync();
+
+            if (res != null)
+            {
+                return ResultT<Guid>.Success((Guid)res);
+            }
+
+            return ResultT<Guid>.Failure(Error.Failure("=", ""));
         }
 
-        public async Task<Result> DeleteAsync(Guid id)
+        public async Task<Result> UpdateAsync(Guid id, T obj)
+        {
+            string tableName = GetTableName();
+            var (columns, values) = obj.GetInsertSQLObject();
+
+            var updatePlaceholderString = "";
+            for (int i = 0; i < columns.Count; i++)
+            {
+                updatePlaceholderString += $"\"{columns[i]}\" = ${i+1}";
+                if (i + 1 != columns.Count)
+                {
+                    updatePlaceholderString += ", ";
+                }
+            }
+
+            await using var cmd = new NpgsqlCommand($"UPDATE \"{tableName}\" SET {updatePlaceholderString} WHERE \"Id\" = (${columns.Count + 1});", PostgresConnection.conn);
+            
+            for (int i = 0; i < values.Count; i++)
+            {
+                cmd.Parameters.Add(values[i]);
+            }
+            cmd.Parameters.Add(new NpgsqlParameter { Value = id, NpgsqlDbType = NpgsqlDbType.Uuid });
+
+            var res = await cmd.ExecuteScalarAsync();
+
+            if (res != null)
+            {
+                return Result.Success();
+            }
+
+            return Result.Failure(Error.Failure("=", ""));
+        }
+
+        public virtual async Task<Result> DeleteAsync(Guid id)
         {
             string tableName = GetTableName();
 
-            await using var cmd = new NpgsqlCommand($"SELECT * FROM \"{tableName}\" WHERE \"Id\" = ($1)", PostgresConnection.conn)
+            return await DeleteFromTable(tableName, "Id", id);
+        }
+
+        internal async Task<Result> DeleteFromTable(string tableName, string property, Guid id)
+        {
+            await using var cmd = new NpgsqlCommand($"DELETE FROM \"{tableName}\" WHERE \"{property}\" = ($1)", PostgresConnection.conn)
             {
                 Parameters =
                 {
@@ -95,9 +224,12 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
                 }
             };
 
+            if (cmd.ExecuteNonQuery() == -1)
+            {
+                return Result.Failure(Error.NotFound("404", $"Item on table {tableName} with given {property} not found"));
+            }
 
-
-            return Result.Success(); // TODO: Fix
+            return Result.Success();
         }
     }
 }

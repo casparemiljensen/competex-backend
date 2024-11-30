@@ -11,7 +11,6 @@ namespace competex_backend.API.Controllers
     public class RoundsController : GenericsController<RoundDTO>, IRoundAPI
     {
         private IRoundService _roundService;
-
         public RoundsController(IGenericService<RoundDTO> service, IRoundService roundService) : base(service)
         {
             _roundService = roundService;

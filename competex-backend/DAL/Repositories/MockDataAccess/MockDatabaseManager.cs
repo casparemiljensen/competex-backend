@@ -10,7 +10,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Club> Clubs { get; set; } = new();
         public List<Round> Rounds { get; set; } = new();
         public List<SportType> SportTypes { get; set; } = new();
-        public List<CompetitionType> CompetitionTypes { get; set; } = [];
+        public List<CompetitionType> CompetitionTypes { get; set; } = new();
         public List<Competition> Competitions { get; set; } = new();
         public List<Event> Events { get; set; } = new();
         public List<ClubMembership> ClubMemberships { get; set; } = new();
@@ -19,12 +19,13 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Field> Fields { get; set; } = new();
         public List<Location> Locations { get; set; } = new();
         public List<Penalty> Penalties { get; set; } = new();
-        public List<Registration> Registrations { get; set; } = [];
+        public List<Registration> Registrations { get; set; } = new();
         public List<ScoringSystem> ScoringSystems { get; set; } = new();
         public List<Participant> Participants { get; set; } = new();
         public List<Judge> Judges { get; set; } = new();
         public List<Match> Matches { get; set; } = new();
         public List<Score> Scores { get; set; } = new();
+        public List<ScoreResult> ScoreResults { get; set; } = new();
 
 
         public MockDatabaseManager()
@@ -54,6 +55,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             if (typeof(T) == typeof(Judge)) return (Judges as List<T>)!;
             if (typeof(T) == typeof(Match)) return (Matches as List<T>)!;
             if (typeof(T) == typeof(Score)) return (Scores as List<T>)!;
+            if (typeof(T) == typeof(ScoreResult)) return (ScoreResults as List<T>)!;
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
 
@@ -395,7 +397,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Fields.AddRange([field1, field2, field3, field4, field5, field6]);
             #endregion
 
-           
+
 
             #region Penalties
 
@@ -547,7 +549,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now.AddHours(1),
                 FieldId = field2.Id,
-                JudgeId = judge2.Id,
+                JudgeId = judge2.Id
             };
 
             Matches.AddRange([match1, match2, match3]);
@@ -595,9 +597,21 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             //Matches[1].Scores.AddRange([score2a, score2b]);
             //Matches[2].Scores.AddRange([score3a, score3b]);
 
-
             #endregion
 
+            #region ScoreResults
+
+            var scoreResult1 = new ScoreResult
+            {
+                Faults = 2,
+                Time = DateTime.Now,
+                CompetitionId = comp1.Id,
+                ParticipantId = ekvipage1.Id
+            };
+
+            ScoreResults.AddRange([scoreResult1]);
+
+            #endregion
         }
     }
 }

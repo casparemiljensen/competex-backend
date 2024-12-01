@@ -1,10 +1,12 @@
-﻿namespace competex_backend.Models
+﻿using competex_backend.API.DTOs;
+
+namespace competex_backend.Models
 {
     public class ScoreResult : Identifiable
     {
-        public int Faults { get; set; }
-        public DateTime Time { get; set; }
         public Guid CompetitionId { get; set; }
         public Guid ParticipantId { get; set; }
+        public int Faults { get; set; }
+        public TimeSpan Time { get; set; }
     }
 }

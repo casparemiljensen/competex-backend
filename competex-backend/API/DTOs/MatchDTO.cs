@@ -16,7 +16,7 @@ namespace competex_backend.API.DTOs
         public Guid? FieldId { get; set; }
         public JudgeDTO? Judge { get; set; }
         public Guid? JudgeId { get; set; }
-        public List<ScoreDTO> Scores { get; set; } = new List<ScoreDTO>();
-        public List<Guid>? ScoreIds { get; set; }
+        //public List<ScoreDTO> Scores { get; set; } = new List<ScoreDTO>();
+        //public List<Guid>? ScoreIds { get; set; }
     }
 }

@@ -4,10 +4,7 @@
     {
         public Guid MatchId { get; set; }
         public Guid ParticipantId { get; set; }
-        //public ScoreType ScoreType { get; set; }
-        // Keeping ScoreValue as a protected abstract property for derived classes
         public abstract object ScoreValue { get; set; }
-        //public Judge? JudgedBy { get; set; }
         public List<Guid> PenaltyIds { get; set; } = new List<Guid>();
 
         public Score(Guid matchId, Guid participantId)
@@ -17,7 +14,7 @@
         }
     }
 
-    // Overvej at lave Score til en generic
+    // TODO: Overvej at lave Score til en generic
 
 
     public class TimeScore : Score
@@ -73,8 +70,8 @@
     public class TimeFaultScore : Score
     {
         public int Faults { get; set; }
-        public DateTime Time { get; set; }
-        public TimeFaultScore(int faults, DateTime time, Guid matchId, Guid participantId) : base(matchId, participantId)
+        public TimeSpan Time { get; set; }
+        public TimeFaultScore(int faults, TimeSpan time, Guid matchId, Guid participantId) : base(matchId, participantId)
         {
             Faults = faults;
             Time = time;
@@ -86,14 +83,14 @@
             get { return (Faults, Time); }
             set
             {
-                if (value is ValueTuple<int, DateTime> tuple) // Check if value is a tuple of the correct type
+                if (value is ValueTuple<int, TimeSpan> tuple) // Check if value is a tuple of the correct type
                 {
                     Faults = tuple.Item1; // Extract Faults
                     Time = tuple.Item2;   // Extract Time
                 }
                 else
                 {
-                    throw new ArgumentException("Value must be a tuple of type (int, DateTime).");
+                    throw new ArgumentException("Value must be a tuple of type (int, TimeSpan).");
                 }
             }
         }

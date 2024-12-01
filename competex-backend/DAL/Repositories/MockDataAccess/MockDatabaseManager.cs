@@ -589,24 +589,30 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var score6 = new SetScore(2, Guid.Empty, Guid.Empty);
             score6.Id = Guid.NewGuid();
 
+            var score7 = new TimeFaultScore(2, TimeSpan.FromMinutes(2), Guid.Empty, Guid.Empty);
+            score7.Id = Guid.NewGuid();
+
+            var score8 = new TimeFaultScore(3, TimeSpan.FromMinutes(2), match1.Id, single1.Id);
+            score8.Id = Guid.NewGuid();
+
             //Scores.AddRange([score1a, score1b, score2a, score2b, score3a, score3b, score4]);
-            Scores.AddRange([score4, score5, score6]);
+            Scores.AddRange([score4, score5, score6, score7, score8]);
 
 
-            //Matches[0].Scores.AddRange([score1a, score1b]);
-            //Matches[1].Scores.AddRange([score2a, score2b]);
-            //Matches[2].Scores.AddRange([score3a, score3b]);
+            //Matches[0].ScoreIds.AddRange([score7.Id, score8.Id]);
 
             #endregion
 
             #region ScoreResults
 
+
             var scoreResult1 = new ScoreResult
             {
-                Faults = 2,
-                Time = DateTime.Now,
+                Id = Guid.NewGuid(),
                 CompetitionId = comp1.Id,
-                ParticipantId = ekvipage1.Id
+                ParticipantId = ekvipage1.Id,
+                Faults = 2,
+                Time = TimeSpan.FromMinutes(2)
             };
 
             ScoreResults.AddRange([scoreResult1]);

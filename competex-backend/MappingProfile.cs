@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using competex_backend.API.DTOs;
 using competex_backend.BLL.Interfaces;
-using competex_backend.Common.Helpers;
 using competex_backend.Models;
-using static competex_backend.MappingProfile;
 
 namespace competex_backend
 {
@@ -11,29 +9,26 @@ namespace competex_backend
     {
         public MappingProfile()
         {
-
-            // TODO: Do we need all of these?
-            CreateMap<Guid, EntityDTO>().ConvertUsing<GuidToObjectConverter<EntityDTO>>();
-            CreateMap<Guid, LocationDTO>().ConvertUsing<GuidToObjectConverter<LocationDTO>>();
-            CreateMap<Guid, SportTypeDTO>().ConvertUsing<GuidToObjectConverter<SportTypeDTO>>();
+            CreateMap<Guid, MemberDTO>().ConvertUsing<GuidToObjectConverter<MemberDTO>>();
             CreateMap<Guid, ClubDTO>().ConvertUsing<GuidToObjectConverter<ClubDTO>>();
+            CreateMap<Guid, RoundDTO>().ConvertUsing<GuidToObjectConverter<RoundDTO>>();
+            CreateMap<Guid, SportTypeDTO>().ConvertUsing<GuidToObjectConverter<SportTypeDTO>>();
             CreateMap<Guid, CompetitionTypeDTO>().ConvertUsing<GuidToObjectConverter<CompetitionTypeDTO>>();
+            CreateMap<Guid, CompetitionDTO>().ConvertUsing<GuidToObjectConverter<CompetitionDTO>>();
             CreateMap<Guid, EventDTO>().ConvertUsing<GuidToObjectConverter<EventDTO>>();
             CreateMap<Guid, ClubMembershipDTO>().ConvertUsing<GuidToObjectConverter<ClubMembershipDTO>>();
             CreateMap<Guid, AdminDTO>().ConvertUsing<GuidToObjectConverter<AdminDTO>>();
+            CreateMap<Guid, EntityDTO>().ConvertUsing<GuidToObjectConverter<EntityDTO>>();
             CreateMap<Guid, FieldDTO>().ConvertUsing<GuidToObjectConverter<FieldDTO>>();
+            CreateMap<Guid, LocationDTO>().ConvertUsing<GuidToObjectConverter<LocationDTO>>();
+            CreateMap<Guid, PenaltyDTO>().ConvertUsing<GuidToObjectConverter<PenaltyDTO>>();
             CreateMap<Guid, RegistrationDTO>().ConvertUsing<GuidToObjectConverter<RegistrationDTO>>();
             CreateMap<Guid, ScoringSystemDTO>().ConvertUsing<GuidToObjectConverter<ScoringSystemDTO>>();
             CreateMap<Guid, JudgeDTO>().ConvertUsing<GuidToObjectConverter<JudgeDTO>>();
-
-
-            // TODO: Definely needed
-            CreateMap<Guid, RoundDTO>().ConvertUsing<GuidToObjectConverter<RoundDTO>>();
-            CreateMap<Guid, ParticipantDTO>().ConvertUsing<GuidToObjectConverter<ParticipantDTO>>();
-            CreateMap<Guid, PenaltyDTO>().ConvertUsing<GuidToObjectConverter<PenaltyDTO>>();
             CreateMap<Guid, MatchDTO>().ConvertUsing<GuidToObjectConverter<MatchDTO>>();
-            CreateMap<Guid, CompetitionDTO>().ConvertUsing<GuidToObjectConverter<CompetitionDTO>>();
-            CreateMap<Guid, MemberDTO>().ConvertUsing<GuidToObjectConverter<MemberDTO>>();
+            CreateMap<Guid, ParticipantDTO>().ConvertUsing<GuidToObjectConverter<ParticipantDTO>>();
+            CreateMap<Guid, ScoreDTO>().ConvertUsing<GuidToObjectConverter<ScoreDTO>>();
+            CreateMap<Guid, ScoreResultDTO>().ConvertUsing<GuidToObjectConverter<ScoreResultDTO>>();
 
 
 
@@ -46,8 +41,7 @@ namespace competex_backend
             CreateMap<Competition, CompetitionDTO>()
                 .ForMember(dest => dest.CompetitionType, opt => opt.MapFrom(src => src.CompetitionTypeIds));
             CreateMap<Event, EventDTO>()
-                .ForMember(dest => dest.Location, opt => opt.MapFrom(src =>
-                    src.LocationId.HasValue ? src.LocationId.Value : Guid.Empty)) // Maps only if LocationId is present
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.LocationId))
                 .ForMember(dest => dest.SportType, opt => opt.MapFrom(src => src.SportTypeId))
                 .ForMember(dest => dest.Competitions, opt => opt.MapFrom(src => src.CompetitionIds));
             CreateMap<ClubMembership, ClubMembershipDTO>();
@@ -69,8 +63,8 @@ namespace competex_backend
                 .ForMember(dest => dest.Round, opt => opt.MapFrom(src => src.RoundId))
                 .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src.ParticipantIds))
                 .ForMember(dest => dest.Field, opt => opt.MapFrom(src => src.FieldId))
-                .ForMember(dest => dest.Judge, opt => opt.MapFrom(src => src.JudgeId))
-                .ForMember(dest => dest.Scores, opt => opt.MapFrom(src => src.ScoreIds));
+                .ForMember(dest => dest.Judge, opt => opt.MapFrom(src => src.JudgeId));
+                //.ForMember(dest => dest.Scores, opt => opt.MapFrom(src => src.ScoreIds));
             CreateMap<Participant, ParticipantDTO>()
                 .Include<Team, TeamDTO>()
                 .Include<Models.Single, SingleDTO>()
@@ -97,9 +91,9 @@ namespace competex_backend
                 .ForMember(dest => dest.SetsWon, opt => opt.MapFrom(src => src.ScoreValue));
             CreateMap<PointScore, PointScoreDTO>()
                 .ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.ScoreValue));
-            CreateMap<TimeFaultScore, TimeFaultScoreDTO>()
-                .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.ScoreValue))
-                .ForMember(dest => dest.Faults, opt => opt.MapFrom(src => src.Faults));
+            CreateMap<TimeFaultScore, TimeFaultScoreDTO>();
+                //.ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.Time))
+                //.ForMember(dest => dest.Faults, opt => opt.MapFrom(src => src.Faults));
             CreateMap<ScoreResult, ScoreResultDTO>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => src.CompetitionId))
                 .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId));

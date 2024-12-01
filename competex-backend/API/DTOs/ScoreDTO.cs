@@ -117,14 +117,14 @@ namespace competex_backend.API.DTOs
     public class TimeFaultScoreDTO : ScoreDTO
     {
         public int Faults { get; set; }
-        public DateTime Time { get; set; }
+        public TimeSpan Time { get; set; }
 
         protected override object GetScoreValue() => (Faults, Time);
 
         // SetScoreValue accepts a tuple or other supported input
         protected override void SetScoreValue(object value)
         {
-            if (value is ValueTuple<int, DateTime> tuple)
+            if (value is ValueTuple<int, TimeSpan> tuple)
             {
                 Faults = tuple.Item1;
                 Time = tuple.Item2;
@@ -139,7 +139,7 @@ namespace competex_backend.API.DTOs
 
                 if (jsonElement.TryGetProperty("Time", out JsonElement timeElement) && timeElement.ValueKind == JsonValueKind.String)
                 {
-                    if (DateTime.TryParse(timeElement.GetString(), out var parsedTime))
+                    if (TimeSpan.TryParse(timeElement.GetString(), out var parsedTime))
                     {
                         Time = parsedTime;
                     }

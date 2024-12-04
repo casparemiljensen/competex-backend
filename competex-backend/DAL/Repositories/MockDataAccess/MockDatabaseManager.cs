@@ -281,7 +281,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Admins.AddRange([admin]);
 
             #endregion
-
+            /*
             #region Entities
             var entity1 = new Entity
             {
@@ -336,7 +336,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             // Adding entities to the collection
             Entities.AddRange([entity1, entity2, entity3, entity4, entity5]);
             #endregion
-
+            */
             #region Fields
             var field1 = new Field()
             {
@@ -395,7 +395,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Fields.AddRange([field1, field2, field3, field4, field5, field6]);
             #endregion
 
-           
+
 
             #region Penalties
 
@@ -422,7 +422,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             Penalties.AddRange([penalty1, penalty2, penalty3]);
             #endregion
-
+            /*
             #region ScoringSystem
 
             var scoringSystem1 = new ScoringSystem
@@ -444,33 +444,35 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             ScoringSystems.AddRange([scoringSystem1]);
             #endregion
-
+            */
+            /*
             #region Participants
 
             // TODO: Reconsider the contructor of the Participant classes
 
-            var team1 = new Team("Team1", new List<Guid> { member1.Id, member2.Id });
+            var team1 = new Team("Team1", new List<Member> { member1, member2 });
             team1.Id = Guid.NewGuid();
 
-            var team2 = new Team("Team2", new List<Guid> { member3.Id, member4.Id });
+            var team2 = new Team("Team2", new List<Member> { member3, member4 });
             team2.Id = Guid.NewGuid();
 
-            var single1 = new Single("Single1", member3.Id);
+            var single1 = new Single("Single1", member3);
             single1.Id = Guid.NewGuid();
 
-            var single2 = new Single("Single2", member4.Id);
+            var single2 = new Single("Single2", member4);
             single2.Id = Guid.NewGuid();
 
-            var ekvipage1 = new Ekvipage("ekvipage", member4.Id, entity1.Id);
+            var ekvipage1 = new Ekvipage("ekvipage", member4, entity1);
             ekvipage1.Id = Guid.NewGuid();
 
-            var ekvipage2 = new Ekvipage("ekvipage2", member5.Id, entity2.Id);
+            var ekvipage2 = new Ekvipage("ekvipage2", member5, entity2);
             ekvipage2.Id = Guid.NewGuid();
 
             Participants.AddRange([team1, team2, single1, single2, ekvipage1, ekvipage2]);
 
             #endregion
-
+            */
+            /*
             #region Registration
             var reg1 = new Registration
             {
@@ -480,7 +482,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             };
             Registrations.AddRange([reg1]);
             #endregion
-
+            */
             #region Judges
 
             var judge1 = new Judge
@@ -508,9 +510,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 Id = Guid.NewGuid(),
                 RoundId = round1.Id,
-                ParticipantIds = new List<Guid>
+                Participants = new List<Participant>
                 {
-                    Participants[0].Id, Participants[1].Id
+                    Participants[0], Participants[1]
                 },
                 Status = MatchStatus.Pending,
                 StartTime = DateTime.Now,
@@ -524,9 +526,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 Id = Guid.NewGuid(),
                 RoundId = round1.Id,
-                ParticipantIds = new List<Guid>
+                Participants = new List<Participant>
                 {
-                    Participants[2].Id, Participants[3].Id
+                    Participants[2], Participants[3]
                 },
                 Status = MatchStatus.Concluded,
                 StartTime = DateTime.Now,
@@ -539,9 +541,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 Id = Guid.NewGuid(),
                 RoundId = round2.Id,
-                ParticipantIds = new List<Guid>
+                Participants = new List<Participant>
                 {
-                    Participants[4].Id, Participants[5].Id
+                    Participants[4], Participants[5]
                 },
                 Status = MatchStatus.Concluded,
                 StartTime = DateTime.Now,

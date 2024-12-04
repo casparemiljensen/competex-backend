@@ -23,6 +23,13 @@
         Concluded
     }
 
+    public enum ParticipantType
+    {
+        Single,
+        Team,
+        Ekvipage
+    }
+
     public enum SurfaceType
     {
         Unknown,

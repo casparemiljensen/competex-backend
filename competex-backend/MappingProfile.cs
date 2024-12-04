@@ -51,35 +51,27 @@ namespace competex_backend
             CreateMap<ClubMembership, ClubMembershipDTO>();
             CreateMap<Admin, AdminDTO>()
                 .ForMember(dest => dest.SportTypes, opt => opt.MapFrom(src => src.SportTypeIds));
-            CreateMap<Entity, EntityDTO>()
-                .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.OwnerId));
+            CreateMap<Entity, EntityDTO>();
             CreateMap<Field, FieldDTO>();
             CreateMap<Location, LocationDTO>();
             CreateMap<Penalty, PenaltyDTO>();
             CreateMap<Registration, RegistrationDTO>()
                 .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => src.CompetitionId));
-            CreateMap<ScoringSystem, ScoringSystemDTO>() // Cannot map penalties somehow.
-                .ForMember(dest => dest.Penalties, opt => opt.MapFrom(src => src.PenaltyIds));
+            CreateMap<ScoringSystem, ScoringSystemDTO>(); // Cannot map penalties somehow.
             CreateMap<Judge, JudgeDTO>()
                 .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId));
             CreateMap<Match, MatchDTO>()
                 .ForMember(dest => dest.Round, opt => opt.MapFrom(src => src.RoundId))
-                .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src.ParticipantIds))
                 .ForMember(dest => dest.Field, opt => opt.MapFrom(src => src.FieldId))
-                .ForMember(dest => dest.Judge, opt => opt.MapFrom(src => src.JudgeId))
-                .ForMember(dest => dest.Scores, opt => opt.MapFrom(src => src.ScoreIds));
+                .ForMember(dest => dest.Judge, opt => opt.MapFrom(src => src.JudgeId));
             CreateMap<Participant, ParticipantDTO>()
                 .Include<Team, TeamDTO>()
                 .Include<Models.Single, SingleDTO>()
                 .Include<Ekvipage, EkvipageDTO>();
-            CreateMap<Team, TeamDTO>()
-                .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.MemberIds));
-            CreateMap<Models.Single, SingleDTO>()
-                .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId));
-            CreateMap<Ekvipage, EkvipageDTO>()
-                .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
-                .ForMember(dest => dest.Entity, opt => opt.MapFrom(src => src.EntityId));
+            CreateMap<Team, TeamDTO>();
+            CreateMap<Models.Single, SingleDTO>();
+            CreateMap<Ekvipage, EkvipageDTO>();
             CreateMap<Score, ScoreDTO>()
                 .ForMember(dest => dest.Match, opt => opt.MapFrom(src => src.MatchId))
                 .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
@@ -153,7 +145,7 @@ namespace competex_backend
             CreateMap<SetScoreDTO, SetScore>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<PointScoreDTO, PointScore>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());         
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
         }
 
 

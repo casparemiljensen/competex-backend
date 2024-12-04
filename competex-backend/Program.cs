@@ -55,7 +55,7 @@ builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRep
 builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>();
 builder.Services.AddScoped<IGenericRepository<Participant>, MockParticipantRepository>();
 builder.Services.AddScoped<IGenericRepository<Judge>, MockJudgeRepository>();
-builder.Services.AddScoped<IGenericRepository<Match>, MockMatchRepository>();
+builder.Services.AddScoped<IGenericRepository<Match>, PostgresMatchRepository>();
 builder.Services.AddScoped<IGenericRepository<Score>, MockScoreRepository>();
 #endregion
 
@@ -102,7 +102,7 @@ builder.Services.AddScoped<IRegistrationRepository, MockRegistrationRepository>(
 builder.Services.AddScoped<IScoringSystemRepository, MockScoringSystemRepository>();
 builder.Services.AddScoped<IParticipantRepository, MockParticipantRepository>();
 builder.Services.AddScoped<IJudgeRepository, MockJudgeRepository>();
-builder.Services.AddScoped<IMatchRepository, MockMatchRepository>();
+builder.Services.AddScoped<IMatchRepository, PostgresMatchRepository>();
 builder.Services.AddScoped<IScoreRepository, MockScoreRepository>();
 #endregion
 

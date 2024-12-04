@@ -1,6 +1,8 @@
-﻿namespace competex_backend.Models
+﻿using Npgsql;
+
+namespace competex_backend.Models
 {
-    public abstract class Score : Identifiable
+    public abstract class Score : Identifiable, IMappable<Score>
     {
         public Guid MatchId { get; set; }
         public Guid ParticipantId { get; set; }
@@ -8,12 +10,22 @@
         // Keeping ScoreValue as a protected abstract property for derived classes
         public abstract object ScoreValue { get; set; }
         //public Judge? JudgedBy { get; set; }
-        public List<Guid> PenaltyIds { get; set; } = new List<Guid>();
+        public List<Penalty> PenaltyIds { get; set; } = [];
 
         public Score(Guid matchId, Guid participantId)
         {
             MatchId = matchId;
             ParticipantId = participantId;
+        }
+
+        public static Task<Score> Map(NpgsqlDataReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Tuple<List<string>, List<NpgsqlParameter>> GetInsertSQLObject()
+        {
+            throw new NotImplementedException();
         }
     }
 

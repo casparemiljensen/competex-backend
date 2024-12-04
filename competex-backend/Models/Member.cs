@@ -17,18 +17,19 @@ namespace competex_backend.Models
 
         // No club implementation yet. 
 
-        public static Member Map(NpgsqlDataReader reader)
+        public static Task<Member> Map(NpgsqlDataReader reader)
         {
-            return new Member()
-            {
-                Id = reader.GetGuid(0),
-                FirstName = reader.GetString(1),
-                LastName = reader.GetString(2),
-                Birthday = reader.GetDateTime(3),
-                Email = reader.GetString(4),
-                Phone = reader.GetString(5),
-                Permissions = EnumMapper.MapEnumValueTo<Permissions>(reader.GetInt16(6)).GetValueOrDefault()
-            };
+            return Task.FromResult(
+                new Member()
+                {
+                    Id = reader.GetGuid(0),
+                    FirstName = reader.GetString(1),
+                    LastName = reader.GetString(2),
+                    Birthday = reader.GetDateTime(3),
+                    Email = reader.GetString(4),
+                    Phone = reader.GetString(5),
+                    Permissions = EnumMapper.MapEnumValueTo<Permissions>(reader.GetInt16(6)).GetValueOrDefault()
+                });
         }
 
         public Tuple<List<string>, List<NpgsqlParameter>> GetInsertSQLObject()

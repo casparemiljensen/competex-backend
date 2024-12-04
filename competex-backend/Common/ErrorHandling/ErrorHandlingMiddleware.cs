@@ -18,9 +18,13 @@ namespace competex_backend.Common.ErrorHandling
             {
                 await _next(context);
             }
-            catch (ApiException ex) 
+            catch (ApiException ex)
             {
                 await HandleExceptionAsync(context, ex);
+            }
+            catch (Npgsql.PostgresException ex)
+            {
+                await HandleExceptionAsync(context, ex);//TODO: make better version for postgres
             }
             catch (Exception ex)
             {

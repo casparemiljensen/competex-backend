@@ -1,0 +1,8 @@
+services:
+  angular-app:
+    image: ilum1/competex:master_frontend
+    ports:
+      - "4200:80" # Maps port 80 in the container to port 4200 on your host
+    environment:
+      - NODE_ENV=production
+    restart: always

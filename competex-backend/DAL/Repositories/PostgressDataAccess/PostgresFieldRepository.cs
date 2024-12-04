@@ -13,7 +13,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
         public async override Task<Result> DeleteAsync(Guid id)
         {
-            return await base.DeleteAsync(id);    
+            return await base.DeleteAsync(id);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace competex_backend.Models
                 Description = reader.GetString(2),
                 StartDate = reader.GetDateTime(3),
                 EndDate = reader.GetDateTime(4),
-                LocationId = reader.GetGuid(5),
+                LocationId = reader.IsDBNull(5) ? null : reader.GetGuid(5),
                 RegistrationStartDate = reader.GetDateTime(6),
                 RegistrationEndDate = reader.GetDateTime(7),
                 Status = (Status)reader.GetInt16(8),

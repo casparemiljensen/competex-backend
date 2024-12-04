@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using competex_backend.Helpers;
+using Microsoft.Extensions.Hosting;
 using Npgsql;
 using NpgsqlTypes;
 using System.Numerics;
@@ -21,7 +22,7 @@ namespace competex_backend.Models
                     ClubId = reader.GetGuid(1),
                     MemberId = reader.GetGuid(2),
                     JoinDate = reader.GetDateTime(3),
-                    Role = (ClubMemberRole)reader.GetInt16(4),
+                    Role = EnumMapper.MapEnumValueTo<ClubMemberRole>(reader.IsDBNull(4) ? null : reader.GetInt16(4)),
                 }
             );
         }
@@ -33,7 +34,7 @@ namespace competex_backend.Models
                 new NpgsqlParameter { Value = ClubId, NpgsqlDbType = NpgsqlDbType.Uuid},
                 new NpgsqlParameter { Value = MemberId, NpgsqlDbType = NpgsqlDbType.Uuid},
                 new NpgsqlParameter { Value = JoinDate, NpgsqlDbType = NpgsqlDbType.Timestamp},
-                new NpgsqlParameter { Value = (short)Role!, NpgsqlDbType = NpgsqlDbType.Smallint}
+                new NpgsqlParameter { Value = Role != null ? Role : null, NpgsqlDbType = NpgsqlDbType.Smallint}
             };
 
             var dbColumnNames = new List<string>

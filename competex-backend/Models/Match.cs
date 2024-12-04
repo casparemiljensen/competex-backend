@@ -30,10 +30,10 @@ namespace competex_backend.Models
                 Status = EnumMapper.MapEnumValueTo<MatchStatus>(reader.GetInt16(2)).GetValueOrDefault(),
                 StartTime = reader.GetDateTime(3),
                 EndTime = reader.GetDateTime(4),
-                FieldId = reader.GetGuid(5),
-                JudgeId = reader.GetGuid(6),
+                FieldId = reader.IsDBNull(5) ? null : reader.GetGuid(5),
+                JudgeId = reader.IsDBNull(6) ? null : reader.GetGuid(6),
                 ParticipantIds = participantIdsTask.Result,
-                ScoreIds = scoreIdsTask.Result, 
+                ScoreIds = scoreIdsTask.Result,
             };
         }
 
@@ -49,7 +49,7 @@ namespace competex_backend.Models
                 new NpgsqlParameter { Value = JudgeId, NpgsqlDbType = NpgsqlDbType.Uuid }
             };
 
-                var dbColumnNames = new List<string>
+            var dbColumnNames = new List<string>
             {
                 "RoundId",
                 "Status",

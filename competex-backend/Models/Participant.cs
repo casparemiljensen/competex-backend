@@ -11,11 +11,6 @@ namespace competex_backend.Models
         public string Name { get; set; }
         public ParticipantType ParticipantType { get; set; }
 
-        public Participant(string name)
-        {
-            Name = name;
-        }
-
         public static async Task<Participant> Map(NpgsqlDataReader reader)
         {
             var type = EnumMapper.MapEnumValueTo<ParticipantType>(reader.GetInt16(3)).GetValueOrDefault();
@@ -41,7 +36,7 @@ namespace competex_backend.Models
     public class Team : Participant, IMappable<Team>
     {
         public List<Member> Members { get; set; }
-        public Team(string name, List<Member> members) : base(name)
+        public Team(string name, List<Member> members) : base()
         {
             Members = members;
         }
@@ -80,7 +75,7 @@ namespace competex_backend.Models
     public class Single : Participant, IMappable<Single>
     {
         public Member Member { get; set; }
-        public Single(string Name, Member member) : base(Name)
+        public Single(string Name, Member member) : base()
         {
             Member = member;
         }
@@ -120,7 +115,7 @@ namespace competex_backend.Models
     {
         public Member Member { get; set; }
         public Entity Entity { get; set; }
-        public Ekvipage(string name, Member member, Entity entity) : base(name)
+        public Ekvipage(string name, Member member, Entity entity) : base()
         {
             Member = member;
             Entity = entity;

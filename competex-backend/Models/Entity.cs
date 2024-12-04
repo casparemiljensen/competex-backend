@@ -11,6 +11,7 @@ namespace competex_backend.Models
         public string Name { get; set; } = string.Empty;
         public DateTime Birthdate { get; set; }
         public Level Level { get; set; }
+        public Guid OwnerId { get; set; }
 
         public static Task<Entity> Map(NpgsqlDataReader reader)
         {
@@ -21,7 +22,8 @@ namespace competex_backend.Models
                     Name = reader.GetString(1),
                     Birthdate = reader.GetDateTime(2),
                     Level = EnumMapper.MapEnumValueTo<Level>(reader.GetInt16(3)).GetValueOrDefault(),
-                    Type = EnumMapper.MapEnumValueTo<EntityType>(reader.GetInt16(4)).GetValueOrDefault(),
+                    OwnerId = reader.GetGuid(4),
+                    Type = EnumMapper.MapEnumValueTo<EntityType>(reader.GetInt16(5)).GetValueOrDefault(),
                 }
             );
         }
@@ -33,6 +35,7 @@ namespace competex_backend.Models
                 new NpgsqlParameter { Value = Name, NpgsqlDbType = NpgsqlDbType.Text },
                 new NpgsqlParameter { Value = Birthdate, NpgsqlDbType = NpgsqlDbType.Timestamp },
                 new NpgsqlParameter { Value = (short)Level, NpgsqlDbType = NpgsqlDbType.Smallint },
+                new NpgsqlParameter { Value = OwnerId, NpgsqlDbType = NpgsqlDbType.Uuid },
                 new NpgsqlParameter { Value = (short)Type, NpgsqlDbType = NpgsqlDbType.Smallint },
             };
 
@@ -41,6 +44,7 @@ namespace competex_backend.Models
                 "Name",
                 "Birthday",
                 "Level",
+                "Owner",
                 "Type"
             };
 

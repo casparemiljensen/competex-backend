@@ -18,7 +18,7 @@ namespace competex_backend.Models
                 Id = reader.GetGuid(0),
                 Name = reader.GetString(1),
                 CompetitionAttributes = (await PostgresConnection.GetAnyList<data_CompetitionType_CompetitionAttributes>(
-                    "data_SportType_EventAttributes", "SportTypeId", reader.GetGuid(0)))
+                    "data_CompetitionType_CompetitionAttributes", "CompetitionTypeId", reader.GetGuid(0)))
                     .Select(x => x.CompetitionAttribute).ToList(),
                 ScoreType = (ScoreType)reader.GetInt16(2),
                 ScoreMethod = (ScoreMethod)reader.GetInt16(3),

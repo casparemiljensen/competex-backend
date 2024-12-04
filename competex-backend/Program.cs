@@ -61,7 +61,7 @@ builder.Services.AddScoped<IGenericRepository<Event>, PostgresEventRepository>()
 builder.Services.AddScoped<IGenericRepository<ClubMembership>, PostgresClubMembershipRepository>();
 builder.Services.AddScoped<IGenericRepository<Admin>, PostgresAdminRepository>();
 builder.Services.AddScoped<IGenericRepository<Entity>, PostgresEntityRepository>();
-builder.Services.AddScoped<IGenericRepository<CompetitionType>, PostgresCompetitionTypeRepository>();
+builder.Services.AddScoped<IGenericRepository<Field>, PostgresFieldRepository>();
 builder.Services.AddScoped<IGenericRepository<Location>, PostgresLocationRepository>();
 builder.Services.AddScoped<IGenericRepository<Penalty>, PostgresPenaltyRepository>();
 builder.Services.AddScoped<IGenericRepository<Registration>, PostgresRegistrationRepository>();
@@ -168,14 +168,14 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 // Right now we want to show Swagger UI in production. Remove this clause when that changes
-    if (app.Environment.IsDevelopment() || true)
+if (app.Environment.IsDevelopment() || true)
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
     {
-        app.UseSwagger();
-        app.UseSwaggerUI(options =>
-        {
-            options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapse swagger on startup
-        });
-    }
+        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None); // Collapse swagger on startup
+    });
+}
 
 app.UseCors(MyAllowSpecificOriginsName);
 

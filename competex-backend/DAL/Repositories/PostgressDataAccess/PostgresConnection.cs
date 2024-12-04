@@ -36,6 +36,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
         internal static string GetTableName<T>()
         {
+            return typeof(T).Name;
             switch (Activator.CreateInstance<T>())
             {
                 case Member:
@@ -148,11 +149,11 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             }
 
             Connection connection = await GetReadyConnection();
-            await using var command = new NpgsqlCommand($"SELECT mem.* " +
+            await using var command = new NpgsqlCommand($"SELECT vt.* " +
             $"FROM \"{relationTable}\" rel " +
-                $"WHERE \"{relationJoinProperty}\" = ($1) " +
-            $"JOIN \"{valueTable}\" vt " +
-                $"ON rel.\"{relationTableValueProperty}\" = vt.\"Id\"",
+                $"JOIN \"{valueTable}\" vt " +
+                    $"ON rel.\"{relationTableValueProperty}\" = vt.\"Id\"" +
+                    $"WHERE \"{relationJoinProperty}\" = ($1) ",
             connection.GetConnection());
 
             List<NpgsqlParameter> paramList = [];
@@ -168,10 +169,10 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             connection.EndQuery();
             return output;
         }
-        
+
         public async static Task<Connection> GetReadyConnection()
         {
-            for(int i = 0; i < connections.Count; i++)
+            for (int i = 0; i < connections.Count; i++)
             {
                 if (connections[i].IsReady())
                 {

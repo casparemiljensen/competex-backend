@@ -1,4 +1,5 @@
-﻿using Swashbuckle.AspNetCore.Annotations;
+﻿using competex_backend.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -8,11 +9,14 @@ namespace competex_backend.API.DTOs
     [JsonDerivedType(typeof(TimeScoreDTO), typeDiscriminator: "TimeScore")]
     [JsonDerivedType(typeof(SetScoreDTO), typeDiscriminator: "SetScore")]
     [JsonDerivedType(typeof(PointScoreDTO), typeDiscriminator: "PointScore")]
+    [JsonDerivedType(typeof(TimeFaultScoreDTO), typeDiscriminator: "TimeFaultScore")]
+
 
     [SwaggerDiscriminator("$type")]
     [SwaggerSubType(typeof(TimeScoreDTO), DiscriminatorValue = "TimeScore")]
     [SwaggerSubType(typeof(SetScoreDTO), DiscriminatorValue = "SetScore")]
     [SwaggerSubType(typeof(PointScoreDTO), DiscriminatorValue = "PointScore")]
+    [SwaggerSubType(typeof(TimeFaultScoreDTO), DiscriminatorValue = "TimeFaultScore")]
 
     public abstract class ScoreDTO : Identifiable
     {
@@ -106,6 +110,44 @@ namespace competex_backend.API.DTOs
             else
             {
                 throw new InvalidCastException($"Unable to cast {value?.GetType().Name} to int for Points.");
+            }
+        }
+    }
+
+    public class TimeFaultScoreDTO : ScoreDTO
+    {
+        public int Faults { get; set; }
+        public TimeSpan Time { get; set; }
+
+        protected override object GetScoreValue() => (Faults, Time);
+
+        // SetScoreValue accepts a tuple or other supported input
+        protected override void SetScoreValue(object value)
+        {
+            if (value is ValueTuple<int, TimeSpan> tuple)
+            {
+                Faults = tuple.Item1;
+                Time = tuple.Item2;
+            }
+            else if (value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Object)
+            {
+                // Example for deserialization from a JSON object
+                if (jsonElement.TryGetProperty("Faults", out JsonElement faultsElement) && faultsElement.ValueKind == JsonValueKind.Number)
+                {
+                    Faults = faultsElement.GetInt32();
+                }
+
+                if (jsonElement.TryGetProperty("Time", out JsonElement timeElement) && timeElement.ValueKind == JsonValueKind.String)
+                {
+                    if (TimeSpan.TryParse(timeElement.GetString(), out var parsedTime))
+                    {
+                        Time = parsedTime;
+                    }
+                }
+            }
+            else
+            {
+                throw new InvalidCastException($"Unable to cast {value?.GetType().Name} to (int, DateTime) for ResultDTO.");
             }
         }
     }

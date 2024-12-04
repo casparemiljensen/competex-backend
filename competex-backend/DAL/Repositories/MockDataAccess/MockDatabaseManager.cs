@@ -10,7 +10,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Club> Clubs { get; set; } = new();
         public List<Round> Rounds { get; set; } = new();
         public List<SportType> SportTypes { get; set; } = new();
-        public List<CompetitionType> CompetitionTypes { get; set; } = [];
+        public List<CompetitionType> CompetitionTypes { get; set; } = new();
         public List<Competition> Competitions { get; set; } = new();
         public List<Event> Events { get; set; } = new();
         public List<ClubMembership> ClubMemberships { get; set; } = new();
@@ -19,12 +19,13 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Field> Fields { get; set; } = new();
         public List<Location> Locations { get; set; } = new();
         public List<Penalty> Penalties { get; set; } = new();
-        public List<Registration> Registrations { get; set; } = [];
+        public List<Registration> Registrations { get; set; } = new();
         public List<ScoringSystem> ScoringSystems { get; set; } = new();
         public List<Participant> Participants { get; set; } = new();
         public List<Judge> Judges { get; set; } = new();
         public List<Match> Matches { get; set; } = new();
         public List<Score> Scores { get; set; } = new();
+        public List<ScoreResult> ScoreResults { get; set; } = new();
 
 
         public MockDatabaseManager()
@@ -54,6 +55,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             if (typeof(T) == typeof(Judge)) return (Judges as List<T>)!;
             if (typeof(T) == typeof(Match)) return (Matches as List<T>)!;
             if (typeof(T) == typeof(Score)) return (Scores as List<T>)!;
+            if (typeof(T) == typeof(ScoreResult)) return (ScoreResults as List<T>)!;
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
 
@@ -194,11 +196,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #endregion
 
             #region Rounds
-            var round1 = new Round { Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"), Name = "TestRoundOne", CompetitionId = comp1.Id };
-            var round2 = new Round { Id = Guid.NewGuid(), Name = "TestRoundTwo", CompetitionId = comp1.Id };
-            var round3 = new Round { Id = Guid.NewGuid(), Name = "TestRoundThree", CompetitionId = comp1.Id };
-            var round4 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFour", CompetitionId = comp2.Id };
-            var round5 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFive", CompetitionId = comp2.Id };
+            var round1 = new Round { Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"), Name = "TestRoundZero", CompetitionId = comp1.Id, SequenceNumber = 0 };
+            var round2 = new Round { Id = Guid.NewGuid(), Name = "TestRoundOne", CompetitionId = comp1.Id, SequenceNumber = 1 };
+            var round3 = new Round { Id = Guid.NewGuid(), Name = "TestRoundTwo", CompetitionId = comp1.Id, SequenceNumber = 2 };
+            var round4 = new Round { Id = Guid.NewGuid(), Name = "TestRoundThree", CompetitionId = comp2.Id, SequenceNumber = 3 };
+            var round5 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFour", CompetitionId = comp2.Id, SequenceNumber = 4 };
             Rounds.AddRange([round1, round2, round3, round4, round5]);
             #endregion
 
@@ -395,7 +397,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             Fields.AddRange([field1, field2, field3, field4, field5, field6]);
             #endregion
 
-           
+
 
             #region Penalties
 
@@ -467,7 +469,13 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var ekvipage2 = new Ekvipage("ekvipage2", member5.Id, entity2.Id);
             ekvipage2.Id = Guid.NewGuid();
 
-            Participants.AddRange([team1, team2, single1, single2, ekvipage1, ekvipage2]);
+            var ekvipage3 = new Ekvipage("ekvipage3", member4.Id, entity1.Id);
+            ekvipage3.Id = Guid.NewGuid();
+
+            var ekvipage4 = new Ekvipage("ekvipage4", member5.Id, entity1.Id);
+            ekvipage4.Id = Guid.NewGuid();
+
+            Participants.AddRange([team1, team2, single1, single2, ekvipage1, ekvipage2, ekvipage3, ekvipage4]);
 
             #endregion
 
@@ -478,7 +486,25 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 CompetitionId = comp2.Id,
                 ParticipantId = single1.Id
             };
-            Registrations.AddRange([reg1]);
+
+            var reg2 = new Registration
+            {
+                Id = Guid.NewGuid(),
+                CompetitionId = comp1.Id,
+                ParticipantId = ekvipage1.Id,
+                Status = RegistrationStatus.Accepted
+            };
+
+            var reg3 = new Registration
+            {
+                Id = Guid.NewGuid(),
+                CompetitionId = comp1.Id,
+                ParticipantId = ekvipage2.Id,
+                Status = RegistrationStatus.Accepted
+            };
+            
+            Registrations.AddRange([reg1, reg2, reg3]);
+
             #endregion
 
             #region Judges
@@ -547,10 +573,25 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now.AddHours(1),
                 FieldId = field2.Id,
-                JudgeId = judge2.Id,
+                JudgeId = judge2.Id
             };
 
-            Matches.AddRange([match1, match2, match3]);
+            var match4 = new Match
+            {
+                Id = Guid.NewGuid(),
+                RoundId = round2.Id,
+                ParticipantIds = new List<Guid>
+                {
+                    Participants[6].Id, Participants[7].Id
+                },
+                Status = MatchStatus.Concluded,
+                StartTime = DateTime.Now,
+                EndTime = DateTime.Now.AddHours(1),
+                FieldId = field2.Id,
+                JudgeId = judge2.Id
+            };
+
+            Matches.AddRange([match1, match2, match3, match4]);
 
 
             #endregion
@@ -587,17 +628,35 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var score6 = new SetScore(2, Guid.Empty, Guid.Empty);
             score6.Id = Guid.NewGuid();
 
+            var score7 = new TimeFaultScore(2, TimeSpan.FromMinutes(2), match1.Id, ekvipage1.Id);
+            score7.Id = Guid.NewGuid();
+
+            var score8 = new TimeFaultScore(2, TimeSpan.FromMinutes(2), match2.Id, ekvipage2.Id);
+            score8.Id = Guid.NewGuid();
+
             //Scores.AddRange([score1a, score1b, score2a, score2b, score3a, score3b, score4]);
-            Scores.AddRange([score4, score5, score6]);
+            Scores.AddRange([score4, score5, score6, score7, score8]);
 
 
-            //Matches[0].Scores.AddRange([score1a, score1b]);
-            //Matches[1].Scores.AddRange([score2a, score2b]);
-            //Matches[2].Scores.AddRange([score3a, score3b]);
-
+            //Matches[0].ScoreIds.AddRange([score7.Id, score8.Id]);
 
             #endregion
 
+            #region ScoreResults
+
+
+            var scoreResult1 = new ScoreResult
+            {
+                Id = Guid.NewGuid(),
+                CompetitionId = comp1.Id,
+                ParticipantId = ekvipage1.Id,
+                Faults = 2,
+                Time = TimeSpan.FromMinutes(2)
+            };
+
+            ScoreResults.AddRange([scoreResult1]);
+
+            #endregion
         }
     }
 }

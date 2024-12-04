@@ -7,5 +7,6 @@ namespace competex_backend.API.Interfaces
     {
         // TODO: Change to Task<IActionResult> Or change IGenericAPI to return IActionResult
         Task<ActionResult> GetRoundIdsByCompetitionIdAsync(Guid competitionId, int? pageSize, int? pageNumber);
+        Task<IActionResult> CreateMatchesForRoundAsync(Guid competitionId, uint roundSequenceNo, CriteriaDTO? criteria, [FromQuery] int? pageSize, [FromQuery] int? pageNumber);
     }
 }

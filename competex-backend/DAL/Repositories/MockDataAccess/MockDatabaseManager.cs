@@ -196,11 +196,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #endregion
 
             #region Rounds
-            var round1 = new Round { Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"), Name = "TestRoundOne", CompetitionId = comp1.Id };
-            var round2 = new Round { Id = Guid.NewGuid(), Name = "TestRoundTwo", CompetitionId = comp1.Id };
-            var round3 = new Round { Id = Guid.NewGuid(), Name = "TestRoundThree", CompetitionId = comp1.Id };
-            var round4 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFour", CompetitionId = comp2.Id };
-            var round5 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFive", CompetitionId = comp2.Id };
+            var round1 = new Round { Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"), Name = "TestRoundZero", CompetitionId = comp1.Id, SequenceNumber = 0 };
+            var round2 = new Round { Id = Guid.NewGuid(), Name = "TestRoundOne", CompetitionId = comp1.Id, SequenceNumber = 1 };
+            var round3 = new Round { Id = Guid.NewGuid(), Name = "TestRoundTwo", CompetitionId = comp1.Id, SequenceNumber = 2 };
+            var round4 = new Round { Id = Guid.NewGuid(), Name = "TestRoundThree", CompetitionId = comp2.Id, SequenceNumber = 3 };
+            var round5 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFour", CompetitionId = comp2.Id, SequenceNumber = 4 };
             Rounds.AddRange([round1, round2, round3, round4, round5]);
             #endregion
 
@@ -469,7 +469,13 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var ekvipage2 = new Ekvipage("ekvipage2", member5.Id, entity2.Id);
             ekvipage2.Id = Guid.NewGuid();
 
-            Participants.AddRange([team1, team2, single1, single2, ekvipage1, ekvipage2]);
+            var ekvipage3 = new Ekvipage("ekvipage3", member4.Id, entity1.Id);
+            ekvipage3.Id = Guid.NewGuid();
+
+            var ekvipage4 = new Ekvipage("ekvipage4", member5.Id, entity1.Id);
+            ekvipage4.Id = Guid.NewGuid();
+
+            Participants.AddRange([team1, team2, single1, single2, ekvipage1, ekvipage2, ekvipage3, ekvipage4]);
 
             #endregion
 
@@ -570,7 +576,22 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 JudgeId = judge2.Id
             };
 
-            Matches.AddRange([match1, match2, match3]);
+            var match4 = new Match
+            {
+                Id = Guid.NewGuid(),
+                RoundId = round2.Id,
+                ParticipantIds = new List<Guid>
+                {
+                    Participants[6].Id, Participants[7].Id
+                },
+                Status = MatchStatus.Concluded,
+                StartTime = DateTime.Now,
+                EndTime = DateTime.Now.AddHours(1),
+                FieldId = field2.Id,
+                JudgeId = judge2.Id
+            };
+
+            Matches.AddRange([match1, match2, match3, match4]);
 
 
             #endregion

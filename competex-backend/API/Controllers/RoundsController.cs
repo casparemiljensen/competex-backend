@@ -1,9 +1,7 @@
 using competex_backend.API.DTOs;
 using competex_backend.API.Interfaces;
 using competex_backend.BLL.Interfaces;
-using competex_backend.BLL.Services;
 using competex_backend.Common.Helpers;
-using competex_backend.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace competex_backend.API.Controllers
@@ -37,9 +35,10 @@ namespace competex_backend.API.Controllers
 
 
         [HttpPost("CreateMatchesForRound")]
-        public async Task<IActionResult> CreateMatchesForRoundAsync(Guid competitionId, uint roundSequenceNo, string? criteria, [FromQuery] int? pageSize, [FromQuery] int? pageNumber)
+        public async Task<IActionResult> CreateMatchesForRoundAsync(Guid competitionId, uint roundSequenceNo, CriteriaDTO? criteria, [FromQuery] int? pageSize, [FromQuery] int? pageNumber)
         {
-            var result = await _roundService.CreateMatchesForRoundAsync(competitionId, roundSequenceNo, null, null);
+
+            var result = await _roundService.CreateMatchesForRoundAsync(competitionId, roundSequenceNo, criteria, null, null);
             if (result.IsSuccess && result.Value != null)
             {
                 // TODO: Should we use paginationWrapper here?

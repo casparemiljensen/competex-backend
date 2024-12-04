@@ -21,7 +21,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 return Result.Failure(Error.NotFound("NotFound", $"Could not find event with Id: {eventId}"));
             }
 
-            _event.AddCompetition(competition.Id);
+            //_event.AddCompetition(competition.Id); //TODO: FIX
             return Result.Success();
         }
     }

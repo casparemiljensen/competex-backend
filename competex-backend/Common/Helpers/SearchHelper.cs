@@ -1,10 +1,11 @@
 using System.Text.Json;
+using competex_backend.DAL.Repositories.PostgressDataAccess;
 using Npgsql;
 using NpgsqlTypes;
 
 public static class SearchHelper
 {
-    public async static Task<List<T>> IterateOverReader<T>(NpgsqlDataReader reader) where T : class, IMappable<T>
+    public async static Task<List<T>> IterateOverReader<T>(NpgsqlDataReader reader, Connection connection) where T : class, IMappable<T>
     {
         List<T> items = [];
         //do
@@ -12,6 +13,7 @@ public static class SearchHelper
         {
             items.Add(await T.Map(reader));
         }
+        connection.EndQuery();
         return items;
     }
     public static void AddTypeCorrectFilter(this List<NpgsqlParameter> list, object filter)

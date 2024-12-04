@@ -41,18 +41,16 @@ namespace competex_backend
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => src.CompetitionId));
             CreateMap<SportType, SportTypeDTO>();
             CreateMap<CompetitionType, CompetitionTypeDTO>();
-            CreateMap<Competition, CompetitionDTO>()
-                .ForMember(dest => dest.CompetitionType, opt => opt.MapFrom(src => src.CompetitionTypeIds));
+            CreateMap<Competition, CompetitionDTO>();
             CreateMap<Event, EventDTO>()
                 .ForMember(dest => dest.Location, opt => opt.MapFrom(src =>
                     src.LocationId.HasValue ? src.LocationId.Value : Guid.Empty)) // Maps only if LocationId is present
-                .ForMember(dest => dest.SportType, opt => opt.MapFrom(src => src.SportTypeId))
-                .ForMember(dest => dest.Competitions, opt => opt.MapFrom(src => src.CompetitionIds));
+                .ForMember(dest => dest.SportType, opt => opt.MapFrom(src => src.SportTypeId));
             CreateMap<ClubMembership, ClubMembershipDTO>();
             CreateMap<Admin, AdminDTO>()
                 .ForMember(dest => dest.SportTypes, opt => opt.MapFrom(src => src.SportTypeIds));
             CreateMap<Entity, EntityDTO>();
-            CreateMap<Field, FieldDTO>();
+            CreateMap<CompetitionType, FieldDTO>();
             CreateMap<Location, LocationDTO>();
             CreateMap<Penalty, PenaltyDTO>();
             CreateMap<Registration, RegistrationDTO>()
@@ -110,7 +108,7 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<EntityDTO, Entity>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<FieldDTO, Field>()
+            CreateMap<FieldDTO, CompetitionType>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<LocationDTO, Location>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());

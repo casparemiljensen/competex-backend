@@ -1,6 +1,8 @@
 ﻿using competex_backend.Models;
+using Microsoft.AspNetCore.SignalR;
 using Npgsql;
 using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.Data;
 using System.Net.Http.Headers;
 
@@ -8,7 +10,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 {
     public static class PostgresConnection
     {
-        public static NpgsqlConnection conn;
+        private static List<Connection> connections = [];
         private static class Config
         {
             public const string Host = "localhost:15432";
@@ -19,11 +21,12 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             public const bool UseSsl = false;
         }
 
-        public static async void Connect()
+        private static async Task Connect()
         {
             Console.WriteLine(BuildConnectionString());
             await using var dataSource = NpgsqlDataSource.Create(BuildConnectionString());
-            conn = await dataSource.OpenConnectionAsync();
+            var connection = new Connection(await dataSource.OpenConnectionAsync());
+            connections.Add(connection);
         }
         public static bool IsValidSQLString(string name)
         {
@@ -38,8 +41,9 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             {
                 return output;
             }
+            var connection = await GetReadyConnection();
 
-            await using var command = new NpgsqlCommand($"SELECT * FROM \"{tableName}\" WHERE \"{property}\" = ($1);", PostgresConnection.conn);
+            await using var command = new NpgsqlCommand($"SELECT * FROM \"{tableName}\" WHERE \"{property}\" = ($1);", connection.GetConnection());
 
             List<NpgsqlParameter> paramList = [];
             paramList.AddTypeCorrectFilter(searchValue);
@@ -47,8 +51,39 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
             await using var reader = await command.ExecuteReaderAsync();
 
-            return await SearchHelper.IterateOverReader<T>(reader);
+            return await SearchHelper.IterateOverReader<T>(reader, connection);
         }
+
+        public static async Task<List<Guid>> GetGuidsByPropertyId(Guid id, string tableName, string propertyName, string selectProperty)
+        {
+            List<Guid> output = [];
+            if (!IsValidSQLString(tableName)
+                || !IsValidSQLString(propertyName)
+                || !IsValidSQLString(selectProperty))
+            {
+                return output;
+            }
+
+            Connection connection = await GetReadyConnection();
+            await using var command = new NpgsqlCommand($"SELECT \"{propertyName}\"" +
+            $"FROM \"{tableName}\"" +
+                $" WHERE \"{propertyName}\" = ($1)" +
+            connection.GetConnection());
+
+            List<NpgsqlParameter> paramList = [];
+            paramList.AddTypeCorrectFilter(id);
+            command.Parameters.Add(paramList[0]);
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                output.Add(reader.GetGuid(0));
+            }
+            connection.EndQuery();
+            return output;
+        }
+
         public static async Task<List<outT>> GetManyManyList<outT>(
             string relationTable,
             string relationJoinProperty,
@@ -66,12 +101,13 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
                 return output;
             }
 
+            Connection connection = await GetReadyConnection();
             await using var command = new NpgsqlCommand($"SELECT mem.* " +
-            "FROM \"{relationTable}\" rel " +
-                " WHERE \"{relationJoinProperty}\" = ($1)" +
-            "JOIN \"{valueTable}\" vt " +
-                "ON rel.\"{relationTableValueProperty}\" = vt.\"Id\"",
-            conn);
+            $"FROM \"{relationTable}\" rel " +
+                $"WHERE \"{relationJoinProperty}\" = ($1) " +
+            $"JOIN \"{valueTable}\" vt " +
+                $"ON rel.\"{relationTableValueProperty}\" = vt.\"Id\"",
+            connection.GetConnection());
 
             List<NpgsqlParameter> paramList = [];
             paramList.AddTypeCorrectFilter(parentGuid);
@@ -83,7 +119,21 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             {
                 output.Add(await outT.Map(reader));
             }
+            connection.EndQuery();
             return output;
+        }
+        
+        public async static Task<Connection> GetReadyConnection()
+        {
+            for(int i = 0; i < connections.Count; i++)
+            {
+                if (!connections[i].IsReady())
+                {
+                    return connections[i];
+                }
+            }
+            await Connect();
+            return connections.Last();
         }
 
         private static string BuildConnectionString()

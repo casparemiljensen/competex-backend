@@ -33,7 +33,6 @@ namespace competex_backend.BLL.Services
         public async Task<ResultT<Tuple<int, IEnumerable<TDto>>>> GetAllAsync(int? pageSize, int? pageNumber)
         {
             var result = await _repository.GetAllAsync(pageSize, pageNumber);
-            Console.WriteLine(result);
             var entities = result.Value.Item2.Select(m => _mapper.Map<TDto>(m)).ToList();
             return ResultT<Tuple<int, IEnumerable<TDto>>>.Success(new Tuple<int, IEnumerable<TDto>>(result.Value.Item1, entities));
         }

@@ -19,11 +19,13 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
         {
             string tableName = GetTableName();
 
-            await using var command = new NpgsqlCommand($"SELECT * FROM \"{tableName}\";", PostgresConnection.conn);
+            var connection = await PostgresConnection.GetReadyConnection();
+
+            await using var command = new NpgsqlCommand($"SELECT * FROM \"{tableName}\";", connection.GetConnection());
 
             await using var reader = await command.ExecuteReaderAsync();
 
-            return PaginationHelper.PaginationWrapper<T>(await SearchHelper.IterateOverReader<T>(reader), pageSize, pageNumber);
+            return PaginationHelper.PaginationWrapper<T>(await SearchHelper.IterateOverReader<T>(reader, connection), pageSize, pageNumber);
         }
 
         internal static string GetTableName()
@@ -35,7 +37,8 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
                 case Match:
                     return "Match";
                 default:
-                    throw new ApiException(400, "Bad request: Invalid type requested");
+                    Console.WriteLine("Unknown type: " + typeof(T).Name);
+                    return typeof(T).Name;
             }
         }
 
@@ -43,8 +46,10 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
         {
             string tableName = GetTableName();
 
+            var connection = await PostgresConnection.GetReadyConnection();
+
             //using var cmd = new NpgsqlCommand($"SELECT * FROM member WHERE id = '58a01cc0-1a49-455b-998c-1500b3db0dca'", PostgresConnection.conn)
-            await using var cmd = new NpgsqlCommand($"SELECT * FROM \"{tableName}\" WHERE \"Id\" = ($1)", PostgresConnection.conn)
+            await using var cmd = new NpgsqlCommand($"SELECT * FROM \"{tableName}\" WHERE \"Id\" = ($1)", connection.GetConnection())
             {
                 Parameters =
                 {
@@ -59,7 +64,9 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
                 return ResultT<T>.Failure(Error.NotFound("400", "Item with given id not found"));
             }
 
-            return ResultT<T>.Success(await T.Map(reader));
+            var result = ResultT<T>.Success(await T.Map(reader));
+            connection.EndQuery();
+            return result;
         }
 
         public async Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
@@ -68,7 +75,9 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
             var (query, parameters) = BuildSearchQuery(tableName, filters ?? []);
 
-            await using var cmd = new NpgsqlCommand(query, PostgresConnection.conn);
+            var connection = await PostgresConnection.GetReadyConnection();
+
+            await using var cmd = new NpgsqlCommand(query, connection.GetConnection());
 
             for (int i = 0; i < parameters.Count; i++)
             {
@@ -77,7 +86,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
             await using var reader = await cmd.ExecuteReaderAsync();
 
-            return PaginationHelper.PaginationWrapper<T>(await SearchHelper.IterateOverReader<T>(reader), pageSize, pageNumber);
+            return PaginationHelper.PaginationWrapper<T>(await SearchHelper.IterateOverReader<T>(reader, connection), pageSize, pageNumber);
         }
 
 
@@ -98,12 +107,10 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
                 {
                     if (jsonElement.ValueKind == JsonValueKind.Array)
                     {
-                        Console.WriteLine("Is Array");
                         int arrayLength = jsonElement.GetArrayLength();
                         List<string> or = [];
                         foreach (var filterEntity in jsonElement.EnumerateArray())
                         {
-                            Console.WriteLine("in loop");
                             or.Add($"\"{filter.Key}\" = ${queryIndex}");
                             paramList.AddTypeCorrectFilter(filterEntity);
                             queryIndex++;
@@ -142,8 +149,6 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             string whereClause = orConditions.Count > 0 ? $"WHERE ({string.Join(") AND (", orConditions)})" : "";
             string query = $"SELECT * FROM \"{tableName}\" {whereClause};";
 
-            Console.WriteLine(query);
-
             return (query, paramList);
         }
 
@@ -159,7 +164,9 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
             var valuePlaceholders = string.Join(", ", Enumerable.Range(1, columns.Count).Select(i => $"${i}"));
 
-            await using var cmd = new NpgsqlCommand($"INSERT INTO \"{tableName}\" (\"{columnsNames}\") VALUES ({valuePlaceholders}) RETURNING \"Id\";", PostgresConnection.conn);
+            var connection = await PostgresConnection.GetReadyConnection();
+
+            await using var cmd = new NpgsqlCommand($"INSERT INTO \"{tableName}\" (\"{columnsNames}\") VALUES ({valuePlaceholders}) RETURNING \"Id\";", connection.GetConnection());
 
             for (int i = 0; i < values.Count; i++)
             {
@@ -167,6 +174,8 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             }
 
             var res = await cmd.ExecuteScalarAsync();
+
+            connection.EndQuery();
 
             if (res != null)
             {
@@ -191,7 +200,9 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
                 }
             }
 
-            await using var cmd = new NpgsqlCommand($"UPDATE \"{tableName}\" SET {updatePlaceholderString} WHERE \"Id\" = (${columns.Count + 1});", PostgresConnection.conn);
+            var connection = await PostgresConnection.GetReadyConnection();
+
+            await using var cmd = new NpgsqlCommand($"UPDATE \"{tableName}\" SET {updatePlaceholderString} WHERE \"Id\" = (${columns.Count + 1});", connection.GetConnection());
 
             for (int i = 0; i < values.Count; i++)
             {
@@ -200,6 +211,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             cmd.Parameters.Add(new NpgsqlParameter { Value = id, NpgsqlDbType = NpgsqlDbType.Uuid });
 
             var res = await cmd.ExecuteScalarAsync();
+            connection.EndQuery();
 
             if (res != null)
             {
@@ -218,7 +230,9 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
         internal async Task<Result> DeleteFromTable(string tableName, string property, Guid id)
         {
-            await using var cmd = new NpgsqlCommand($"DELETE FROM \"{tableName}\" WHERE \"{property}\" = ($1)", PostgresConnection.conn)
+            var connection = await PostgresConnection.GetReadyConnection();
+
+            await using var cmd = new NpgsqlCommand($"DELETE FROM \"{tableName}\" WHERE \"{property}\" = ($1)", connection.GetConnection())
             {
                 Parameters =
                 {

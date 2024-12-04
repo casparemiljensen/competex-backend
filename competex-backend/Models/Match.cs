@@ -2,6 +2,8 @@
 using competex_backend.Helpers;
 using competex_backend.Models;
 using Npgsql;
+using NpgsqlTypes;
+using System.Numerics;
 
 namespace competex_backend.Models
 {
@@ -34,7 +36,27 @@ namespace competex_backend.Models
 
         public Tuple<List<string>, List<NpgsqlParameter>> GetInsertSQLObject()
         {
-            throw new NotImplementedException();
+            var parameters = new List<NpgsqlParameter>
+            {
+                new NpgsqlParameter { Value = RoundId, NpgsqlDbType = NpgsqlDbType.Uuid },
+                new NpgsqlParameter { Value = (short)Status, NpgsqlDbType = NpgsqlDbType.Text },
+                new NpgsqlParameter { Value = StartTime, NpgsqlDbType = NpgsqlDbType.Timestamp },
+                new NpgsqlParameter { Value = EndTime, NpgsqlDbType = NpgsqlDbType.Timestamp },
+                new NpgsqlParameter { Value = FieldId, NpgsqlDbType = NpgsqlDbType.Uuid },
+                new NpgsqlParameter { Value = JudgeId, NpgsqlDbType = NpgsqlDbType.Uuid }
+            };
+
+                var dbColumnNames = new List<string>
+            {
+                "RoundId",
+                "Status",
+                "StartTime",
+                "EndTime",
+                "FieldId",
+                "JudgeId"
+            };
+
+            return new Tuple<List<string>, List<NpgsqlParameter>>(dbColumnNames, parameters);
         }
     }
 }

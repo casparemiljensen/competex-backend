@@ -16,7 +16,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<ClubMembership> ClubMemberships { get; set; } = new();
         public List<Admin> Admins { get; set; } = new();
         public List<Entity> Entities { get; set; } = new();
-        public List<Field> Fields { get; set; } = new();
+        public List<CompetitionType> Fields { get; set; } = new();
         public List<Location> Locations { get; set; } = new();
         public List<Penalty> Penalties { get; set; } = new();
         public List<Registration> Registrations { get; set; } = [];
@@ -45,7 +45,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             if (typeof(T) == typeof(ClubMembership)) return (ClubMemberships as List<T>)!;
             if (typeof(T) == typeof(Admin)) return (Admins as List<T>)!;
             if (typeof(T) == typeof(Entity)) return (Entities as List<T>)!;
-            if (typeof(T) == typeof(Field)) return (Fields as List<T>)!;
+            if (typeof(T) == typeof(CompetitionType)) return (Fields as List<T>)!;
             if (typeof(T) == typeof(Location)) return (Locations as List<T>)!;
             if (typeof(T) == typeof(Penalty)) return (Penalties as List<T>)!;
             if (typeof(T) == typeof(Registration)) return (Registrations as List<T>)!;
@@ -59,6 +59,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
         private void SeedData()
         {
+            /*
             // Mock data
 
             #region Members
@@ -167,7 +168,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var comp1 = new Competition
             {
                 Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"),
-                CompetitionTypeIds = new List<Guid> { competitionTypeOne.Id },
+                CompetitionTypeId = competitionTypeOne.Id,
                 StartDate = new DateTime(2024, 5, 1),
                 EndDate = new DateTime(2024, 5, 10),
                 Level = Level.Intermediate,
@@ -180,7 +181,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var comp2 = new Competition
             {
                 Id = new Guid("42fff518-0815-4148-b826-33a4a1686dc0"),
-                CompetitionTypeIds = new List<Guid> { competitionTypeTwo.Id },
+                CompetitionTypeId = competitionTypeTwo.Id,
                 StartDate = new DateTime(2024, 7, 1),
                 EndDate = new DateTime(2024, 7, 3),
                 Level = Level.Professional,
@@ -336,9 +337,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             // Adding entities to the collection
             Entities.AddRange([entity1, entity2, entity3, entity4, entity5]);
             #endregion
-            */
+            
             #region Fields
-            var field1 = new Field()
+            var field1 = new CompetitionType()
             {
                 Id = new Guid("1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"),
                 Name = "Bane 1",
@@ -347,7 +348,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Surface = SurfaceType.NaturalGrass
             };
 
-            var field2 = new Field
+            var field2 = new CompetitionType
             {
                 Id = new Guid("2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e"),
                 Name = "Bane 2",
@@ -356,7 +357,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Surface = SurfaceType.ArtificialTurf
             };
 
-            var field3 = new Field
+            var field3 = new CompetitionType
             {
                 Id = new Guid("3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f"),
                 Name = "Bane 3",
@@ -365,7 +366,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Surface = SurfaceType.Clay
             };
 
-            var field4 = new Field
+            var field4 = new CompetitionType
             {
                 Id = new Guid("4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9c"),
                 Name = "Bane 4",
@@ -374,7 +375,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Surface = SurfaceType.Dirt
             };
 
-            var field5 = new Field
+            var field5 = new CompetitionType
             {
                 Id = new Guid("5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9d0b"),
                 Name = "Bane 5",
@@ -383,7 +384,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Surface = SurfaceType.Turf
             };
 
-            var field6 = new Field
+            var field6 = new CompetitionType
             {
                 Id = Guid.NewGuid(),
                 Name = "Bane 1",
@@ -482,7 +483,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             };
             Registrations.AddRange([reg1]);
             #endregion
-            */
+            
             #region Judges
 
             var judge1 = new Judge
@@ -599,7 +600,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
 
             #endregion
-
+            */
         }
     }
 }

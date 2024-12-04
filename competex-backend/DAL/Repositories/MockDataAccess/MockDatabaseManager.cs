@@ -480,7 +480,25 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 CompetitionId = comp2.Id,
                 ParticipantId = single1.Id
             };
-            Registrations.AddRange([reg1]);
+
+            var reg2 = new Registration
+            {
+                Id = Guid.NewGuid(),
+                CompetitionId = comp1.Id,
+                ParticipantId = ekvipage1.Id,
+                Status = RegistrationStatus.Accepted
+            };
+
+            var reg3 = new Registration
+            {
+                Id = Guid.NewGuid(),
+                CompetitionId = comp1.Id,
+                ParticipantId = ekvipage2.Id,
+                Status = RegistrationStatus.Accepted
+            };
+            
+            Registrations.AddRange([reg1, reg2, reg3]);
+
             #endregion
 
             #region Judges
@@ -589,10 +607,10 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var score6 = new SetScore(2, Guid.Empty, Guid.Empty);
             score6.Id = Guid.NewGuid();
 
-            var score7 = new TimeFaultScore(2, TimeSpan.FromMinutes(2), Guid.Empty, Guid.Empty);
+            var score7 = new TimeFaultScore(2, TimeSpan.FromMinutes(2), match1.Id, ekvipage1.Id);
             score7.Id = Guid.NewGuid();
 
-            var score8 = new TimeFaultScore(3, TimeSpan.FromMinutes(2), match1.Id, single1.Id);
+            var score8 = new TimeFaultScore(2, TimeSpan.FromMinutes(2), match2.Id, ekvipage2.Id);
             score8.Id = Guid.NewGuid();
 
             //Scores.AddRange([score1a, score1b, score2a, score2b, score3a, score3b, score4]);

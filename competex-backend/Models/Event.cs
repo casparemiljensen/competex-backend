@@ -15,7 +15,6 @@ namespace competex_backend.Models
         public required Guid SportTypeId { get; set; }
         public List<Guid> CompetitionIds { get; set; } = [];
         public int EntryFee { get; set; } = 0;
-
         public Result AddCompetition(Guid competitionId)
         {
             CompetitionIds.Add(competitionId);

@@ -2,8 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: competex-backend-deployment
+  namespace: competex-backend
 spec:
-  replicas: 6
+  replicas: 4
   selector:
     matchLabels:
       app: competex-backend
@@ -12,6 +13,11 @@ spec:
       labels:
         app: competex-backend
     spec:
+      tolerations: # Ensure pods are scheduled on appropriate nodes (Control where Pods can run.)
+      - key: "competex-backend"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
       containers:
       - name: competex-backend
         image: ilum1/competex:master_backend # your-repository/competex-backend:latest  # Replace with your container registry URL

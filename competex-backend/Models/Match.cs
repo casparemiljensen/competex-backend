@@ -11,6 +11,6 @@ namespace competex_backend.Models
         public DateTime EndTime { get; set; }
         public Guid? FieldId { get; set; }
         public Guid? JudgeId { get; set; }
-        public List<Guid>? ScoreIds { get; set; } = new List<Guid>();
+        //public List<Guid> ScoreIds { get; set; } = new List<Guid>();
     }
 }

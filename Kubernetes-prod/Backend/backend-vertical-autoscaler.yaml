@@ -1,0 +1,22 @@
+apiVersion: "autoscaling.k8s.io/v1"
+kind: VerticalPodAutoscaler
+metadata:
+  name: backend-api-vpa
+  namespace: competex-backend
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: competex-backend-deployment
+  updatePolicy:
+    updateMode: "Auto"
+  resourcePolicy:
+    containerPolicies:
+      - containerName: '*'
+        minAllowed:
+          cpu: 100m     # Minimum CPU requests
+          memory: 50Mi  # Minimum memory requests
+        maxAllowed:
+          cpu: 2        # Maximum CPU requests
+          memory: 1Gi   # Maximum memory requests
+    controlledResources: ["cpu", "memory"]

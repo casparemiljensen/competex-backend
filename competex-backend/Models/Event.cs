@@ -18,6 +18,7 @@ namespace competex_backend.Models
         public Status Status { get; set; } = Status.Pending;
         public required Guid Organizer { get; set; } // ClubId
         public required Guid SportTypeId { get; set; }
+        public List<Guid> CompetitionIds { get; set; } = [];
         public int EntryFee { get; set; } = 0;
 
         public static Task<Event> Map(NpgsqlDataReader reader)

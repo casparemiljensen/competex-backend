@@ -1,6 +1,7 @@
 ﻿
 using competex_backend.DAL.Repositories.PostgressDataAccess;
 using competex_backend.Helpers;
+using competex_backend.Models.DataModels;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -23,9 +24,9 @@ namespace competex_backend.Models
             {
                 Id = reader.GetGuid(0),
                 Name = reader.GetString(1),
-                EventAttributes = (await PostgresConnection.GetAnyList<data_CompetitionType_CompetitionAttributes>(
+                EventAttributes = (await PostgresConnection.GetAnyList<data_Event_EventAttributes>(
                     "data_SportType_EventAttributes", "SportTypeId", reader.GetGuid(0)))
-                    .Select(x => x.CompetitionAttribute).ToList(),
+                    .Select(x => x.EventAttribute).ToList(),
                 EntityType = EnumMapper.MapEnumValueTo<EntityType>(reader.GetInt16(3)).GetValueOrDefault()
             };
         }

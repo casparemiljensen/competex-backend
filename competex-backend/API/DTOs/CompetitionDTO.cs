@@ -4,7 +4,7 @@ namespace competex_backend.API.DTOs
 {
     public class CompetitionDTO : Identifiable
     {
-        public required IEnumerable<CompetitionTypeDTO> CompetitionType { get; set; }
+        public required Guid CompetitionTypeId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public Level Level { get; set; }

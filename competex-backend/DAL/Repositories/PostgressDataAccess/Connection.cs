@@ -4,33 +4,33 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 {
     public class Connection
     {
-        private readonly NpgsqlConnection connection;
+        private readonly NpgsqlConnection connectionA;
         private bool isBusy = false;
 
-        public Connection(NpgsqlConnection connection)
+        public Connection(NpgsqlConnection _connection)
         {
-            this.connection = connection;
+            connectionA = _connection;
         }
 
         public NpgsqlConnection GetConnection()
         {
             isBusy = true;
-            return connection;
+            return connectionA;
         }
 
         public void EndQuery()
         {
-            isBusy = true;
+            isBusy = false;
         }
 
         public bool IsReady()
         {
-            return !isBusy;
+            return !isBusy && connectionA.State == System.Data.ConnectionState.Open;
         }
 
         public void Dispose()
         {
-            connection.Dispose();
+            connectionA.Dispose();
         }
     }
 }

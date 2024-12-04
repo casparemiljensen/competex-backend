@@ -10,16 +10,19 @@ namespace competex_backend.Models
     public class Match : Identifiable, IMappable<Match>
     {
         public Guid RoundId { get; set; }
-        public List<Participant>? Participants { get; set; }
+        public List<Guid>? ParticipantIds { get; set; }
         public MatchStatus Status { get; set; } = MatchStatus.Pending;
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public Guid? FieldId { get; set; }
         public Guid? JudgeId { get; set; }
-        public List<Score>? Scores { get; set; } = [];
+        public List<Guid>? ScoreIds { get; set; } = [];
 
         public static async Task<Match> Map(NpgsqlDataReader reader)
         {
+            var participantIdsTask = PostgresConnection.GetGuidsByPropertyId(reader.GetGuid(0), "MatchParticipants", "MatchId", "ParticipantId");
+            var scoreIdsTask = PostgresConnection.GetGuidsByPropertyId(reader.GetGuid(0), "MatchScores", "MatchId", "ScoreId");
+            await Task.WhenAll(participantIdsTask, scoreIdsTask);
             return new Match
             {
                 Id = reader.GetGuid(0),
@@ -29,8 +32,8 @@ namespace competex_backend.Models
                 EndTime = reader.GetDateTime(4),
                 FieldId = reader.GetGuid(5),
                 JudgeId = reader.GetGuid(6),
-                Participants = (await PostgresConnection.GetManyManyList<Participant>("MatchParticipants", "MatchId", "Participant", "ParticipantId", reader.GetGuid(0))).ToList(),
-                Scores = (await PostgresConnection.GetManyManyList<Score>("MatchScores", "MatchId", "Score", "ScoreId", reader.GetGuid(0))).ToList(),
+                ParticipantIds = participantIdsTask.Result,
+                ScoreIds = scoreIdsTask.Result, 
             };
         }
 

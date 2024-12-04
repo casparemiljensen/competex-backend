@@ -28,19 +28,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             return PaginationHelper.PaginationWrapper<T>(await SearchHelper.IterateOverReader<T>(reader, connection), pageSize, pageNumber);
         }
 
-        internal static string GetTableName()
-        {
-            switch (Activator.CreateInstance<T>())
-            {
-                case Member:
-                    return "Member";
-                case Match:
-                    return "Match";
-                default:
-                    Console.WriteLine("Unknown type: " + typeof(T).Name);
-                    return typeof(T).Name;
-            }
-        }
+        
 
         public async Task<ResultT<T>> GetByIdAsync(Guid id)
         {
@@ -154,40 +142,14 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
 
 
-        public async Task<ResultT<Guid>> InsertAsync(T obj)
+        public async Task<ResultT<Guid>> InsertAsync(T obj) where T : class, IMappable<T>
         {
-            string tableName = GetTableName();
-            var internalGuid = Guid.Empty;
-            var (columns, values) = obj.GetInsertSQLObject();
-
-            var columnsNames = String.Join("\", \"", columns);
-
-            var valuePlaceholders = string.Join(", ", Enumerable.Range(1, columns.Count).Select(i => $"${i}"));
-
-            var connection = await PostgresConnection.GetReadyConnection();
-
-            await using var cmd = new NpgsqlCommand($"INSERT INTO \"{tableName}\" (\"{columnsNames}\") VALUES ({valuePlaceholders}) RETURNING \"Id\";", connection.GetConnection());
-
-            for (int i = 0; i < values.Count; i++)
-            {
-                cmd.Parameters.Add(values[i]);
-            }
-
-            var res = await cmd.ExecuteScalarAsync();
-
-            connection.EndQuery();
-
-            if (res != null)
-            {
-                return ResultT<Guid>.Success((Guid)res);
-            }
-
-            return ResultT<Guid>.Failure(Error.Failure("=", ""));
+            return await PostgresConnection.Insert(obj);
         }
 
         public async Task<Result> UpdateAsync(Guid id, T obj)
         {
-            string tableName = GetTableName();
+            string tableName = PostgresConnection.GetTableName<T>();
             var (columns, values) = obj.GetInsertSQLObject();
 
             var updatePlaceholderString = "";

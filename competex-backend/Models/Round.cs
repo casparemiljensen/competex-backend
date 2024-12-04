@@ -16,8 +16,8 @@ public class Round : Identifiable, IMappable<Round>
     public RoundStatus Status { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
-    public List<Match> Matches { get; set; }
-    public List<Participant> Participants { get; set; }
+    //public List<Match> Matches { get; set; }
+    //public List<Participant> Participants { get; set; }
 
     public static async Task<Round> Map(NpgsqlDataReader reader)
     {
@@ -31,8 +31,8 @@ public class Round : Identifiable, IMappable<Round>
             StartTime = reader.GetDateTime(5),
             EndTime = reader.GetDateTime(6),
             Name = reader.GetString(7),
-            Matches = (await PostgresConnection.GetManyManyList<Match>("RoundMatches", "RoundId", "Match", "MatchId", reader.GetGuid(0))).ToList(),
-            Participants = (await PostgresConnection.GetManyManyList<Participant>("RoundParticipants", "RoundId", "Participant", "ParticipantId", reader.GetGuid(0))).ToList(),
+            //Matches = (await PostgresConnection.GetManyManyList<Match>("RoundMatches", "RoundId", "Match", "MatchId", reader.GetGuid(0))).ToList(),
+            //Participants = (await PostgresConnection.GetManyManyList<Participant>("RoundParticipants", "RoundId", "Participant", "ParticipantId", reader.GetGuid(0))).ToList(),
         };
     }
 

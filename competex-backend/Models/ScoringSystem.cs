@@ -11,7 +11,7 @@ namespace competex_backend.Models
         public string Description { get; set; } = string.Empty;
         public ScoreType ScoreType { get; set; }
         public string ScoringRules { get; set; } = string.Empty;
-        public List<Penalty> Penalties { get; set; } = [];
+        public List<Guid> PenaltyIds { get; set; } = [];
         public Func<ScoreType, int, int>? EvaluationMethod { get; set; }
 
         public static async Task<ScoringSystem> Map(NpgsqlDataReader reader)
@@ -22,7 +22,7 @@ namespace competex_backend.Models
                 Description = reader.GetString(1),
                 ScoreType = EnumMapper.MapEnumValueTo<ScoreType>(reader.GetInt16(2)).GetValueOrDefault(),
                 ScoringRules = reader.GetString(3),
-                Penalties = (await PostgresConnection.GetManyManyList<Penalty>("ScoringSystemPenalties", "ScoringSystemId", "Penalty", "PenaltyId", reader.GetGuid(0))).ToList(),
+                PenaltyIds = await PostgresConnection.GetGuidsByPropertyId(reader.GetGuid(0), "ScoringSystemPenalties", "ScoringSystemId", "PanaltyId"),
                 Name = reader.GetString(5),
             };
         }

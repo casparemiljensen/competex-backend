@@ -33,6 +33,51 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             // Basic validation: check for allowed characters
             return name.All(c => char.IsLetterOrDigit(c) || c == '_');
         }
+
+        internal static string GetTableName<T>()
+        {
+            switch (Activator.CreateInstance<T>())
+            {
+                case Member:
+                    return "Member";
+                case Match:
+                    return "Match";
+                default:
+                    Console.WriteLine("Unknown type: " + typeof(T).Name);
+                    return typeof(T).Name;
+            }
+        }
+
+        public static async Task<ResultT<Guid>> Insert<T>(T obj) where T : class, IMappable<T>
+        {
+            string tableName = GetTableName<T>();
+            var internalGuid = Guid.Empty;
+            var (columns, values) = obj.GetInsertSQLObject();
+
+            var columnsNames = String.Join("\", \"", columns);
+
+            var valuePlaceholders = string.Join(", ", Enumerable.Range(1, columns.Count).Select(i => $"${i}"));
+
+            var connection = await GetReadyConnection();
+
+            await using var cmd = new NpgsqlCommand($"INSERT INTO \"{tableName}\" (\"{columnsNames}\") VALUES ({valuePlaceholders}) RETURNING \"Id\";", connection.GetConnection());
+
+            for (int i = 0; i < values.Count; i++)
+            {
+                cmd.Parameters.Add(values[i]);
+            }
+
+            var res = await cmd.ExecuteScalarAsync();
+
+            connection.EndQuery();
+
+            if (res != null)
+            {
+                return ResultT<Guid>.Success((Guid)res);
+            }
+
+            return ResultT<Guid>.Failure(Error.Failure("=", ""));
+        }
         public static async Task<List<T>> GetAnyList<T>(string tableName, string property, object searchValue) where T : class, IMappable<T>
         {
 
@@ -41,7 +86,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             {
                 return output;
             }
-            var connection = await GetReadyConnection();
+            Connection connection = await GetReadyConnection();
 
             await using var command = new NpgsqlCommand($"SELECT * FROM \"{tableName}\" WHERE \"{property}\" = ($1);", connection.GetConnection());
 
@@ -65,9 +110,10 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             }
 
             Connection connection = await GetReadyConnection();
+
             await using var command = new NpgsqlCommand($"SELECT \"{propertyName}\"" +
             $"FROM \"{tableName}\"" +
-                $" WHERE \"{propertyName}\" = ($1)" +
+                $" WHERE \"{propertyName}\" = ($1)",
             connection.GetConnection());
 
             List<NpgsqlParameter> paramList = [];
@@ -127,13 +173,20 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
         {
             for(int i = 0; i < connections.Count; i++)
             {
-                if (!connections[i].IsReady())
+                if (connections[i].IsReady())
                 {
                     return connections[i];
                 }
             }
+            Console.WriteLine("Creating new connection");
             await Connect();
-            return connections.Last();
+            var lastConnection = connections.Last();
+            if (!lastConnection.IsReady())
+            {
+                throw new InvalidOperationException("The newly created connection is not ready.");
+            }
+
+            return lastConnection;
         }
 
         private static string BuildConnectionString()

@@ -11,6 +11,13 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
     {
         private static PostgresGenericRepository<ClubMembership> _postgresGenericRepository = new PostgresGenericRepository<ClubMembership>();
 
+        private IMemberRepository _memberRepository;
+
+        public PostgresClubMembershipRepository(IMemberRepository memberRepository)
+        {
+            _memberRepository = memberRepository;
+        }
+
         public Task<Result> CreateEventAsync()
         {
             throw new NotImplementedException();
@@ -23,7 +30,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
         public Task<ResultT<Tuple<int, IEnumerable<Club>>>> GetClubsOfMemberAsync(Guid memberId, int? pageSize, int? pageNumber)
         {
-            throw new NotImplementedException();
+            _memberRepository.SearchAllAsync(pageSize, pageNumber, new Dictionary<string, object>() { { "", ""} })
         }
 
         public Task<ResultT<Tuple<int, IEnumerable<Member>>>> GetMembersOfClubAsync(Guid clubId, int? pageSize, int? pageNumber)

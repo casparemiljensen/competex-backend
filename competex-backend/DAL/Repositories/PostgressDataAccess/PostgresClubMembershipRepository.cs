@@ -30,7 +30,8 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
         public Task<ResultT<Tuple<int, IEnumerable<Club>>>> GetClubsOfMemberAsync(Guid memberId, int? pageSize, int? pageNumber)
         {
-            _memberRepository.SearchAllAsync(pageSize, pageNumber, new Dictionary<string, object>() { { "", ""} })
+            _memberRepository.SearchAllAsync(pageSize, pageNumber, new Dictionary<string, object>() { { "", "" } });
+            throw new NotImplementedException();
         }
 
         public Task<ResultT<Tuple<int, IEnumerable<Member>>>> GetMembersOfClubAsync(Guid clubId, int? pageSize, int? pageNumber)

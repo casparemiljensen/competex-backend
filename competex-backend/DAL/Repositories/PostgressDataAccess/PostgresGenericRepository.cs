@@ -17,7 +17,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
     {
         public async Task<ResultT<Tuple<int, IEnumerable<T>>>> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            string tableName = GetTableName();
+            string tableName = PostgresConnection.GetTableName<T>();
 
             var connection = await PostgresConnection.GetReadyConnection();
 
@@ -32,7 +32,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
         public async Task<ResultT<T>> GetByIdAsync(Guid id)
         {
-            string tableName = GetTableName();
+            string tableName = PostgresConnection.GetTableName<T>();
 
             var connection = await PostgresConnection.GetReadyConnection();
 
@@ -59,7 +59,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
         public async Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
         {
-            var tableName = GetTableName();
+            var tableName = PostgresConnection.GetTableName<T>();
 
             var (query, parameters) = BuildSearchQuery(tableName, filters ?? []);
 
@@ -142,7 +142,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
 
 
-        public async Task<ResultT<Guid>> InsertAsync(T obj) where T : class, IMappable<T>
+        public async Task<ResultT<Guid>> InsertAsync(T obj)
         {
             return await PostgresConnection.Insert(obj);
         }
@@ -185,7 +185,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
         public virtual async Task<Result> DeleteAsync(Guid id)
         {
-            string tableName = GetTableName();
+            string tableName = PostgresConnection.GetTableName<T>();
 
             return await DeleteFromTable(tableName, "Id", id);
         }

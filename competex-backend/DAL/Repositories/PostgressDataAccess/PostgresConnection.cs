@@ -1,6 +1,7 @@
 ﻿using competex_backend.Models;
 using Microsoft.AspNetCore.SignalR;
 using Npgsql;
+using NpgsqlTypes;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Data;
@@ -168,6 +169,45 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             }
             connection.EndQuery();
             return output;
+        }
+
+        public async static Task<List<List<Guid>>> GetGuidsBatch(List<Guid> ids, string tableName, string propertyName, string targetProperty)
+        {
+            var connection = await GetReadyConnection();
+            await using var batch = new NpgsqlBatch(connection.GetConnection());
+
+            foreach (var id in ids)
+            {
+                batch.BatchCommands.Add(BuildBatchCommand(id, tableName, propertyName, targetProperty));
+            }
+
+            await using var reader = await batch.ExecuteReaderAsync();
+
+            List<List<Guid>> output = [];
+            do
+            {
+                List<Guid> intermediate = [];
+                while (await reader.ReadAsync())
+                {
+                    // Access data from the current result set
+                    // For example: reader.GetString(0) to get the first column
+                    intermediate.Add(reader.GetGuid(0)); // Adjust the index and type as needed
+                }
+                output.Add(intermediate);
+            } while (await reader.NextResultAsync());
+
+            return output;
+        }
+
+        private static NpgsqlBatchCommand BuildBatchCommand(Guid id, string tableName, string propertyName, string targetProperty)
+        {
+            return new NpgsqlBatchCommand($"SELECT \"{targetProperty}\" FROM \"{tableName}\" WHERE \"{propertyName}\" = ($1)")
+            {
+                Parameters = {
+                    new NpgsqlParameter() { Value = id, NpgsqlDbType = NpgsqlDbType.Uuid }
+                }
+            };
+
         }
 
         public async static Task<Connection> GetReadyConnection()

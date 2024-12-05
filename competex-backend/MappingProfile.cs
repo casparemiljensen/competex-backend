@@ -59,10 +59,7 @@ namespace competex_backend
             CreateMap<ScoringSystem, ScoringSystemDTO>(); // Cannot map penalties somehow.
             CreateMap<Judge, JudgeDTO>()
                 .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId));
-            CreateMap<Match, MatchDTO>()
-                .ForMember(dest => dest.Round, opt => opt.MapFrom(src => src.RoundId))
-                .ForMember(dest => dest.Field, opt => opt.MapFrom(src => src.FieldId))
-                .ForMember(dest => dest.Judge, opt => opt.MapFrom(src => src.JudgeId));
+            CreateMap<Match, MatchDTO>();
             CreateMap<Participant, ParticipantDTO>()
                 .Include<Team, TeamDTO>()
                 .Include<Models.Single, SingleDTO>()

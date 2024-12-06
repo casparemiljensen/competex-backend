@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: db-pvc # Stands for database-persistent volume claim
+  name: competex-db-pvc
 spec:
   accessModes:
   - ReadWriteOnce

@@ -11,7 +11,7 @@ namespace competex_backend.Models
         public DateTime RegistrationStartDate { get; set; }
         public DateTime RegistrationEndDate { get; set; }
         public Status Status { get; set; } = Status.Pending;
-        public required Guid Organizer { get; set; } // ClubId
+        public required Guid OrganizerId { get; set; } // ClubId
         public required Guid SportTypeId { get; set; }
         public List<Guid> CompetitionIds { get; set; } = [];
         public int EntryFee { get; set; } = 0;

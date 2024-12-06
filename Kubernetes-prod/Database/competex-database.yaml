@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: competex-db
+spec:
+  serviceName: "competex-db"
+  replicas: 1 # Adjust the replicas based on your requirements
+  selector:
+    matchLabels:
+      app: competex-db
+  template:
+    metadata:
+      labels:
+        app: competex-db
+    spec:
+      containers:
+      - name: competex-db
+        image: your-dockerhub-username/your-database-image:tag
+        ports:
+        - containerPort: 5432
+          name: db
+        env:
+        - name: POSTGRES_USER
+          value: admin
+        - name: POSTGRES_PASSWORD
+          value: admin123
+        - name: POSTGRES_DB
+          value: competex
+        volumeMounts:
+        - name: db-storage
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: db-storage
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi

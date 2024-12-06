@@ -35,7 +35,7 @@ namespace competex_backend.BLL.Services
                 return Result.Failure(competitionResult.Error!);
             }
 
-            var result = await _eventRepository.AddCompetition(eventId, competitionResult.Value);
+            var result = await _eventRepository.AddCompetition(eventId, competitionResult.Value.Id);
             if (!result.IsSuccess)
             {
                 return Result.Failure(result.Error!);

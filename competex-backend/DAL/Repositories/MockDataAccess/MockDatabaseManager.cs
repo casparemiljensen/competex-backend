@@ -203,7 +203,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #region Events
             var mockEvent1 = new Event
             {
-                Id = new Guid("27d4f28f-bd77-4bdc-865b-f13f7bbf71df"),
+                Id = Guid.NewGuid(),
                 Title = "Champions League Håndbold",
                 Description = "Handball Finals",
                 StartDate = new DateTime(2024, 6, 15, 9, 0, 0),
@@ -220,7 +220,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             var mockEvent2 = new Event
             {
-                Id = new Guid("27d4f28f-bd77-4bdc-865b-f13f7bbf71df"),
+                Id = Guid.NewGuid(),
                 Title = "Champions League Tennis",
                 Description = "Tennis Finals",
                 StartDate = new DateTime(2024, 4, 16, 9, 0, 0),
@@ -256,7 +256,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 Id = new Guid("42fff518-0815-4148-b826-33a4a1686dc0"),
                 CompetitionTypeId = competitionTypeTwo.Id,
-                EventId = mockEvent2.Id,
+                EventId = mockEvent1.Id,
                 Name = "SomeComp2",
                 StartDate = new DateTime(2024, 7, 1),
                 EndDate = new DateTime(2024, 7, 3),

@@ -139,7 +139,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
 
         // Add a new entity
-        public async Task<ResultT<Guid>> InsertAsync(T obj)
+        public virtual async Task<ResultT<Guid>> InsertAsync(T obj)
         {
             obj.Id = Guid.NewGuid();  // Generate a new Guid for new clubs
             try

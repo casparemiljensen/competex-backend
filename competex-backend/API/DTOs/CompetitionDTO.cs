@@ -12,5 +12,6 @@ namespace competex_backend.API.DTOs
         public int MinParticipants { get; set; }
         public int MaxParticipants { get; set; }
         public required int RegistrationPrice { get; set; }
+        public string Name { get; set; }
     }
 }

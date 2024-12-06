@@ -10,10 +10,5 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
     internal class PostgresScoringSystemRepository : PostgresGenericRepository<ScoringSystem>, IScoringSystemRepository
     {
         private static PostgresGenericRepository<ScoringSystem> _postgresGenericRepository = new PostgresGenericRepository<ScoringSystem>();
-
-        public async override Task<Result> DeleteAsync(Guid id)
-        {
-            return await base.DeleteAsync(id);    
-        }
     }
 }

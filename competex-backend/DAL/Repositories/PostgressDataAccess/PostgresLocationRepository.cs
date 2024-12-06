@@ -10,10 +10,5 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
     internal class PostgresLocationRepository : PostgresGenericRepository<Location>, ILocationRepository
     {
         private static PostgresGenericRepository<Location> _postgresGenericRepository = new PostgresGenericRepository<Location>();
-
-        public async override Task<Result> DeleteAsync(Guid id)
-        {
-            return await base.DeleteAsync(id);    
-        }
     }
 }

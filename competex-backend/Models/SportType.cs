@@ -16,7 +16,7 @@ namespace competex_backend.Models
         //public required IEnumerable<Admin> Admins { get; set; }
         //public IEnumerable<Event>? Events { get; set; }
         //public required IEnumerable<CompetitionType> CompetitionTypes { get; set; }
-        public EntityType EntityType { get; set; }
+        public EntityType? EntityType { get; set; }
 
         public static async Task<SportType> Map(NpgsqlDataReader reader)
         {
@@ -27,7 +27,7 @@ namespace competex_backend.Models
                 EventAttributes = (await PostgresConnection.GetAnyList<data_Event_EventAttributes>(
                     "data_SportType_EventAttributes", "SportTypeId", reader.GetGuid(0)))
                     .Select(x => x.EventAttribute).ToList(),
-                EntityType = EnumMapper.MapEnumValueTo<EntityType>(reader.GetInt16(3)).GetValueOrDefault()
+                EntityType = reader.IsDBNull(3) ? null : EnumMapper.MapEnumValueTo<EntityType>(reader.GetInt16(3)).GetValueOrDefault()
             };
         }
 

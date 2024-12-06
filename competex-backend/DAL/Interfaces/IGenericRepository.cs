@@ -18,7 +18,8 @@ namespace competex_backend.DAL.Interfaces
         Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters);
         Task<ResultT<Guid>> InsertAsync(T obj);
         Task<Result> UpdateAsync(Guid id, T obj);
-        Task<Result> DeleteAsync(Guid id);
+        Task<Result> DeleteAsync(Guid id, bool skipRecursion = false);
+        Task<Result> DeleteByPropertyId(string propertyName, Guid id, string? tableName = null, string? nextProperty = null);
         //Task<ResultT<IEnumerable<T>>> GetByFilterAsync(BaseFilter filter);
 
     }

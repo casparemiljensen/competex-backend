@@ -10,10 +10,5 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
     internal class PostgresEntityRepository : PostgresGenericRepository<Entity>, IEntityRepository
     {
         private static PostgresGenericRepository<Entity> _postgresGenericRepository = new PostgresGenericRepository<Entity>();
-
-        public async override Task<Result> DeleteAsync(Guid id)
-        {
-            return await base.DeleteAsync(id);    
-        }
     }
 }

@@ -11,9 +11,16 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
     {
         private static PostgresGenericRepository<Penalty> _postgresGenericRepository = new PostgresGenericRepository<Penalty>();
 
-        public async override Task<Result> DeleteAsync(Guid id)
+        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion)
         {
-            return await base.DeleteAsync(id);    
+            if (skipRecursion) return await base.DeleteAsync(id, skipRecursion);
+            var result = await base.DeleteByPropertyId("PenaltyId", id, "ScorePenalties", "PenaltyId");
+            if (!result.IsSuccess)
+            {
+                return result.Error!;
+            }
+
+            return await base.DeleteAsync(id, skipRecursion);    
         }
     }
 }

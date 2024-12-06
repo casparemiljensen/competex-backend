@@ -11,6 +11,6 @@ namespace competex_backend.API.DTOs
         //public required IEnumerable<Admin> Admins { get; set; }
         //public IEnumerable<Event>? Events { get; set; }
         //public required IEnumerable<CompetitionType> CompetitionTypes { get; set; }
-        public EntityType EntityType { get; set; }
+        public EntityType? EntityType { get; set; }
     }
 }

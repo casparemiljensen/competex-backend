@@ -10,10 +10,29 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
     internal class PostgresCompetitionTypeRepository : PostgresGenericRepository<CompetitionType>, ICompetitionTypeRepository
     {
         private static PostgresGenericRepository<CompetitionType> _postgresGenericRepository = new PostgresGenericRepository<CompetitionType>();
+        private ICompetitionRepository _competitionRepository;
 
-        public async override Task<Result> DeleteAsync(Guid id)
+        public PostgresCompetitionTypeRepository(ICompetitionRepository competitionRepository)
         {
-            return await base.DeleteAsync(id);
+            _competitionRepository = competitionRepository;
+        }
+
+        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion)
+        {
+            var result = await _competitionRepository.DeleteByPropertyId("CompetitionType", id);
+            if (!result.IsSuccess)
+            {
+                return result.Error!;
+            }
+            if (skipRecursion) return await base.DeleteAsync(id, skipRecursion);
+
+            result = await base.DeleteFromTable("data_CompetitionType_CompetitionAttributes", "CompetitionTypeId", id);
+            if (!result.IsSuccess)
+            {
+                return result.Error!;
+            }
+
+            return await base.DeleteAsync(id, skipRecursion);
         }
     }
 }

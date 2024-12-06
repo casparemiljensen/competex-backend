@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using competex_backend.Common.Helpers;
 using Npgsql;
 using NpgsqlTypes;
+using competex_backend.DAL.Repositories.PostgressDataAccess.Resolvers;
 
 namespace competex_backend.DAL.Repositories.PostgressDataAccess
 {
@@ -11,26 +12,19 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
     {
         private static PostgresGenericRepository<ClubMembership> _postgresGenericRepository = new PostgresGenericRepository<ClubMembership>();
 
-        private IMemberRepository _memberRepository;
-
-        public PostgresClubMembershipRepository(IMemberRepository memberRepository)
-        {
-            _memberRepository = memberRepository;
-        }
-
         public Task<Result> CreateEventAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async override Task<Result> DeleteAsync(Guid id)
+        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion)
         {
-            return await base.DeleteAsync(id);    
+            return await base.DeleteAsync(id, skipRecursion);    
         }
 
         public Task<ResultT<Tuple<int, IEnumerable<Club>>>> GetClubsOfMemberAsync(Guid memberId, int? pageSize, int? pageNumber)
         {
-            _memberRepository.SearchAllAsync(pageSize, pageNumber, new Dictionary<string, object>() { { "", "" } });
+            ClubMemberShipMemberResolver.SearchAllAsync(pageSize, pageNumber, new Dictionary<string, object>() { { "", "" } });
             throw new NotImplementedException();
         }
 

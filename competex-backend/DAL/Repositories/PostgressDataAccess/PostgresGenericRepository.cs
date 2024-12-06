@@ -183,13 +183,13 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             return Result.Failure(Error.Failure("=", ""));
         }
 
-        public virtual async Task<Result> DeleteAsync(Guid id)
+        public virtual async Task<Result> DeleteAsync(Guid id, bool skipRecursion)
         {
             string tableName = PostgresConnection.GetTableName<T>();
 
             return await DeleteFromTable(tableName, "Id", id);
         }
-
+        
         internal async Task<Result> DeleteFromTable(string tableName, string property, Guid id)
         {
             var connection = await PostgresConnection.GetReadyConnection();
@@ -202,9 +202,55 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
                 }
             };
 
-            if (cmd.ExecuteNonQuery() == -1)
+            if ((await cmd.ExecuteNonQueryAsync()) == -1)
             {
                 return Result.Failure(Error.NotFound("404", $"Item on table {tableName} with given {property} not found"));
+            }
+
+            return Result.Success();
+        }
+
+        internal static async Task<ResultT<List<Guid>>> GetIdsFromTable(string tableName, string property, Guid id, string nextPropertyName)
+        {
+            var connection = await PostgresConnection.GetReadyConnection();
+
+            await using var cmd = new NpgsqlCommand($"SELECT \"{nextPropertyName}\" FROM \"{tableName}\" WHERE \"{property}\" = ($1)", connection.GetConnection())
+            {
+                Parameters =
+                {
+                    new() { Value = id, NpgsqlDbType = NpgsqlDbType.Uuid},
+                }
+            };
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+
+            List<Guid> output = [];
+
+            while (reader.Read())
+            {
+                output.Add(reader.GetGuid(0));
+            }
+            Console.WriteLine(tableName + ": " + output.Count);
+
+            return ResultT<List<Guid>>.Success(output);
+        }
+
+        public async Task<Result> DeleteByPropertyId(string propertyName, Guid id, string? tableName = null, string? nextProperty = null)
+        {
+            var isManyMany = nextProperty != null;
+            tableName = tableName ?? PostgresConnection.GetTableName<T>();
+            nextProperty = nextProperty ?? "Id";
+
+            Console.WriteLine(tableName + " " + isManyMany);
+            var idsResult = await GetIdsFromTable(tableName, propertyName, id, nextProperty);
+            if (!idsResult.IsSuccess)
+            {
+                return Result.Failure(idsResult.Error!);
+            }
+
+            foreach (var localId in idsResult.Value)
+            {
+                await DeleteAsync(localId, isManyMany);
             }
 
             return Result.Success();

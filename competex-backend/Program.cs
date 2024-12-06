@@ -6,6 +6,7 @@ using competex_backend.API.DTOs;
 using competex_backend.Models;
 using competex_backend.Common.ErrorHandling;
 using competex_backend.DAL.Repositories.PostgressDataAccess;
+using Microsoft.Extensions.DependencyInjection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -72,6 +73,7 @@ builder.Services.AddScoped<IGenericRepository<Match>, PostgresMatchRepository>()
 builder.Services.AddScoped<IGenericRepository<Score>, PostgresScoreRepository>();
 #endregion
 
+builder.Services.AddScoped<IMatchScoresRepository, PostgresMatchScoresRepository>();
 # region Services 
 // Registers services specific to each model's business logic (such as IMemberService for Member, IClubService for Club, etc.).
 builder.Services.AddScoped<IMemberService, MemberService>();

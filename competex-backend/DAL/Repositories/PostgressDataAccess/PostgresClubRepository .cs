@@ -10,15 +10,26 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
     internal class PostgresClubRepository : PostgresGenericRepository<Club>, IClubRepository
     {
         private static PostgresGenericRepository<Club> _postgresGenericRepository = new PostgresGenericRepository<Club>();
-
-        public async override Task<Result> DeleteAsync(Guid id)
+        private IRoundRepository _roundRepository;
+        private IClubMembershipRepository _clubMembershipRepository;
+        
+        public PostgresClubRepository(IRoundRepository roundRepository, IClubMembershipRepository clubMembershipRepository)
         {
-            return await base.DeleteAsync(id);    
+            _roundRepository = roundRepository;
+            _clubMembershipRepository = clubMembershipRepository;
         }
+        
 
         public Task<ResultT<IEnumerable<Club>>> GetClubsByNameAsync(string name)
         {
             throw new NotImplementedException();
+        }
+        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion)
+        {
+            await _roundRepository.DeleteByPropertyId("CompetitionId", id);
+            await _clubMembershipRepository.DeleteByPropertyId("ClubId", id);
+
+            return await base.DeleteAsync(id, skipRecursion);
         }
     }
 }

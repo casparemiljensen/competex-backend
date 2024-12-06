@@ -183,7 +183,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
 
         // Delete an entity
-        public async Task<Result> DeleteAsync(Guid id)
+        public async Task<Result> DeleteAsync(Guid id, bool skipRecursion)
         {
             var entityToRemove = await Task.Run(() => _entities.FirstOrDefault(c => c.Id == id));
             if (entityToRemove is null)
@@ -200,6 +200,11 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 return Result.Failure(Error.Failure("DeletionError", $"Could not delete {typeof(T).Name.ToLower()}: {ex.Message}"));
             }
+        }
+
+        public Task<Result> DeleteByPropertyId(string propertyName, Guid id, string? tableName = null, string? nextProperty = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }

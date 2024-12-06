@@ -10,10 +10,35 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
     internal class PostgresRoundRepository : PostgresGenericRepository<Round>, IRoundRepository
     {
         private static PostgresGenericRepository<Round> _postgresGenericRepository = new PostgresGenericRepository<Round>();
+        private IMatchRepository _matchRepository;
 
-        public async override Task<Result> DeleteAsync(Guid id)
+        public PostgresRoundRepository(IMatchRepository matchRepository)
         {
-            return await base.DeleteAsync(id);    
+            _matchRepository = matchRepository;
+        }
+
+        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion)
+        {
+            var result = await _matchRepository.DeleteByPropertyId("RoundId", id);
+            if (!result.IsSuccess)
+            {
+                return result.Error!;
+            }
+            if (skipRecursion) return await base.DeleteAsync(id, skipRecursion);
+
+            result = await base.DeleteByPropertyId("RoundId", id, "RoundParticipants", "ParticipantId");
+            if (!result.IsSuccess)
+            {
+                return result.Error!;
+            }
+
+            result = await base.DeleteByPropertyId("RoundId", id, "RoundMatches", "MatchId");
+            if (!result.IsSuccess)
+            {
+                return result.Error!;
+            }
+
+            return await base.DeleteAsync(id, skipRecursion);
         }
 
         public Task<ResultT<Tuple<int, IEnumerable<Round>>>> GetRoundIdsByCompetitionId(Guid CompetitionId, int? pageSize, int? pageNumber)

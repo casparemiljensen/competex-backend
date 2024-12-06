@@ -12,13 +12,13 @@ namespace competex_backend.BLL.Services
     {
         private readonly IGenericRepository<T> _repository;
         private readonly IMapper _mapper;
+        private IClubRepository clubRepo;
 
         public GenericService(IGenericRepository<T> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
-
 
         public async Task<ResultT<TDto>> GetByIdAsync(Guid id)
         {
@@ -72,7 +72,7 @@ namespace competex_backend.BLL.Services
 
         public async Task<Result> RemoveAsync(Guid id)
         {
-            var result = await _repository.DeleteAsync(id);
+            var result = await _repository.DeleteAsync(id, false);
             if (result.IsSuccess)
             {
                 return Result.Success();

@@ -165,45 +165,6 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             CompetitionTypes.AddRange([competitionTypeOne, competitionTypeTwo, competitionTypeThree, competitionTypeFour]);
             #endregion
 
-            #region Competitions
-            var comp1 = new Competition
-            {
-                Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"),
-                CompetitionTypeIds = new List<Guid> { competitionTypeOne.Id },
-                StartDate = new DateTime(2024, 5, 1),
-                EndDate = new DateTime(2024, 5, 10),
-                Level = Level.Intermediate,
-                Status = Status.Pending,
-                MinParticipants = 5,
-                MaxParticipants = 20,
-                RegistrationPrice = 100
-            };
-
-            var comp2 = new Competition
-            {
-                Id = new Guid("42fff518-0815-4148-b826-33a4a1686dc0"),
-                CompetitionTypeIds = new List<Guid> { competitionTypeTwo.Id },
-                StartDate = new DateTime(2024, 7, 1),
-                EndDate = new DateTime(2024, 7, 3),
-                Level = Level.Professional,
-                Status = Status.Pending,
-                MinParticipants = 10,
-                MaxParticipants = 10,
-                RegistrationPrice = 200
-            };
-
-            Competitions.AddRange([comp1, comp2]);
-            #endregion
-
-            #region Rounds
-            var round1 = new Round { Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"), Name = "TestRoundZero", CompetitionId = comp1.Id, SequenceNumber = 0 };
-            var round2 = new Round { Id = Guid.NewGuid(), Name = "TestRoundOne", CompetitionId = comp1.Id, SequenceNumber = 1 };
-            var round3 = new Round { Id = Guid.NewGuid(), Name = "TestRoundTwo", CompetitionId = comp1.Id, SequenceNumber = 2 };
-            var round4 = new Round { Id = Guid.NewGuid(), Name = "TestRoundThree", CompetitionId = comp2.Id, SequenceNumber = 3 };
-            var round5 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFour", CompetitionId = comp2.Id, SequenceNumber = 4 };
-            Rounds.AddRange([round1, round2, round3, round4, round5]);
-            #endregion
-
             #region Locations
 
             var location1 = new Location
@@ -240,7 +201,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #endregion
 
             #region Events
-            var mockEvent = new Event
+            var mockEvent1 = new Event
             {
                 Id = new Guid("27d4f28f-bd77-4bdc-865b-f13f7bbf71df"),
                 Title = "Champions League Håndbold",
@@ -251,11 +212,77 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 RegistrationStartDate = new DateTime(2024, 6, 10),
                 RegistrationEndDate = new DateTime(2024, 6, 20),
                 Status = Status.Pending,
-                Organizer = Guid.Parse("aa57885f-cab9-48da-85d6-57a671c7d664"), // Mock ClubId as Organizer
+                OrganizerId = Guid.Parse("aa57885f-cab9-48da-85d6-57a671c7d664"), // Mock ClubId as Organizer
                 SportTypeId = sportTypeFive.Id,
-                CompetitionIds = new List<Guid>() { comp1.Id }
+                CompetitionIds = new List<Guid>() { }
             };
-            Events.Add(mockEvent);
+
+
+            var mockEvent2 = new Event
+            {
+                Id = new Guid("27d4f28f-bd77-4bdc-865b-f13f7bbf71df"),
+                Title = "Champions League Tennis",
+                Description = "Tennis Finals",
+                StartDate = new DateTime(2024, 4, 16, 9, 0, 0),
+                EndDate = new DateTime(2024, 4, 20, 18, 0, 0),
+                LocationId = location3.Id,
+                RegistrationStartDate = new DateTime(2024, 3, 1),
+                RegistrationEndDate = new DateTime(2024, 3, 31),
+                Status = Status.Pending,
+                OrganizerId = Guid.Parse("aa57885f-cab9-48da-85d6-57a671c7d664"), // Mock ClubId as Organizer
+                SportTypeId = sportTypeFive.Id,
+                CompetitionIds = new List<Guid>() { }
+            };
+            Events.AddRange([mockEvent1, mockEvent2]);
+            #endregion
+
+            #region Competitions
+            var comp1 = new Competition
+            {
+                Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"),
+                CompetitionTypeId = competitionTypeOne.Id,
+                EventId = mockEvent1.Id,
+                Name = "SomeComp",
+                StartDate = new DateTime(2024, 5, 1),
+                EndDate = new DateTime(2024, 5, 10),
+                Level = Level.Intermediate,
+                Status = Status.Pending,
+                MinParticipants = 5,
+                MaxParticipants = 20,
+                RegistrationPrice = 100
+            };
+
+            var comp2 = new Competition
+            {
+                Id = new Guid("42fff518-0815-4148-b826-33a4a1686dc0"),
+                CompetitionTypeId = competitionTypeTwo.Id,
+                EventId = mockEvent2.Id,
+                Name = "SomeComp2",
+                StartDate = new DateTime(2024, 7, 1),
+                EndDate = new DateTime(2024, 7, 3),
+                Level = Level.Professional,
+                Status = Status.Pending,
+                MinParticipants = 10,
+                MaxParticipants = 10,
+                RegistrationPrice = 200
+            };
+
+            Competitions.AddRange([comp1, comp2]);
+            #endregion
+
+            #region Event-add-competitions
+
+            mockEvent1.CompetitionIds.AddRange([comp1.Id, comp2.Id]);
+
+            #endregion
+
+            #region Rounds
+            var round1 = new Round { Id = new Guid("da9b7748-6278-4b97-b24e-716aec6aafac"), Name = "TestRoundZero", CompetitionId = comp1.Id, SequenceNumber = 0 };
+            var round2 = new Round { Id = Guid.NewGuid(), Name = "TestRoundOne", CompetitionId = comp1.Id, SequenceNumber = 1 };
+            var round3 = new Round { Id = Guid.NewGuid(), Name = "TestRoundTwo", CompetitionId = comp1.Id, SequenceNumber = 2 };
+            var round4 = new Round { Id = Guid.NewGuid(), Name = "TestRoundThree", CompetitionId = comp2.Id, SequenceNumber = 3 };
+            var round5 = new Round { Id = Guid.NewGuid(), Name = "TestRoundFour", CompetitionId = comp2.Id, SequenceNumber = 4 };
+            Rounds.AddRange([round1, round2, round3, round4, round5]);
             #endregion
 
             #region Clubmembers

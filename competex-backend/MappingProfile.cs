@@ -39,9 +39,10 @@ namespace competex_backend
             CreateMap<SportType, SportTypeDTO>();
             CreateMap<CompetitionType, CompetitionTypeDTO>();
             CreateMap<Competition, CompetitionDTO>()
-                .ForMember(dest => dest.CompetitionType, opt => opt.MapFrom(src => src.CompetitionTypeIds));
+                .ForMember(dest => dest.CompetitionType, opt => opt.MapFrom(src => src.CompetitionTypeId));
             CreateMap<Event, EventDTO>()
                 .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.LocationId))
+                .ForMember(dest => dest.Organizer, opt => opt.MapFrom(src => src.OrganizerId))
                 .ForMember(dest => dest.SportType, opt => opt.MapFrom(src => src.SportTypeId))
                 .ForMember(dest => dest.Competitions, opt => opt.MapFrom(src => src.CompetitionIds));
             CreateMap<ClubMembership, ClubMembershipDTO>();

@@ -1,9 +1,11 @@
 ﻿using competex_backend.Common.ErrorHandling;
 using competex_backend.Common.Helpers;
+using competex_backend.DAL.Filters;
 using competex_backend.DAL.Interfaces;
 using competex_backend.DAL.Repositories.PostgressDataAccess;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
+using Npgsql;
+using System.Collections;
 using System.Text.Json;
 
 namespace competex_backend.DAL.Repositories.PostgresDataAccess
@@ -42,26 +44,32 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
             return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
         }
 
-        // Search entities with filters
-        public async Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
-        {
-            var query = _dbSet.AsQueryable();
 
-            if (filters != null)
+        public async Task<ResultT<Tuple<int, IEnumerable<T>>>> SearchAllAsync(
+            int? pageSize, int? pageNumber, Dictionary<string, object>? filters)
+        {
+            // Generate the SQL query and parameters
+            var (query, parameters) = BuildSearchQuery(DatabaseHelper.GetTableName<T>(), filters ?? new Dictionary<string, object>());
+
+            // Execute the raw SQL query
+            var resultSet = _dbSet.FromSqlRaw(query, parameters.ToArray());
+
+            // Count total records
+            var totalRecords = await resultSet.CountAsync();
+
+            // Apply pagination manually (if needed)
+            if (pageSize.HasValue && pageNumber.HasValue)
             {
-                foreach (var filter in filters)
-                {
-                    query = ApplyFilter(query, filter.Key, filter.Value);
-                }
+                resultSet = resultSet.Skip((pageNumber.Value - 1) * pageSize.Value)
+                                     .Take(pageSize.Value);
             }
 
-            var totalPages = PaginationHelper.GetTotalPages(pageSize, pageNumber, await query.CountAsync());
-            var result = await query
-                .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
-                .Take(pageSize ?? Defaults.PageSize)
-                .ToListAsync();
+            // Fetch results
+            var results = await resultSet.ToListAsync();
 
-            return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
+            // Wrap results in the expected return type
+            return ResultT<Tuple<int, IEnumerable<T>>>.Success(
+                new Tuple<int, IEnumerable<T>>(totalRecords, results));
         }
 
         // Add a new entity
@@ -134,23 +142,74 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
             }
         }
 
-        // Helper method to apply filters dynamically
-        private IQueryable<T> ApplyFilter(IQueryable<T> query, string filterKey, object filterValue)
+
+        public (string query, List<NpgsqlParameter> parameters) BuildSearchQuery(string tableName, Dictionary<string, object> filters)
         {
-            var propertyInfo = typeof(T).GetProperty(filterKey, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            var orConditions = new List<string>();
+            int queryIndex = 0;
+            List<NpgsqlParameter> paramList = [];
 
-            if (propertyInfo == null)
+            foreach (var filter in filters)
             {
-                throw new ApiException(500, $"No property on {typeof(T).Name} called {filterKey}");
+                var filterKey = string.Concat(filter.Key[0].ToString().ToUpper(), filter.Key.AsSpan(1));
+                if (!IsValidSQLString(filterKey))
+                {
+                    Console.WriteLine("Banned character used");
+                    break;
+                }
+                if (filter.Value is JsonElement jsonElement)
+                {
+                    if (jsonElement.ValueKind == JsonValueKind.Array)
+                    {
+                        int arrayLength = jsonElement.GetArrayLength();
+                        List<string> or = [];
+                        foreach (var filterEntity in jsonElement.EnumerateArray())
+                        {
+                            or.Add($"\"{filterKey}\" = {{{queryIndex}}}");
+                            paramList.AddTypeCorrectFilter(filterEntity);
+                            queryIndex++;
+                        }
+                        orConditions.Add(string.Join(" OR ", or));
+                        continue;
+                    }
+                    else
+                    {
+                        orConditions.Add($"\"{filterKey}\" = {{{queryIndex}}}");
+                        paramList.AddTypeCorrectFilter(filter.Value);
+                        queryIndex++;
+                    }
+                }
+                else if (filter.Value is IEnumerable enumerable)
+                {
+                    int arrayLength = enumerable.Cast<object>().Count();
+                    List<string> or = [];
+                    foreach (var filterEntity in enumerable)
+                    {
+                        or.Add($"\"{filterKey}\" = {{{queryIndex}}}");
+                        paramList.AddTypeCorrectFilter(filterEntity);
+                        queryIndex++;
+                    }
+                    orConditions.Add(string.Join(" OR ", or));
+                }
+                else
+                {
+                    orConditions.Add($"\"{filterKey}\" = {{{queryIndex}}}");
+                    paramList.AddTypeCorrectFilter(filter.Value);
+                    queryIndex++;
+                }
             }
 
-            // Convert filter value if necessary
-            if (filterValue is JsonElement jsonElement)
-            {
-                filterValue = jsonElement.ToString();
-            }
-
-            return query.Where(e => EF.Property<object>(e, propertyInfo.Name).ToString() == filterValue.ToString());
+            // Combine conditions with AND
+            string whereClause = orConditions.Count > 0 ? $"WHERE ({string.Join(") AND (", orConditions)})" : "";
+            string query = $"SELECT * FROM \"{tableName}\" {whereClause}";
+            return (query, paramList);
         }
+
+        public static bool IsValidSQLString(string name)
+        {
+            // Basic validation: check for allowed characters
+            return name.All(c => char.IsLetterOrDigit(c) || c == '_');
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using competex_backend.Models;
 using Single = competex_backend.Models.Single;
+using competex_backend.Common.Helpers;
 
 namespace competex_backend.DAL.Repositories.PostgressDataAccess
 {
@@ -98,7 +99,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
 
             modelBuilder.Entity<Judge>()
-                .ToTable("judges")
+                .ToTable(DatabaseHelper.GetTableName<Judge>())
                 .HasKey(j => j.Id);
 
             modelBuilder.Entity<Judge>()
@@ -107,13 +108,13 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
                 .HasForeignKey(i => i.MemberId);
 
             modelBuilder.Entity<Entity>()
-                .ToTable("entities")
+                .ToTable(DatabaseHelper.GetTableName<Entity>())
                 .HasOne<Member>()
                 .WithMany()
                 .HasForeignKey(s => s.OwnerId);
 
             modelBuilder.Entity<Ekvipage>()
-                .ToTable("participants");
+                .ToTable(DatabaseHelper.GetTableName<Participant>());
 
             modelBuilder.Entity<Ekvipage>()
                 .HasOne<Member>()

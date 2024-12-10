@@ -2,9 +2,10 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: competex-db
+  namespace: competex-db  # Make sure the namespace exists
 spec:
   serviceName: "competex-db"
-  replicas: 1 # Adjust the replicas based on your requirements
+  replicas: 1  # Adjust the number of replicas based on your needs
   selector:
     matchLabels:
       app: competex-db
@@ -15,20 +16,32 @@ spec:
     spec:
       containers:
       - name: competex-db
-        image: your-dockerhub-username/your-database-image:tag
+        image: postgres:latest # ilum1/competex:master_db  # Replace with actual Docker Hub path
         ports:
         - containerPort: 5432
           name: db
         env:
         - name: POSTGRES_USER
-          value: admin
+          value: postgres  # It's better to use a Secret for this
         - name: POSTGRES_PASSWORD
-          value: admin123
+          valueFrom:
+            secretKeyRef:
+              name: competex-db-secret  # Referencing the Secret
+              key: password
         - name: POSTGRES_DB
-          value: competex
+          value: competexdb
+        - name: DB_HOST
+          value: competex-db-headless-service
         volumeMounts:
         - name: db-storage
           mountPath: /var/lib/postgresql/data
+        - name: init-scripts
+          mountPath: /docker-entrypoint-initdb.d/init.sql
+          subPath: init.sql
+      volumes:
+      - name: init-scripts
+        configMap:
+          name: competex-db-config
   volumeClaimTemplates:
   - metadata:
       name: db-storage

@@ -23,30 +23,46 @@ namespace competex_backend.API.Controllers
             _roundService = roundService;
         }
 
-        public List<T> GetAllSearch<T, RType>()
+        public async List<T> GetAllSearch<T, SType>(SType service, Dictionary<string, object> filter) where SType : IGenericService<T> where T : class
         {
+            var batchSize = 10;
+            var localPageNumber = 1;
+            var totalPageNumber = 0;
+            List<T> output = [];
+            var competitionResult = await service.SearchAllAsync(batchSize, localPageNumber, filter);
+            localPageNumber++;
+            if (!competitionResult.IsSuccess)
+            {
+                return NotFound(competitionResult.Error);
+            }
 
+            output.AddRange(competitionResult.Value.Item2);
+
+            totalPageNumber = PaginationHelper.GetTotalPages(batchSize, localPageNumber, competitionResult.Value.Item1);
+            List<Task<ResultT<Tuple<int, IEnumerable<T>>>>> tasks = [];
+            while (localPageNumber <= totalPageNumber)
+            {
+                tasks.Add(service.SearchAllAsync(batchSize, localPageNumber, filter));
+                localPageNumber++;
+            }
+
+            await Task.WhenAll(tasks);
+
+            foreach (var task in tasks)
+            {
+                foreach (var a in task.Result.Value.Item2)
+                {
+                    output.Add(a);
+                }
+            }
+            return output;
         }
 
         [HttpGet("/getResults/{competitionId}")]
         public async Task<IActionResult> GetResultsOfMatch(Guid competitionId, int? pageSize, int? pageNumber)
         {
-            var batchSize = 10;
-            var localPageNumber = 0;
-            var totalPageNumber = 0;
-            var competitionResult = await _roundService.SearchAllAsync(batchSize, localPageNumber, new Dictionary<string, object>()
-                {
-                    { "CompetitionId", competitionId }
-                });
-            if (!competitionResult.IsSuccess)
-            {
-                return NotFound(competitionResult.Error);
-            }
-            totalPageNumber = PaginationHelper.GetTotalPages(batchSize, localPageNumber, competitionResult.Value.Item1);
-            while (localPageNumber < totalPageNumber) {
-                
-                localPageNumber++;
-            }
+           
+            
 
             if (!competitionResult.IsSuccess)
             {
@@ -83,7 +99,7 @@ namespace competex_backend.API.Controllers
             
             var resultScore = new ScoreResult()
             {
-                com
+                resu
             }
 
             var resultValues = results.Aggregate( => )

@@ -48,7 +48,7 @@ namespace competex_backend.BLL.Services
             return ResultT<Tuple<int, IEnumerable<TDto>>>.Success(new Tuple<int, IEnumerable<TDto>>(result.Value.Item1, entities));
         }
 
-        public async Task<ResultT<Guid>> CreateAsync(TDto obj)
+        public virtual async Task<ResultT<Guid>> CreateAsync(TDto obj)
         {
             var entity = _mapper.Map<T>(obj);
             var result = await _repository.InsertAsync(entity);

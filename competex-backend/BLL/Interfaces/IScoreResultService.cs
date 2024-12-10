@@ -2,7 +2,7 @@
 
 namespace competex_backend.BLL.Interfaces
 {
-    public interface IMemberService : IGenericService<MemberDTO>
+    public interface IScoreResultService : IGenericService<ScoreResultDTO>
     {
     }
 }

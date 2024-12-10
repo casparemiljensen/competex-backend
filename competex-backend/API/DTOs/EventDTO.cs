@@ -13,7 +13,8 @@ namespace competex_backend.API.DTOs
         public DateTime RegistrationStartDate { get; set; }
         public DateTime RegistrationEndDate { get; set; }
         public Status Status { get; set; } = Status.Pending;
-        public required Guid Organizer { get; set; } // ClubId - We need more info than this in frontend...
+        public ClubDTO? Organizer { get; set; }
+        public Guid? OrganizerId { get; set; } // ClubId - We need more info than this in frontend...
         public SportTypeDTO? SportType { get; set; }
         public Guid? SportTypeId { get; set; }
         public List<CompetitionDTO>? Competitions { get; set; }

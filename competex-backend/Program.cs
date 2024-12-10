@@ -33,6 +33,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.UseAllOfForInheritance();
+    //c.UseAllOfToExtendReferenceSchemas(); // TESTING
+
     c.UseOneOfForPolymorphism();
 
     // Dynamically discover subtypes for any base type (e.g., ParticipantDTO, ScoreDTO)
@@ -69,6 +71,8 @@ builder.Services.AddScoped<IGenericRepository<Participant>, MockParticipantRepos
 builder.Services.AddScoped<IGenericRepository<Judge>, MockJudgeRepository>();
 builder.Services.AddScoped<IGenericRepository<Match>, MockMatchRepository>();
 builder.Services.AddScoped<IGenericRepository<Score>, MockScoreRepository>();
+builder.Services.AddScoped<IGenericRepository<ScoreResult>, MockScoreResultRepository>();
+
 #endregion
 
 # region Services 
@@ -92,6 +96,7 @@ builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IJudgeService, JudgeService>();
 builder.Services.AddScoped<IMatchService, MatchService>();
 builder.Services.AddScoped<IScoreService, ScoreService>();
+builder.Services.AddScoped<IScoreResultService, ScoreResultService>();
 # endregion
 
 #region Service DTO Mappings
@@ -115,6 +120,7 @@ builder.Services.AddScoped<IParticipantRepository, MockParticipantRepository>();
 builder.Services.AddScoped<IJudgeRepository, MockJudgeRepository>();
 builder.Services.AddScoped<IMatchRepository, MockMatchRepository>();
 builder.Services.AddScoped<IScoreRepository, MockScoreRepository>();
+builder.Services.AddScoped<IScoreResultRepository, MockScoreResultRepository>();
 #endregion
 
 # region IGenericService
@@ -140,6 +146,7 @@ builder.Services.AddScoped<IGenericService<ParticipantDTO>, GenericService<Parti
 builder.Services.AddScoped<IGenericService<JudgeDTO>, GenericService<Judge, JudgeDTO>>();
 builder.Services.AddScoped<IGenericService<MatchDTO>, GenericService<Match, MatchDTO>>();
 builder.Services.AddScoped<IGenericService<ScoreDTO>, GenericService<Score, ScoreDTO>>();
+builder.Services.AddScoped<IGenericService<ScoreResultDTO>, GenericService<ScoreResult, ScoreResultDTO>>();
 # endregion
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);

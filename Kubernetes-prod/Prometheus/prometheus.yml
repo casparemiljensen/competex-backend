@@ -1,0 +1,51 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'kubernetes-apiservers'
+    kubernetes_sd_configs:
+      - role: endpoints
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_service_name]
+        action: keep
+        regex: kubernetes
+      - source_labels: [__meta_kubernetes_endpoint_port_name]
+        action: keep
+        regex: https
+
+  - job_name: 'kubernetes-nodes'
+    kubernetes_sd_configs:
+      - role: node
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+        target_label: instance
+
+  - job_name: 'backend'
+    kubernetes_sd_configs:
+      - role: endpoints
+    relabel_configs:
+      # Filter by namespace to only scrape the backend service
+      - source_labels: [__meta_kubernetes_namespace]
+        action: keep
+        regex: competex-backend
+      - source_labels: [__meta_kubernetes_service_name]
+        action: keep
+        regex: competex-backend-service
+      - source_labels: [__meta_kubernetes_endpoint_port_name]
+        action: keep
+        regex: "8080|8081"  # Ensure this matches the ports your backend exposes
+
+  - job_name: 'frontend'
+    kubernetes_sd_configs:
+      - role: endpoints
+    relabel_configs:
+      # Filter by namespace to only scrape the frontend service
+      - source_labels: [__meta_kubernetes_namespace]
+        action: keep
+        regex: competex-frontend
+      - source_labels: [__meta_kubernetes_service_name]
+        action: keep
+        regex: competex-frontend-service
+      - source_labels: [__meta_kubernetes_endpoint_port_name]
+        action: keep
+        regex: "8082"  # Ensure this matches the port your frontend exposes

@@ -89,38 +89,38 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 Id = new Guid("3a2b1a0d-9e8f-7d6c-5b4a-3f2e1d0c9b8a"),
                 Name = "SportTypeTestOne",
-                EntityType = EntityType.Rabbit,
-                EventAttributes = ["EventAttributeOne"],
+                EntityType = EntityType.Rabbit
+                //EventAttributes = ["EventAttributeOne"],
             };
             var sportTypeTwo = new SportType
             {
                 Id = new Guid("8b9d1a2c-3f4e-5d6b-7c8a-9e0f1d2a3b4c"),
                 Name = "SportTypeTestTwo",
-                EntityType = EntityType.Horse,
-                EventAttributes = ["EventAttributeTwo", "EventAttributeThree"],
+                EntityType = EntityType.Horse
+                //EventAttributes = ["EventAttributeTwo", "EventAttributeThree"],
             };
 
             var sportTypeThree = new SportType
             {
                 Id = new Guid("2e3f4d5b-6a7c-8d9e-0f1a-2b3c4d5e6f7a"),
                 Name = "SportTypeTestThree",
-                EntityType = EntityType.Rabbit,
-                EventAttributes = ["EventAttributeFour"],
+                EntityType = EntityType.Rabbit
+                //EventAttributes = ["EventAttributeFour"],
             };
 
             var sportTypeFour = new SportType
             {
                 Id = new Guid("7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d1e2f"),
                 Name = "SportTypeTestFour",
-                EntityType = EntityType.Horse,
-                EventAttributes = ["EventAttributeFive", "EventAttributeSix"],
+                EntityType = EntityType.Horse
+                //EventAttributes = ["EventAttributeFive", "EventAttributeSix"],
             };
 
             var sportTypeFive = new SportType
             {
                 Id = new Guid("1035c83a-1899-49cb-bfd6-bcefc1aafffb"),
                 Name = "Handball",
-                EventAttributes = new List<string> { "Indoor", "Ball" },
+                //EventAttributes = new List<string> { "Indoor", "Ball" },
                 EntityType = EntityType.None
             };
 
@@ -132,7 +132,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 Id = new Guid("5e6f7a8b-9c0d-1e2f-3a4b-5a6d7e8f9d0b"),
                 Name = "CompetitionTypeOne",
-                CompetitionAttributes = ["AttributeOne", "AttributeTwo"],
+                //CompetitionAttributes = ["AttributeOne", "AttributeTwo"],
                 ScoreMethod = ScoreMethod.C2,
                 ScoreType = ScoreType.Time
             };
@@ -140,7 +140,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 Id = new Guid("9c8b7a6d-5f4e-3a2d-1b0a-9d8c7b6f5a4e"),
                 Name = "CompetitionTypeTwo",
-                CompetitionAttributes = ["AttributeThree", "AttributeFour"],
+                //CompetitionAttributes = ["AttributeThree", "AttributeFour"],
                 ScoreMethod = ScoreMethod.D1,
                 ScoreType = ScoreType.Set
             };
@@ -149,7 +149,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 Id = new Guid("6f7e8d9c-4b3a-2c1d-0e9f-8a7b6c5d4e3f"),
                 Name = "CompetitionTypeThree",
-                CompetitionAttributes = ["AttributeFive", "AttributeSix"],
+                //CompetitionAttributes = ["AttributeFive", "AttributeSix"],
                 ScoreMethod = ScoreMethod.C2,
                 ScoreType = ScoreType.Number
             };
@@ -158,7 +158,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 Id = new Guid("3a2b1c0d-9e8f-7d6c-5b4a-3f2e1d0c9b8a"),
                 Name = "CompetitionTypeFour",
-                CompetitionAttributes = ["AttributeSeven", "AttributeEight"],
+                //CompetitionAttributes = ["AttributeSeven", "AttributeEight"],
                 ScoreMethod = ScoreMethod.D1,
                 ScoreType = ScoreType.TimeAndPenalty
             };
@@ -374,7 +374,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Name = "Bane 1",
                 Location = "Hal 1",
                 Capacity = 100,
-                Surface = SurfaceType.NaturalGrass
+                SurfaceType = SurfaceType.NaturalGrass
             };
 
             var field2 = new Field
@@ -383,7 +383,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Name = "Bane 2",
                 Location = "Hal 2",
                 Capacity = 80,
-                Surface = SurfaceType.ArtificialTurf
+                SurfaceType = SurfaceType.ArtificialTurf
             };
 
             var field3 = new Field
@@ -392,7 +392,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Name = "Bane 3",
                 Location = "Hal 3",
                 Capacity = 120,
-                Surface = SurfaceType.Clay
+                SurfaceType = SurfaceType.Clay
             };
 
             var field4 = new Field
@@ -401,7 +401,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Name = "Bane 4",
                 Location = "Hal 4",
                 Capacity = 60,
-                Surface = SurfaceType.Dirt
+                SurfaceType = SurfaceType.Dirt
             };
 
             var field5 = new Field
@@ -410,7 +410,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Name = "Bane 5",
                 Location = "Hal 5",
                 Capacity = 90,
-                Surface = SurfaceType.Turf
+                SurfaceType = SurfaceType.Turf
             };
 
             var field6 = new Field
@@ -419,7 +419,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 Name = "Bane 1",
                 Location = "Hal 1",
                 Capacity = 2000,
-                Surface = SurfaceType.PVC
+                SurfaceType = SurfaceType.PVC
             };
 
             Fields.AddRange([field1, field2, field3, field4, field5, field6]);
@@ -596,7 +596,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 RoundId = round2.Id,
                 ParticipantIds = new List<Guid>
                 {
-                    Participants[4].Id, Participants[5].Id
+                    Participants[0].Id, Participants[1].Id
                 },
                 Status = MatchStatus.Concluded,
                 StartTime = DateTime.Now,
@@ -611,7 +611,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 RoundId = round2.Id,
                 ParticipantIds = new List<Guid>
                 {
-                    Participants[6].Id, Participants[7].Id
+                    Participants[2].Id, Participants[3].Id
                 },
                 Status = MatchStatus.Concluded,
                 StartTime = DateTime.Now,

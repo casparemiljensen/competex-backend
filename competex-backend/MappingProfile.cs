@@ -45,7 +45,9 @@ namespace competex_backend
                 .ForMember(dest => dest.Organizer, opt => opt.MapFrom(src => src.OrganizerId))
                 .ForMember(dest => dest.SportType, opt => opt.MapFrom(src => src.SportTypeId))
                 .ForMember(dest => dest.Competitions, opt => opt.MapFrom(src => src.CompetitionIds));
-            CreateMap<ClubMembership, ClubMembershipDTO>();
+            CreateMap<ClubMembership, ClubMembershipDTO>()
+                .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
+                .ForMember(dest => dest.Club, opt => opt.MapFrom(src => src.ClubId));
             CreateMap<Admin, AdminDTO>()
                 .ForMember(dest => dest.SportTypes, opt => opt.MapFrom(src => src.SportTypeIds));
             CreateMap<Entity, EntityDTO>()
@@ -65,7 +67,7 @@ namespace competex_backend
                 .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src.ParticipantIds))
                 .ForMember(dest => dest.Field, opt => opt.MapFrom(src => src.FieldId))
                 .ForMember(dest => dest.Judge, opt => opt.MapFrom(src => src.JudgeId));
-            //.ForMember(dest => dest.Scores, opt => opt.MapFrom(src => src.ScoreIds));
+
             //CreateMap<Participant, ParticipantDTO>()
             //    .Include<Team, TeamDTO>()
             //    .Include<Models.Single, SingleDTO>()
@@ -82,6 +84,24 @@ namespace competex_backend
                 .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
                 .ForMember(dest => dest.Entity, opt => opt.MapFrom(src => src.EntityId));
 
+            //CreateMap<Score, ScoreDTO>()
+            //.ForMember(dest => dest.Match, opt => opt.MapFrom(src => src.MatchId))
+            //.ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
+            //.ForMember(dest => dest.ScoreValue, opt => opt.MapFrom(src => src.ScoreValue)) // Do not know how to handle this...
+            //.ForMember(dest => dest.Penalties, opt => opt.MapFrom(src => src.PenaltyIds))
+            //.Include<TimeScore, TimeScoreDTO>()
+            //.Include<SetScore, SetScoreDTO>()
+            //.Include<PointScore, PointScoreDTO>()
+            //.Include<TimeFaultScore, TimeFaultScoreDTO>();
+            ////CreateMap<TimeScore, TimeScoreDTO>()
+            //    .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.ScoreValue));
+            //CreateMap<SetScore, SetScoreDTO>()
+            //    .ForMember(dest => dest.SetsWon, opt => opt.MapFrom(src => src.ScoreValue));
+            //CreateMap<PointScore, PointScoreDTO>()
+            //    .ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.ScoreValue));
+            //CreateMap<TimeFaultScore, TimeFaultScoreDTO>();
+
+
             CreateMap<Score, ScoreDTO>()
                 .ForMember(dest => dest.Match, opt => opt.MapFrom(src => src.MatchId))
                 .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
@@ -91,13 +111,11 @@ namespace competex_backend
                 .Include<SetScore, SetScoreDTO>()
                 .Include<PointScore, PointScoreDTO>()
                 .Include<TimeFaultScore, TimeFaultScoreDTO>();
-            CreateMap<TimeScore, TimeScoreDTO>()
-                .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.ScoreValue));
-            CreateMap<SetScore, SetScoreDTO>()
-                .ForMember(dest => dest.SetsWon, opt => opt.MapFrom(src => src.ScoreValue));
-            CreateMap<PointScore, PointScoreDTO>()
-                .ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.ScoreValue));
+            CreateMap<TimeScore, TimeScoreDTO>();
+            CreateMap<SetScore, SetScoreDTO>();
+            CreateMap<PointScore, PointScoreDTO>();
             CreateMap<TimeFaultScore, TimeFaultScoreDTO>();
+
             CreateMap<ScoreResult, ScoreResultDTO>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => src.CompetitionId))
                 .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId));

@@ -6,7 +6,7 @@ using competex_backend.BLL.Interfaces;
 using competex_backend.API.DTOs;
 using competex_backend.Models;
 using competex_backend.Common.ErrorHandling;
-using competex_backend.DAL.Repositories.PostgressDataAccess;
+using competex_backend.DAL.Repositories.PostgresDataAccess;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -54,26 +54,26 @@ builder.Services.AddSingleton<MockDatabaseManager>();
 
 # region IGenericRepository
 //Registers IGenericRepository<T> with specific implementations (MockMemberRepository, MockClubRepository, etc.) for each model type.
-builder.Services.AddScoped<IGenericRepository<Member>, PostgresMemberRepository>(); //
-builder.Services.AddScoped<IGenericRepository<Club>, MockClubRepository>();
-builder.Services.AddScoped<IGenericRepository<Round>, MockRoundRepository>();
-builder.Services.AddScoped<IGenericRepository<SportType>, MockSportTypeRepository>();
-builder.Services.AddScoped<IGenericRepository<CompetitionType>, MockCompetitionTypeRepository>();
-builder.Services.AddScoped<IGenericRepository<Competition>, MockCompetitionRepository>();
-builder.Services.AddScoped<IGenericRepository<Event>, MockEventRepository>();
-builder.Services.AddScoped<IGenericRepository<ClubMembership>, MockClubMembershipRepository>();
-builder.Services.AddScoped<IGenericRepository<Admin>, MockAdminRepository>();
+builder.Services.AddScoped<IGenericRepository<Member>, PostgresMemberRepository>();
+builder.Services.AddScoped<IGenericRepository<Club>, PostgresClubRepository>();
+builder.Services.AddScoped<IGenericRepository<Round>, PostgresRoundRepository>();
+builder.Services.AddScoped<IGenericRepository<SportType>, PostgresSportTypeRepository>();
+builder.Services.AddScoped<IGenericRepository<CompetitionType>, PostgresCompetitionTypeRepository>();
+builder.Services.AddScoped<IGenericRepository<Competition>, PostgresCompetitionRepository>();
+builder.Services.AddScoped<IGenericRepository<Event>, PostgresEventRepository>();
+builder.Services.AddScoped<IGenericRepository<ClubMembership>, PostgresClubMembershipRepository>();
+builder.Services.AddScoped<IGenericRepository<Admin>, MockAdminRepository>(); //
 builder.Services.AddScoped<IGenericRepository<Entity>, PostgresEntityRepository>();
-builder.Services.AddScoped<IGenericRepository<Field>, MockFieldRepository>();
-builder.Services.AddScoped<IGenericRepository<Location>, PostgresLocationRepository>(); //
-builder.Services.AddScoped<IGenericRepository<Penalty>, MockPenaltyRepository>();
-builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRepository>();
-builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>();
-builder.Services.AddScoped<IGenericRepository<Ekvipage>, PostgresParticipantRepository>(); //
-builder.Services.AddScoped<IGenericRepository<Judge>, PostgresJudgeRepository>(); //
-builder.Services.AddScoped<IGenericRepository<Match>, MockMatchRepository>();
-builder.Services.AddScoped<IGenericRepository<Score>, MockScoreRepository>();
-builder.Services.AddScoped<IGenericRepository<ScoreResult>, MockScoreResultRepository>();
+builder.Services.AddScoped<IGenericRepository<Field>, PostgresFieldRepository>();
+builder.Services.AddScoped<IGenericRepository<Location>, PostgresLocationRepository>();
+builder.Services.AddScoped<IGenericRepository<Penalty>, MockPenaltyRepository>(); //
+builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRepository>(); //
+builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>(); //
+builder.Services.AddScoped<IGenericRepository<Ekvipage>, PostgresParticipantRepository>();
+builder.Services.AddScoped<IGenericRepository<Judge>, PostgresJudgeRepository>();
+builder.Services.AddScoped<IGenericRepository<Match>, PostgresMatchRepository>();
+builder.Services.AddScoped<IGenericRepository<Score>, PostgresScoreRepository>();
+builder.Services.AddScoped<IGenericRepository<ScoreResult>, MockScoreResultRepository>(); //
 
 //builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
@@ -106,26 +106,26 @@ builder.Services.AddScoped<IScoreResultService, ScoreResultService>();
 
 #region Service DTO Mappings
 // Registers services with DTO mappings for each model type.
-builder.Services.AddScoped<IMemberRepository, PostgresMemberRepository>(); //
-builder.Services.AddScoped<IClubRepository, MockClubRepository>();
-builder.Services.AddScoped<IRoundRepository, MockRoundRepository>();
-builder.Services.AddScoped<ISportTypeRepository, MockSportTypeRepository>();
-builder.Services.AddScoped<ICompetitionTypeRepository, MockCompetitionTypeRepository>();
-builder.Services.AddScoped<ICompetitionRepository, MockCompetitionRepository>();
-builder.Services.AddScoped<IEventRepository, MockEventRepository>();
-builder.Services.AddScoped<IClubMembershipRepository, MockClubMembershipRepository>();
-builder.Services.AddScoped<IAdminRepository, MockAdminRepository>();
+builder.Services.AddScoped<IMemberRepository, PostgresMemberRepository>();
+builder.Services.AddScoped<IClubRepository, PostgresClubRepository>();
+builder.Services.AddScoped<IRoundRepository, PostgresRoundRepository>();
+builder.Services.AddScoped<ISportTypeRepository, PostgresSportTypeRepository>();
+builder.Services.AddScoped<ICompetitionTypeRepository, PostgresCompetitionTypeRepository>();
+builder.Services.AddScoped<ICompetitionRepository, PostgresCompetitionRepository>();
+builder.Services.AddScoped<IEventRepository, PostgresEventRepository>();
+builder.Services.AddScoped<IClubMembershipRepository, PostgresClubMembershipRepository>();
+builder.Services.AddScoped<IAdminRepository, MockAdminRepository>(); //
 builder.Services.AddScoped<IEntityRepository, PostgresEntityRepository>();
-builder.Services.AddScoped<IFieldRepository, MockFieldRepository>();
-builder.Services.AddScoped<ILocationRepository, PostgresLocationRepository>(); //
-builder.Services.AddScoped<IPenaltyRepository, MockPenaltyRepository>();
-builder.Services.AddScoped<IRegistrationRepository, MockRegistrationRepository>();
-builder.Services.AddScoped<IScoringSystemRepository, MockScoringSystemRepository>();
-builder.Services.AddScoped<IParticipantRepository, PostgresParticipantRepository>(); //
-builder.Services.AddScoped<IJudgeRepository, PostgresJudgeRepository>(); //
-builder.Services.AddScoped<IMatchRepository, MockMatchRepository>();
-builder.Services.AddScoped<IScoreRepository, MockScoreRepository>();
-builder.Services.AddScoped<IScoreResultRepository, MockScoreResultRepository>();
+builder.Services.AddScoped<IFieldRepository, PostgresFieldRepository>();
+builder.Services.AddScoped<ILocationRepository, PostgresLocationRepository>();
+builder.Services.AddScoped<IPenaltyRepository, MockPenaltyRepository>(); //
+builder.Services.AddScoped<IRegistrationRepository, MockRegistrationRepository>(); //
+builder.Services.AddScoped<IScoringSystemRepository, MockScoringSystemRepository>(); //
+builder.Services.AddScoped<IParticipantRepository, PostgresParticipantRepository>();
+builder.Services.AddScoped<IJudgeRepository, PostgresJudgeRepository>();
+builder.Services.AddScoped<IMatchRepository, PostgresMatchRepository>();
+builder.Services.AddScoped<IScoreRepository, PostgresScoreRepository>();
+builder.Services.AddScoped<IScoreResultRepository, MockScoreResultRepository>(); //
 
 
 #endregion

@@ -1,37 +1,18 @@
-﻿//using competex_backend.Models;
-//using competex_backend.DAL.Interfaces;
+﻿using competex_backend.DAL.Interfaces;
+using competex_backend.DAL.Repositories.PostgresDataAccess;
+using competex_backend.DAL.Repositories.PostgressDataAccess;
+using competex_backend.Models;
+using Microsoft.EntityFrameworkCore;
 
-//namespace competex_backend.DAL.Repositories.PostgressDataAccess
-//{
-//    internal class PostgresMemberRepository : IMemberRepository
-//    {
+public class PostgresMemberRepository : PostgresGenericRepository<Member>, IMemberRepository
+{
+    public PostgresMemberRepository(ApplicationDbContext dbContext)
+        : base(dbContext)
+    {
+    }
 
-
-//        public Task<Member?> GetByIdAsync(Guid memberId)
-//        {
-//            throw new NotImplementedException();
-//        }
-
-//        public Task<IEnumerable<Member>> GetAllAsync()
-//        {
-//            throw new NotImplementedException();
-//        }
-
-
-//        public Task<Guid> InsertAsync(Member member)
-//        {
-//            throw new NotImplementedException();
-//        }
-
-//        public Task<bool> UpdateAsync(Member member)
-//        {
-//            throw new NotImplementedException();
-//        }
-
-
-//        public Task<Member?> GetByFirstNameAsync(string firstName)
-//        {
-//            throw new NotImplementedException();
-//        }
-//    }
-//}
+    public async Task<Member?> GetByFirstNameAsync(string firstName)
+    {
+        return await _dbSet.FirstOrDefaultAsync(l => l.FirstName.ToLower() == firstName.ToLowerInvariant());
+    }
+}

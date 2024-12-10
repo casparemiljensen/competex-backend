@@ -1,4 +1,5 @@
 ﻿using competex_backend.Models;
+using System;
 using Member = competex_backend.Models.Member;
 using Single = competex_backend.Models.Single;
 
@@ -21,7 +22,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         public List<Penalty> Penalties { get; set; } = new();
         public List<Registration> Registrations { get; set; } = new();
         public List<ScoringSystem> ScoringSystems { get; set; } = new();
-        public List<Participant> Participants { get; set; } = new();
+        public List<Ekvipage> Participants { get; set; } = new();
         public List<Judge> Judges { get; set; } = new();
         public List<Match> Matches { get; set; } = new();
         public List<Score> Scores { get; set; } = new();
@@ -66,9 +67,9 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             #region Members
             var member1 = new Member() { FirstName = "Janni", LastName = "Karlsson", Id = new Guid("81a9d1b7-2d4c-4520-944c-36e129447c26") };
             var member2 = new Member() { FirstName = "Søren", LastName = "Pind", Id = new Guid("98c5c539-6367-4d54-94c7-8a25d4b80986") };
-            var member3 = new Member() { FirstName = "Caspar", LastName = "Emil Jensen", Id = new Guid("bec52019-b429-47bc-987e-47d13224d75e"), Birthday = new DateTime(1990, 1, 1), Email = "Caspar@uni.com", Phone = "12345890", Permissions = "Admin" };
-            var member4 = new Member() { FirstName = "Thomas", LastName = "Ilum Andersen", Id = new Guid("cd4d665d-cd71-4aaa-9799-9f9c973ce19e"), Birthday = new DateTime(1985, 5, 23), Email = "Ilum@uni.com", Phone = "98763210", Permissions = "User" };
-            var member5 = new Member() { FirstName = "Thomas", LastName = "Dam Nykjær", Id = new Guid("c7a53ea7-950a-4c8f-83c8-6262f2ec1571"), Birthday = new DateTime(1995, 10, 10), Email = "Dam@uni.com", Phone = "55555555", Permissions = "Judge" };
+            var member3 = new Member() { FirstName = "Caspar", LastName = "Emil Jensen", Id = new Guid("bec52019-b429-47bc-987e-47d13224d75e"), Birthday = new DateTime(1990, 1, 1), Email = "Caspar@uni.com", Phone = "12345890", Permissions = 3 };
+            var member4 = new Member() { FirstName = "Thomas", LastName = "Ilum Andersen", Id = new Guid("cd4d665d-cd71-4aaa-9799-9f9c973ce19e"), Birthday = new DateTime(1985, 5, 23), Email = "Ilum@uni.com", Phone = "98763210", Permissions = 1 };
+            var member5 = new Member() { FirstName = "Thomas", LastName = "Dam Nykjær", Id = new Guid("c7a53ea7-950a-4c8f-83c8-6262f2ec1571"), Birthday = new DateTime(1995, 10, 10), Email = "Dam@uni.com", Phone = "55555555", Permissions = 2 };
             Members.AddRange([member1, member2, member3, member4, member5]);
             #endregion
 
@@ -318,7 +319,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 OwnerId = member3.Id,
                 Type = EntityType.Rabbit,
                 Name = "Thumper",
-                BirthDate = new DateTime(2021, 4, 15),
+                Birthdate = new DateTime(2021, 4, 15),
                 Level = Level.Beginner,
             };
 
@@ -328,7 +329,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 OwnerId = member4.Id,
                 Type = EntityType.Rabbit,
                 Name = "Cotton",
-                BirthDate = new DateTime(2020, 8, 3),
+                Birthdate = new DateTime(2020, 8, 3),
                 Level = Level.Intermediate,
             };
 
@@ -338,7 +339,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 OwnerId = member3.Id,
                 Type = EntityType.Rabbit,
                 Name = "Pepper",
-                BirthDate = new DateTime(2022, 1, 20),
+                Birthdate = new DateTime(2022, 1, 20),
                 Level = Level.Advanced,
             };
 
@@ -348,7 +349,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 OwnerId = member4.Id,
                 Type = EntityType.Rabbit,
                 Name = "Snowball",
-                BirthDate = new DateTime(2019, 11, 25),
+                Birthdate = new DateTime(2019, 11, 25),
                 Level = Level.Advanced,
             };
 
@@ -358,7 +359,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 OwnerId = member5.Id,
                 Type = EntityType.Rabbit,
                 Name = "Flopsy",
-                BirthDate = new DateTime(2021, 6, 10),
+                Birthdate = new DateTime(2021, 6, 10),
                 Level = Level.Beginner,
             };
 
@@ -478,17 +479,17 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
             // TODO: Reconsider the contructor of the Participant classes
 
-            var team1 = new Team("Team1", new List<Guid> { member1.Id, member2.Id });
-            team1.Id = Guid.NewGuid();
+            //var team1 = new Team("Team1", new List<Guid> { member1.Id, member2.Id });
+            //team1.Id = Guid.NewGuid();
 
-            var team2 = new Team("Team2", new List<Guid> { member3.Id, member4.Id });
-            team2.Id = Guid.NewGuid();
+            //var team2 = new Team("Team2", new List<Guid> { member3.Id, member4.Id });
+            //team2.Id = Guid.NewGuid();
 
-            var single1 = new Single("Single1", member3.Id);
-            single1.Id = Guid.NewGuid();
+            //var single1 = new Single("Single1", member3.Id);
+            //single1.Id = Guid.NewGuid();
 
-            var single2 = new Single("Single2", member4.Id);
-            single2.Id = Guid.NewGuid();
+            //var single2 = new Single("Single2", member4.Id);
+            //single2.Id = Guid.NewGuid();
 
             var ekvipage1 = new Ekvipage("ekvipage", member4.Id, entity1.Id);
             ekvipage1.Id = Guid.NewGuid();
@@ -502,7 +503,8 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             var ekvipage4 = new Ekvipage("ekvipage4", member5.Id, entity1.Id);
             ekvipage4.Id = Guid.NewGuid();
 
-            Participants.AddRange([team1, team2, single1, single2, ekvipage1, ekvipage2, ekvipage3, ekvipage4]);
+            //Participants.AddRange([team1, team2, single1, single2, ekvipage1, ekvipage2, ekvipage3, ekvipage4]);
+            Participants.AddRange([ekvipage1, ekvipage2, ekvipage3, ekvipage4]);
 
             #endregion
 
@@ -511,7 +513,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             {
                 Id = Guid.NewGuid(),
                 CompetitionId = comp2.Id,
-                ParticipantId = single1.Id
+                ParticipantId = ekvipage1.Id
             };
 
             var reg2 = new Registration

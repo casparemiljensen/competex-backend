@@ -26,7 +26,7 @@ namespace competex_backend
             CreateMap<Guid, ScoringSystemDTO>().ConvertUsing<GuidToObjectConverter<ScoringSystemDTO>>();
             CreateMap<Guid, JudgeDTO>().ConvertUsing<GuidToObjectConverter<JudgeDTO>>();
             CreateMap<Guid, MatchDTO>().ConvertUsing<GuidToObjectConverter<MatchDTO>>();
-            CreateMap<Guid, ParticipantDTO>().ConvertUsing<GuidToObjectConverter<ParticipantDTO>>();
+            CreateMap<Guid, EkvipageDTO>().ConvertUsing<GuidToObjectConverter<EkvipageDTO>>();
             CreateMap<Guid, ScoreDTO>().ConvertUsing<GuidToObjectConverter<ScoreDTO>>();
             CreateMap<Guid, ScoreResultDTO>().ConvertUsing<GuidToObjectConverter<ScoreResultDTO>>();
 
@@ -65,18 +65,23 @@ namespace competex_backend
                 .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src.ParticipantIds))
                 .ForMember(dest => dest.Field, opt => opt.MapFrom(src => src.FieldId))
                 .ForMember(dest => dest.Judge, opt => opt.MapFrom(src => src.JudgeId));
-                //.ForMember(dest => dest.Scores, opt => opt.MapFrom(src => src.ScoreIds));
-            CreateMap<Participant, ParticipantDTO>()
-                .Include<Team, TeamDTO>()
-                .Include<Models.Single, SingleDTO>()
-                .Include<Ekvipage, EkvipageDTO>();
-            CreateMap<Team, TeamDTO>()
-                .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.MemberIds));
-            CreateMap<Models.Single, SingleDTO>()
-                .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId));
+            //.ForMember(dest => dest.Scores, opt => opt.MapFrom(src => src.ScoreIds));
+            //CreateMap<Participant, ParticipantDTO>()
+            //    .Include<Team, TeamDTO>()
+            //    .Include<Models.Single, SingleDTO>()
+            //    .Include<Ekvipage, EkvipageDTO>();
+            //CreateMap<Team, TeamDTO>()
+            //    .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.MemberIds));
+            //CreateMap<Models.Single, SingleDTO>()
+            //    .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId));
+            //CreateMap<Ekvipage, EkvipageDTO>()
+            //    .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
+            //    .ForMember(dest => dest.Entity, opt => opt.MapFrom(src => src.EntityId));
+
             CreateMap<Ekvipage, EkvipageDTO>()
                 .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
                 .ForMember(dest => dest.Entity, opt => opt.MapFrom(src => src.EntityId));
+
             CreateMap<Score, ScoreDTO>()
                 .ForMember(dest => dest.Match, opt => opt.MapFrom(src => src.MatchId))
                 .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
@@ -93,8 +98,6 @@ namespace competex_backend
             CreateMap<PointScore, PointScoreDTO>()
                 .ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.ScoreValue));
             CreateMap<TimeFaultScore, TimeFaultScoreDTO>();
-                //.ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.Time))
-                //.ForMember(dest => dest.Faults, opt => opt.MapFrom(src => src.Faults));
             CreateMap<ScoreResult, ScoreResultDTO>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => src.CompetitionId))
                 .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId));
@@ -135,15 +138,6 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<MatchDTO, Match>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<ParticipantDTO, Participant>()
-                .Include<TeamDTO, Team>()
-                .Include<SingleDTO, Models.Single>()
-                .Include<EkvipageDTO, Ekvipage>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<TeamDTO, Team>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<SingleDTO, Models.Single>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<EkvipageDTO, Ekvipage>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<ScoreDTO, Score>()
@@ -162,36 +156,165 @@ namespace competex_backend
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<ScoreResultDTO, ScoreResult>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-        }
-
-
-        public class GuidToObjectConverter<T> : ITypeConverter<Guid, T> where T : class
-        {
-            private readonly IGenericService<T> _service;
-
-            public GuidToObjectConverter(IGenericService<T> service)
-            {
-                _service = service;
-            }
-
-            public T Convert(Guid source, T destination, ResolutionContext context)
-            {
-                if (source == Guid.Empty)
-                {
-                    Console.WriteLine($"Empty Guid received for {typeof(T).Name}");
-                    return default; // Return null for reference types
-                }
-
-                var result = _service.GetByIdAsync(source).GetAwaiter().GetResult();
-                if (result == null || !result.IsSuccess)
-                {
-                    Console.WriteLine($"Failed to resolve {typeof(T).Name} for Guid: {source}");
-                    return default;
-                }
-
-                Console.WriteLine($"Successfully resolved {typeof(T).Name} for Guid: {source}");
-                return result.Value;
-            }
+            //CreateMap<ParticipantDTO, DbParticipant>()
+            //    .ForMember(dest => dest.Id, opt => opt.Ignore())
+            //    .ConvertUsing<ParticipantDTOToDbParticipantConverter>();
+            //CreateMap<ParticipantDTO, DbParticipant>()
+            //.Include<TeamDTO, Team>()
+            //.Include<SingleDTO, Models.Single>()
+            //.Include<EkvipageDTO, Ekvipage>()
+            //.ForMember(dest => dest.Id, opt => opt.Ignore());
+            //CreateMap<TeamDTO, Team>()
+            //    .ForMember(dest => dest.Id, opt => opt.Ignore());
+            //CreateMap<SingleDTO, Models.Single>()
+            //    .ForMember(dest => dest.Id, opt => opt.Ignore());
         }
     }
+
+    public class GuidToObjectConverter<T> : ITypeConverter<Guid, T> where T : class
+    {
+        private readonly IGenericService<T> _service;
+
+        public GuidToObjectConverter(IGenericService<T> service)
+        {
+            _service = service;
+        }
+
+        public T Convert(Guid source, T destination, ResolutionContext context)
+        {
+            if (source == Guid.Empty)
+            {
+                Console.WriteLine($"Empty Guid received for {typeof(T).Name}");
+                return default; // Return null for reference types
+            }
+
+            var result = _service.GetByIdAsync(source).GetAwaiter().GetResult();
+            if (result == null || !result.IsSuccess)
+            {
+                Console.WriteLine($"Failed to resolve {typeof(T).Name} for Guid: {source}");
+                return default;
+            }
+
+            Console.WriteLine($"Successfully resolved {typeof(T).Name} for Guid: {source}");
+            return result.Value;
+        }
+    }
+
+
+    //public class ParticipantDTOToDbParticipantConverter : ITypeConverter<ParticipantDTO, DbParticipant>
+    //{
+    //    private readonly ApplicationDbContext _dbContext;
+
+    //    public ParticipantDTOToDbParticipantConverter(ApplicationDbContext dbContext)
+    //    {
+    //        _dbContext = dbContext;
+    //    }
+
+    //    public DbParticipant Convert(ParticipantDTO source, DbParticipant destination, ResolutionContext context)
+    //    {
+    //        DbParticipant dbParticipant;
+
+    //        // Create DbParticipant based on the source type
+    //        switch (source)
+    //        {
+    //            case TeamDTO team:
+    //                dbParticipant = new DbParticipant
+    //                {
+    //                    Id = team.Id,
+    //                    Name = team.Name,
+    //                    ParticipantType = 1,
+    //                    MemberIds = team.MemberIds ?? new List<Guid>()
+    //                };
+
+    //                // Insert participant_members for Team
+    //                InsertParticipantMembers(dbParticipant.Id, dbParticipant.MemberIds);
+    //                break;
+
+    //            case SingleDTO single:
+    //                dbParticipant = new DbParticipant
+    //                {
+    //                    Id = single.Id,
+    //                    Name = single.Name,
+    //                    ParticipantType = 2,
+    //                    MemberIds = single.MemberId.HasValue ? new List<Guid> { single.MemberId.Value } : new List<Guid>()
+    //                };
+
+    //                // Insert participant_members for Single
+    //                InsertParticipantMembers(dbParticipant.Id, dbParticipant.MemberIds);
+    //                break;
+
+    //            case EkvipageDTO ekvipage:
+    //                dbParticipant = new DbParticipant
+    //                {
+    //                    Id = ekvipage.Id,
+    //                    Name = ekvipage.Name,
+    //                    ParticipantType = 3,
+    //                    MemberIds = ekvipage.MemberId.HasValue ? new List<Guid> { ekvipage.MemberId.Value } : new List<Guid>(),
+    //                    EntityId = ekvipage.EntityId
+    //                };
+
+    //                // Insert participant_members for Ekvipage
+    //                InsertParticipantMembers(dbParticipant.Id, dbParticipant.MemberIds);
+    //                break;
+
+    //            default:
+    //                throw new InvalidOperationException($"Unknown ParticipantDTO type: {source.GetType()}");
+    //        }
+
+    //        return dbParticipant;
+    //    }
+
+    //    private void InsertParticipantMembers(Guid participantId, List<Guid> memberIds)
+    //    {
+    //        // Create DbParticipantMember entries and add to the context
+    //        var participantMembers = memberIds.Select(memberId => new DbParticipantMember
+    //        {
+    //            ParticipantId = participantId,
+    //            MemberId = memberId
+    //        }).ToList();
+
+    //        _dbContext.ParticipantMembers.AddRange(participantMembers);
+    //    }
+    //}
+
+    //public class ParticipantDTOToDbParticipantConverter : ITypeConverter<ParticipantDTO, DbParticipant>
+    //{
+    //    public DbParticipant Convert(ParticipantDTO source, DbParticipant destination, ResolutionContext context)
+    //    {
+    //        switch (source)
+    //        {
+    //            case TeamDTO team:
+    //                return new DbParticipant
+    //                {
+    //                    Id = team.Id,
+    //                    Name = team.Name,
+    //                    ParticipantType = 1,
+    //                    MemberIds = team.MemberIds ?? new List<Guid>()
+    //                };
+
+    //            case SingleDTO single:
+    //                return new DbParticipant
+    //                {
+    //                    Id = single.Id,
+    //                    Name = single.Name,
+    //                    ParticipantType = 2,
+    //                    MemberIds = single.MemberId.HasValue ? new List<Guid> { single.MemberId.Value } : new List<Guid>()
+    //                };
+
+    //            case EkvipageDTO ekvipage:
+    //                return new DbParticipant
+    //                {
+    //                    Id = ekvipage.Id,
+    //                    Name = ekvipage.Name,
+    //                    ParticipantType = 3,
+    //                    MemberIds = ekvipage.MemberId.HasValue ? new List<Guid> { ekvipage.MemberId.Value } : new List<Guid>(),
+    //                    EntityId = ekvipage.EntityId
+    //                };
+
+    //            default:
+    //                throw new InvalidOperationException($"Unknown ParticipantDTO type: {source.GetType()}");
+    //        }
+    //    }
+    //}
+
 }

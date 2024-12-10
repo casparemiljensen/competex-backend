@@ -1,11 +1,8 @@
-﻿using AutoMapper.Internal;
-using competex_backend.Common.ErrorHandling;
+﻿using competex_backend.Common.ErrorHandling;
 using competex_backend.Common.Helpers;
-using competex_backend.DAL.Filters;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json;
 

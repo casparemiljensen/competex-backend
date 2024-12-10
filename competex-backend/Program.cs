@@ -6,6 +6,8 @@ using competex_backend.BLL.Interfaces;
 using competex_backend.API.DTOs;
 using competex_backend.Models;
 using competex_backend.Common.ErrorHandling;
+using competex_backend.DAL.Repositories.PostgressDataAccess;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,7 +54,7 @@ builder.Services.AddSingleton<MockDatabaseManager>();
 
 # region IGenericRepository
 //Registers IGenericRepository<T> with specific implementations (MockMemberRepository, MockClubRepository, etc.) for each model type.
-builder.Services.AddScoped<IGenericRepository<Member>, MockMemberRepository>();
+builder.Services.AddScoped<IGenericRepository<Member>, PostgresMemberRepository>(); //
 builder.Services.AddScoped<IGenericRepository<Club>, MockClubRepository>();
 builder.Services.AddScoped<IGenericRepository<Round>, MockRoundRepository>();
 builder.Services.AddScoped<IGenericRepository<SportType>, MockSportTypeRepository>();
@@ -61,17 +63,20 @@ builder.Services.AddScoped<IGenericRepository<Competition>, MockCompetitionRepos
 builder.Services.AddScoped<IGenericRepository<Event>, MockEventRepository>();
 builder.Services.AddScoped<IGenericRepository<ClubMembership>, MockClubMembershipRepository>();
 builder.Services.AddScoped<IGenericRepository<Admin>, MockAdminRepository>();
-builder.Services.AddScoped<IGenericRepository<Entity>, MockEntityRepository>();
+builder.Services.AddScoped<IGenericRepository<Entity>, PostgresEntityRepository>();
 builder.Services.AddScoped<IGenericRepository<Field>, MockFieldRepository>();
-builder.Services.AddScoped<IGenericRepository<Location>, MockLocationRepository>();
+builder.Services.AddScoped<IGenericRepository<Location>, PostgresLocationRepository>(); //
 builder.Services.AddScoped<IGenericRepository<Penalty>, MockPenaltyRepository>();
 builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRepository>();
 builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>();
-builder.Services.AddScoped<IGenericRepository<Participant>, MockParticipantRepository>();
-builder.Services.AddScoped<IGenericRepository<Judge>, MockJudgeRepository>();
+builder.Services.AddScoped<IGenericRepository<Ekvipage>, PostgresParticipantRepository>(); //
+builder.Services.AddScoped<IGenericRepository<Judge>, PostgresJudgeRepository>(); //
 builder.Services.AddScoped<IGenericRepository<Match>, MockMatchRepository>();
 builder.Services.AddScoped<IGenericRepository<Score>, MockScoreRepository>();
 builder.Services.AddScoped<IGenericRepository<ScoreResult>, MockScoreResultRepository>();
+
+//builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 
 #endregion
 
@@ -101,7 +106,7 @@ builder.Services.AddScoped<IScoreResultService, ScoreResultService>();
 
 #region Service DTO Mappings
 // Registers services with DTO mappings for each model type.
-builder.Services.AddScoped<IMemberRepository, MockMemberRepository>();
+builder.Services.AddScoped<IMemberRepository, PostgresMemberRepository>(); //
 builder.Services.AddScoped<IClubRepository, MockClubRepository>();
 builder.Services.AddScoped<IRoundRepository, MockRoundRepository>();
 builder.Services.AddScoped<ISportTypeRepository, MockSportTypeRepository>();
@@ -110,17 +115,19 @@ builder.Services.AddScoped<ICompetitionRepository, MockCompetitionRepository>();
 builder.Services.AddScoped<IEventRepository, MockEventRepository>();
 builder.Services.AddScoped<IClubMembershipRepository, MockClubMembershipRepository>();
 builder.Services.AddScoped<IAdminRepository, MockAdminRepository>();
-builder.Services.AddScoped<IEntityRepository, MockEntityRepository>();
+builder.Services.AddScoped<IEntityRepository, PostgresEntityRepository>();
 builder.Services.AddScoped<IFieldRepository, MockFieldRepository>();
-builder.Services.AddScoped<ILocationRepository, MockLocationRepository>();
+builder.Services.AddScoped<ILocationRepository, PostgresLocationRepository>(); //
 builder.Services.AddScoped<IPenaltyRepository, MockPenaltyRepository>();
 builder.Services.AddScoped<IRegistrationRepository, MockRegistrationRepository>();
 builder.Services.AddScoped<IScoringSystemRepository, MockScoringSystemRepository>();
-builder.Services.AddScoped<IParticipantRepository, MockParticipantRepository>();
-builder.Services.AddScoped<IJudgeRepository, MockJudgeRepository>();
+builder.Services.AddScoped<IParticipantRepository, PostgresParticipantRepository>(); //
+builder.Services.AddScoped<IJudgeRepository, PostgresJudgeRepository>(); //
 builder.Services.AddScoped<IMatchRepository, MockMatchRepository>();
 builder.Services.AddScoped<IScoreRepository, MockScoreRepository>();
 builder.Services.AddScoped<IScoreResultRepository, MockScoreResultRepository>();
+
+
 #endregion
 
 # region IGenericService
@@ -142,7 +149,7 @@ builder.Services.AddScoped<IGenericService<PenaltyDTO>, GenericService<Penalty, 
 builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
 builder.Services.AddScoped<IGenericService<RegistrationDTO>, GenericService<Registration, RegistrationDTO>>();
 builder.Services.AddScoped<IGenericService<ScoringSystemDTO>, GenericService<ScoringSystem, ScoringSystemDTO>>();
-builder.Services.AddScoped<IGenericService<ParticipantDTO>, GenericService<Participant, ParticipantDTO>>();
+builder.Services.AddScoped<IGenericService<EkvipageDTO>, GenericService<Ekvipage, EkvipageDTO>>();
 builder.Services.AddScoped<IGenericService<JudgeDTO>, GenericService<Judge, JudgeDTO>>();
 builder.Services.AddScoped<IGenericService<MatchDTO>, GenericService<Match, MatchDTO>>();
 builder.Services.AddScoped<IGenericService<ScoreDTO>, GenericService<Score, ScoreDTO>>();
@@ -151,11 +158,33 @@ builder.Services.AddScoped<IGenericService<ScoreResultDTO>, GenericService<Score
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
+// Configure the database context for PostgreSQL
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 var app = builder.Build();
+
+// Apply migrations and seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        // Apply pending migrations
+        await context.Database.MigrateAsync();
+    }
+    catch (Exception ex)
+    {
+        // Log migration errors
+        Console.WriteLine($"An error occurred during migration: {ex.Message}");
+    }
+}
+
 
 // Configure the HTTP request pipeline.
 // Right now we want to show Swagger UI in production. Remove this clause when that changes
-    if (app.Environment.IsDevelopment() || true)
+if (app.Environment.IsDevelopment() || true)
     {
         app.UseSwagger();
         app.UseSwaggerUI(options =>

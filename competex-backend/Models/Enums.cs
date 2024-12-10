@@ -96,4 +96,11 @@
         Main,
         Assistant
     }
+
+    public enum Permissions
+    {
+        User,
+        Judge,
+        Admin
+    }
 }

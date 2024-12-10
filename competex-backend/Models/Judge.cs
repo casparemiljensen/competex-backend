@@ -7,6 +7,5 @@ namespace competex_backend.Models
         public JudgeType JudgeType { get; set; }
         public Guid MemberId { get; set; }  
         public string Description { get; set; }
-
     }
 }

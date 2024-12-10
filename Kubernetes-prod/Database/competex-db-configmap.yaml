@@ -14,7 +14,16 @@ data:
     CREATE DATABASE "competexdb";
     \connect "competexdb";
 
-    CREATE TABLE "public"."Admin" (
+    CREATE TABLE "public"."admin_sporttypes" (
+        "AdminId" uuid NOT NULL,
+        "SportTypeId" uuid NOT NULL
+    ) WITH (oids = false);
+
+    CREATE INDEX "AdminSportType_AdminId" ON "public"."admin_sporttypes" USING btree ("AdminId");
+
+    CREATE INDEX "AdminSportType_SportTypeId" ON "public"."admin_sporttypes" USING btree ("SportTypeId");
+
+    CREATE TABLE "public"."admins" (
         "Id" uuid NOT NULL,
         "FirstName" text NOT NULL,
         "LastName" text NOT NULL,
@@ -25,32 +34,8 @@ data:
         CONSTRAINT "Admin_Id" PRIMARY KEY ("Id")
     ) WITH (oids = false);
 
-    INSERT INTO "Admin" ("Id", "FirstName", "LastName", "Birthday", "Email", "Phone", "Permissions") VALUES
-    ('f7fb4ace-1756-41ed-aa16-a2ce79d5806f',	'Lars',	'Kristensen',	'1999-01-08 04:05:06',	'Lars.kristensen@email.com',	'85988238',	2);
 
-    CREATE TABLE "public"."AdminSportType" (
-        "AdminId" uuid NOT NULL,
-        "SportTypeId" uuid NOT NULL
-    ) WITH (oids = false);
-
-    CREATE INDEX "AdminSportType_AdminId" ON "public"."AdminSportType" USING btree ("AdminId");
-
-    CREATE INDEX "AdminSportType_SportTypeId" ON "public"."AdminSportType" USING btree ("SportTypeId");
-
-    INSERT INTO "AdminSportType" ("AdminId", "SportTypeId") VALUES
-    ('f7fb4ace-1756-41ed-aa16-a2ce79d5806f',	'72aa9288-be28-4e23-9f49-82f37f3948f4');
-
-    CREATE TABLE "public"."Club" (
-        "Id" uuid NOT NULL,
-        "Name" text NOT NULL,
-        "AssociatedSport" text NOT NULL,
-        CONSTRAINT "Club_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Club" ("Id", "Name", "AssociatedSport") VALUES
-    ('0cc431c3-a954-4648-b75f-ddaf286343ae',	'KLG',	'Tennis');
-
-    CREATE TABLE "public"."ClubMembership" (
+    CREATE TABLE "public"."club_memberships" (
         "Id" uuid NOT NULL,
         "ClubId" uuid NOT NULL,
         "MemberId" uuid NOT NULL,
@@ -59,8 +44,31 @@ data:
         CONSTRAINT "ClubMembership_ClubId" UNIQUE ("ClubId")
     ) WITH (oids = false);
 
+    INSERT INTO "club_memberships" ("Id", "ClubId", "MemberId", "JoinDate", "Role") VALUES
+    ('d1a15a87-8402-495f-8c2a-c34d653ce2dc',	'0cc431c3-a954-4648-b75f-ddaf286343ae',	'58a01cc0-1a49-455b-998c-1500b3db0dca',	'1999-01-08 04:05:06',	NULL);
 
-    CREATE TABLE "public"."Competition" (
+    CREATE TABLE "public"."clubs" (
+        "Id" uuid NOT NULL,
+        "Name" text NOT NULL,
+        "AssociatedSport" text NOT NULL,
+        CONSTRAINT "Club_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
+
+    INSERT INTO "clubs" ("Id", "Name", "AssociatedSport") VALUES
+    ('0cc431c3-a954-4648-b75f-ddaf286343ae',	'KLG',	'Tennis');
+
+    CREATE TABLE "public"."competition_types" (
+        "Id" uuid NOT NULL,
+        "Name" text NOT NULL,
+        "ScoreType" smallint NOT NULL,
+        "ScoreMethod" smallint NOT NULL,
+        CONSTRAINT "CompetitionType_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
+
+    INSERT INTO "competition_types" ("Id", "Name", "ScoreType", "ScoreMethod") VALUES
+    ('2418a441-4fcf-4a7e-a256-ed97ad1403ce',	'HandBall',	0,	0);
+
+    CREATE TABLE "public"."competitions" (
         "Id" uuid NOT NULL,
         "CompetitionType" uuid NOT NULL,
         "StartDate" timestamp NOT NULL,
@@ -75,271 +83,8 @@ data:
         CONSTRAINT "Competition_Id" PRIMARY KEY ("Id")
     ) WITH (oids = false);
 
-    INSERT INTO "Competition" ("Id", "CompetitionType", "StartDate", "EndDate", "Level", "Status", "MinParticipants", "MaxParticipants", "RegistrationPrice", "EventId", "Name") VALUES
+    INSERT INTO "competitions" ("Id", "CompetitionType", "StartDate", "EndDate", "Level", "Status", "MinParticipants", "MaxParticipants", "RegistrationPrice", "EventId", "Name") VALUES
     ('a4bd46ad-aabe-4ec6-9b3f-55836b3f241e',	'2418a441-4fcf-4a7e-a256-ed97ad1403ce',	'2023-04-15 14:30:00',	'2023-04-16 14:30:00',	0,	0,	10,	20,	50,	'd776254f-0084-41b3-a17c-1a1ac350084e',	'2020 HAndball stuffs');
-
-    CREATE TABLE "public"."CompetitionType" (
-        "Id" uuid NOT NULL,
-        "Name" text NOT NULL,
-        "ScoreType" smallint NOT NULL,
-        "ScoreMethod" smallint NOT NULL,
-        CONSTRAINT "CompetitionType_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "CompetitionType" ("Id", "Name", "ScoreType", "ScoreMethod") VALUES
-    ('2418a441-4fcf-4a7e-a256-ed97ad1403ce',	'HandBall',	0,	0);
-
-    CREATE TABLE "public"."Entity" (
-        "Id" uuid NOT NULL,
-        "Name" text NOT NULL,
-        "Birthday" date NOT NULL,
-        "Level" smallint NOT NULL,
-        "Owner" uuid NOT NULL,
-        "Type" smallint NOT NULL,
-        CONSTRAINT "Entity_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Entity" ("Id", "Name", "Birthday", "Level", "Owner", "Type") VALUES
-    ('e73dca0c-0731-4593-8df7-3d5b76ff913d',	'Charles',	'1999-01-08',	3,	'58a01cc0-1a49-455b-998c-1500b3db0dca',	1);
-
-    CREATE TABLE "public"."Event" (
-        "Id" uuid NOT NULL,
-        "Title" text NOT NULL,
-        "Description" text NOT NULL,
-        "StartDate" timestamp NOT NULL,
-        "EndDate" timestamp NOT NULL,
-        "Location" uuid,
-        "RegistrationStartDate" timestamp NOT NULL,
-        "RegistrationEndDate" timestamp NOT NULL,
-        "Status" smallint NOT NULL,
-        "Organizer" uuid NOT NULL,
-        "SportType" uuid NOT NULL,
-        "EntryFee" integer NOT NULL,
-        CONSTRAINT "Event_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Event" ("Id", "Title", "Description", "StartDate", "EndDate", "Location", "RegistrationStartDate", "RegistrationEndDate", "Status", "Organizer", "SportType", "EntryFee") VALUES
-    ('d776254f-0084-41b3-a17c-1a1ac350084e',	'TestEvent',	'This is a test event description',	'2024-11-27 10:35:14.506871',	'2024-11-27 10:35:14.506871',	NULL,	'2024-11-27 10:35:14.506871',	'2024-11-27 10:35:14.506871',	0,	'290a2cfb-1af3-4b41-bf45-94935ecad69d',	'72aa9288-be28-4e23-9f49-82f37f3948f4',	23);
-
-    CREATE TABLE "public"."Field" (
-        "Id" uuid NOT NULL,
-        "Location" text NOT NULL,
-        "Capacity" integer NOT NULL,
-        "SurfaceType" smallint DEFAULT '0' NOT NULL,
-        "Name" text NOT NULL,
-        CONSTRAINT "Field_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Field" ("Id", "Location", "Capacity", "SurfaceType", "Name") VALUES
-    ('9a16dcb4-8efc-4185-9171-dffe2b7f4027',	'Field 3',	30,	1,	'Field 3');
-
-    CREATE TABLE "public"."Judge" (
-        "MemberId" uuid NOT NULL,
-        "Description" text NOT NULL,
-        "JudgeType" smallint NOT NULL,
-        "Id" uuid DEFAULT gen_random_uuid() NOT NULL,
-        CONSTRAINT "Judge_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Judge" ("MemberId", "Description", "JudgeType", "Id") VALUES
-    ('58a01cc0-1a49-455b-998c-1500b3db0dca',	'asd',	1,	'aa76039e-5f08-4bec-9eb3-2ced90c39575');
-
-    CREATE TABLE "public"."Location" (
-        "Id" uuid NOT NULL,
-        "Address" text NOT NULL,
-        "Zip" text NOT NULL,
-        "City" text NOT NULL,
-        "Country" text NOT NULL,
-        "Name" text NOT NULL,
-        CONSTRAINT "Location_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Location" ("Id", "Address", "Zip", "City", "Country", "Name") VALUES
-    ('40d1654b-aefc-4be6-8bf6-287db185001e',	'address',	'zip',	'city',	'country',	'Name');
-
-    CREATE TABLE "public"."Match" (
-        "Id" uuid NOT NULL,
-        "RoundId" uuid NOT NULL,
-        "Status" smallint DEFAULT '0' NOT NULL,
-        "StartTime" timestamptz NOT NULL,
-        "EndTime" timestamptz NOT NULL,
-        "Field" uuid,
-        "Judge" uuid,
-        CONSTRAINT "Match_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Match" ("Id", "RoundId", "Status", "StartTime", "EndTime", "Field", "Judge") VALUES
-    ('eab24cde-fa47-4ccc-8a0d-7c0d40bd8067',	'b5f764d8-85c4-4a83-b323-5ede8db6c1c9',	1,	'1999-01-08 04:05:06+00',	'1999-01-08 04:05:07+00',	NULL,	NULL);
-
-    CREATE TABLE "public"."MatchParticipants" (
-        "MatchId" uuid NOT NULL,
-        "ParticipantId" uuid NOT NULL
-    ) WITH (oids = false);
-
-    CREATE INDEX "fk_Match_Participants_Match" ON "public"."MatchParticipants" USING btree ("MatchId");
-
-    INSERT INTO "MatchParticipants" ("MatchId", "ParticipantId") VALUES
-    ('eab24cde-fa47-4ccc-8a0d-7c0d40bd8067',	'1f0485ff-2d4d-4190-8393-9742ab55af2f');
-
-    CREATE TABLE "public"."MatchScores" (
-        "MatchId" uuid NOT NULL,
-        "ScoreId" uuid NOT NULL
-    ) WITH (oids = false);
-
-    INSERT INTO "MatchScores" ("MatchId", "ScoreId") VALUES
-    ('eab24cde-fa47-4ccc-8a0d-7c0d40bd8067',	'65c2f3bb-583d-481d-8554-8dca0e13d70f');
-
-    CREATE TABLE "public"."Member" (
-        "Id" uuid DEFAULT gen_random_uuid() NOT NULL,
-        "FirstName" text NOT NULL,
-        "LastName" text NOT NULL,
-        "Birthday" date NOT NULL,
-        "Email" text NOT NULL,
-        "Phone" text NOT NULL,
-        "Permissions" smallint NOT NULL,
-        CONSTRAINT "Member_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Member" ("Id", "FirstName", "LastName", "Birthday", "Email", "Phone", "Permissions") VALUES
-    ('58a01cc0-1a49-455b-998c-1500b3db0dca',	'Thomas',	'Nykjær',	'2000-07-19',	'thomas.nykjaer@live.dk',	'60602698',	2),
-    ('873c08d4-a57e-42c7-95d1-62b16089185d',	'Illum',	'Thomas',	'1923-04-15',	'email@email.email',	'+4563975839',	2),
-    ('290a2cfb-1af3-4b41-bf45-94935ecad69d',	'Lucas',	'Dexter',	'2024-11-27',	'lucas@gmail.om',	'1',	3),
-    ('4ad019ae-db24-4b6d-a5d0-720018b41ce5',	'string',	'string',	'2024-11-29',	'string',	'string',	3),
-    ('30b45915-29c4-4f76-9908-3aa4888793c0',	'string',	'string',	'2024-11-29',	'string',	'string',	3),
-    ('8b1f62e0-e89b-4891-9f96-33c8d9640d29',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
-    ('8e8f69fc-ba17-4aed-bda8-a877d51a7d43',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
-    ('dbcbbace-92a9-423f-82bf-5d4de11bd01a',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
-    ('67ed9d61-86e2-41da-9879-eadff2f2de35',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
-    ('73f8c41c-84fe-420a-8412-c14c4cdc1b0b',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
-    ('6bd3fdfe-575d-4279-9151-2c0c570aea43',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
-    ('277531d9-ade8-4611-a59d-f4e0985301b4',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
-    ('fb4b7290-fd59-4f0a-bbf3-8cca407711dd',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
-    ('02f10df6-34ae-4adf-b64d-029e0929e53b',	'string',	'string',	'2024-11-29',	'asd',	'string',	3),
-    ('d8780171-f4c0-4964-87ee-47e51fa9339c',	'Pætur',	'help',	'2024-11-29',	'string',	'stdgdgdgdgring',	0);
-
-    CREATE TABLE "public"."Participant" (
-        "Id" uuid NOT NULL,
-        "Entity" uuid,
-        "Name" text NOT NULL,
-        "ParticipantType" smallint NOT NULL,
-        CONSTRAINT "Ekvipage_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Participant" ("Id", "Entity", "Name", "ParticipantType") VALUES
-    ('1f0485ff-2d4d-4190-8393-9742ab55af2f',	NULL,	'Team 5',	1);
-
-    CREATE TABLE "public"."ParticipantMembers" (
-        "ParticipantId" uuid NOT NULL,
-        "MemberId" uuid NOT NULL
-    ) WITH (oids = false);
-
-    INSERT INTO "ParticipantMembers" ("ParticipantId", "MemberId") VALUES
-    ('1f0485ff-2d4d-4190-8393-9742ab55af2f',	'58a01cc0-1a49-455b-998c-1500b3db0dca'),
-    ('1f0485ff-2d4d-4190-8393-9742ab55af2f',	'873c08d4-a57e-42c7-95d1-62b16089185d');
-
-    CREATE TABLE "public"."Penalty" (
-        "Id" uuid NOT NULL,
-        "PenaltyValue" text NOT NULL,
-        "PenaltyType" smallint NOT NULL,
-        CONSTRAINT "Penalty_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Penalty" ("Id", "PenaltyValue", "PenaltyType") VALUES
-    ('ab47aaa8-321e-4415-90dd-1f3dee99a05a',	'penaltyValue',	1);
-
-    CREATE TABLE "public"."Registration" (
-        "Id" uuid NOT NULL,
-        "MemberId" uuid NOT NULL,
-        "CompetitionId" uuid NOT NULL,
-        "RegistrationDate" timestamptz NOT NULL,
-        "Status" smallint DEFAULT '0' NOT NULL,
-        CONSTRAINT "Registration_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-
-    CREATE TABLE "public"."Round" (
-        "Id" uuid NOT NULL,
-        "SequenceNumber" integer NOT NULL,
-        "RoundType" smallint NOT NULL,
-        "CompetitionId" uuid NOT NULL,
-        "Status" smallint NOT NULL,
-        "StartTime" timestamp NOT NULL,
-        "EndTime" timestamp NOT NULL,
-        "Name" text NOT NULL,
-        CONSTRAINT "Round_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Round" ("Id", "SequenceNumber", "RoundType", "CompetitionId", "Status", "StartTime", "EndTime", "Name") VALUES
-    ('b5f764d8-85c4-4a83-b323-5ede8db6c1c9',	0,	0,	'a4bd46ad-aabe-4ec6-9b3f-55836b3f241e',	0,	'2023-04-15 14:30:00',	'2023-04-17 14:30:00',	'Handball Lund Cup 2023');
-
-    CREATE TABLE "public"."RoundMatches" (
-        "RoundId" uuid NOT NULL,
-        "MatchId" uuid NOT NULL
-    ) WITH (oids = false);
-
-    CREATE INDEX "fk_Round_Matches_Round" ON "public"."RoundMatches" USING btree ("RoundId");
-
-    INSERT INTO "RoundMatches" ("RoundId", "MatchId") VALUES
-    ('b5f764d8-85c4-4a83-b323-5ede8db6c1c9',	'eab24cde-fa47-4ccc-8a0d-7c0d40bd8067');
-
-    CREATE TABLE "public"."RoundParticipants" (
-        "RoundId" uuid NOT NULL,
-        "ParticipantId" uuid NOT NULL
-    ) WITH (oids = false);
-
-    CREATE INDEX "fk_Round_Participants_Round" ON "public"."RoundParticipants" USING btree ("RoundId");
-
-    INSERT INTO "RoundParticipants" ("RoundId", "ParticipantId") VALUES
-    ('b5f764d8-85c4-4a83-b323-5ede8db6c1c9',	'1f0485ff-2d4d-4190-8393-9742ab55af2f');
-
-    CREATE TABLE "public"."Score" (
-        "Id" uuid NOT NULL,
-        "ParticipantId" uuid NOT NULL,
-        "TimeScore" interval,
-        "Points" integer,
-        "ScoreType" smallint NOT NULL,
-        CONSTRAINT "Score_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "Score" ("Id", "ParticipantId", "TimeScore", "Points", "ScoreType") VALUES
-    ('65c2f3bb-583d-481d-8554-8dca0e13d70f',	'1f0485ff-2d4d-4190-8393-9742ab55af2f',	NULL,	3,	1);
-
-    CREATE TABLE "public"."ScorePenalties" (
-        "ScoreId" uuid NOT NULL,
-        "PenaltyId" uuid NOT NULL
-    ) WITH (oids = false);
-
-    CREATE INDEX "fk_PointScore_Penalties_PointScore" ON "public"."ScorePenalties" USING btree ("ScoreId");
-
-    INSERT INTO "ScorePenalties" ("ScoreId", "PenaltyId") VALUES
-    ('65c2f3bb-583d-481d-8554-8dca0e13d70f',	'ab47aaa8-321e-4415-90dd-1f3dee99a05a');
-
-    CREATE TABLE "public"."ScoringSystem" (
-        "Id" uuid NOT NULL,
-        "Description" text NOT NULL,
-        "ScoreType" smallint NOT NULL,
-        "ScoringRules" text NOT NULL,
-        "Penalties" integer NOT NULL,
-        "EvaluationMethod" text NOT NULL,
-        CONSTRAINT "ScoringSystem_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-
-    CREATE TABLE "public"."ScoringSystemPenalties" (
-        "ScoringSystemId" uuid NOT NULL,
-        "PanaltyId" uuid NOT NULL
-    ) WITH (oids = false);
-
-
-    CREATE TABLE "public"."SportType" (
-        "Id" uuid NOT NULL,
-        "Name" text NOT NULL,
-        "EntityType" smallint,
-        CONSTRAINT "SportType_Id" PRIMARY KEY ("Id")
-    ) WITH (oids = false);
-
-    INSERT INTO "SportType" ("Id", "Name", "EntityType") VALUES
-    ('72aa9288-be28-4e23-9f49-82f37f3948f4',	'Handball',	NULL);
 
     CREATE TABLE "public"."data_CompetitionType_CompetitionAttributes" (
         "CompetitionTypeId" uuid NOT NULL,
@@ -370,59 +115,316 @@ data:
     ('72aa9288-be28-4e23-9f49-82f37f3948f4',	'Attribute'),
     ('72aa9288-be28-4e23-9f49-82f37f3948f4',	'Another attribute');
 
-    ALTER TABLE ONLY "public"."AdminSportType" ADD CONSTRAINT "AdminSportType_AdminId_fkey" FOREIGN KEY ("AdminId") REFERENCES "Admin"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."AdminSportType" ADD CONSTRAINT "AdminSportType_SportTypeId_fkey" FOREIGN KEY ("SportTypeId") REFERENCES "SportType"("Id") NOT DEFERRABLE;
+    CREATE TABLE "public"."entities" (
+        "Id" uuid NOT NULL,
+        "Name" text NOT NULL,
+        "Birthdate" date NOT NULL,
+        "Level" smallint NOT NULL,
+        "OwnerId" uuid NOT NULL,
+        "Type" smallint NOT NULL,
+        CONSTRAINT "Entity_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
 
-    ALTER TABLE ONLY "public"."ClubMembership" ADD CONSTRAINT "ClubMembership_ClubId_fkey" FOREIGN KEY ("ClubId") REFERENCES "Club"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."ClubMembership" ADD CONSTRAINT "ClubMembership_MemberId_fkey" FOREIGN KEY ("MemberId") REFERENCES "Member"("Id") NOT DEFERRABLE;
+    INSERT INTO "entities" ("Id", "Name", "Birthdate", "Level", "OwnerId", "Type") VALUES
+    ('e73dca0c-0731-4593-8df7-3d5b76ff913d',	'Charles',	'1999-01-08',	3,	'58a01cc0-1a49-455b-998c-1500b3db0dca',	1);
 
-    ALTER TABLE ONLY "public"."Competition" ADD CONSTRAINT "Competition_CompetitionType_fkey" FOREIGN KEY ("CompetitionType") REFERENCES "CompetitionType"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."Competition" ADD CONSTRAINT "Competition_EventId_fkey" FOREIGN KEY ("EventId") REFERENCES "Event"("Id") NOT DEFERRABLE;
+    CREATE TABLE "public"."events" (
+        "Id" uuid NOT NULL,
+        "Title" text NOT NULL,
+        "Description" text NOT NULL,
+        "StartDate" timestamp NOT NULL,
+        "EndDate" timestamp NOT NULL,
+        "Location" uuid,
+        "RegistrationStartDate" timestamp NOT NULL,
+        "RegistrationEndDate" timestamp NOT NULL,
+        "Status" smallint NOT NULL,
+        "Organizer" uuid NOT NULL,
+        "SportType" uuid NOT NULL,
+        "EntryFee" integer NOT NULL,
+        CONSTRAINT "Event_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
 
-    ALTER TABLE ONLY "public"."Entity" ADD CONSTRAINT "Entity_Owner_fkey" FOREIGN KEY ("Owner") REFERENCES "Member"("Id") NOT DEFERRABLE;
+    INSERT INTO "events" ("Id", "Title", "Description", "StartDate", "EndDate", "Location", "RegistrationStartDate", "RegistrationEndDate", "Status", "Organizer", "SportType", "EntryFee") VALUES
+    ('d776254f-0084-41b3-a17c-1a1ac350084e',	'TestEvent',	'This is a test event description',	'2024-11-27 10:35:14.506871',	'2024-11-27 10:35:14.506871',	NULL,	'2024-11-27 10:35:14.506871',	'2024-11-27 10:35:14.506871',	0,	'290a2cfb-1af3-4b41-bf45-94935ecad69d',	'72aa9288-be28-4e23-9f49-82f37f3948f4',	23);
 
-    ALTER TABLE ONLY "public"."Event" ADD CONSTRAINT "Event_Location_fkey" FOREIGN KEY ("Location") REFERENCES "Location"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."Event" ADD CONSTRAINT "Event_Organizer_fkey" FOREIGN KEY ("Organizer") REFERENCES "Member"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."Event" ADD CONSTRAINT "Event_SportType_fkey" FOREIGN KEY ("SportType") REFERENCES "SportType"("Id") NOT DEFERRABLE;
+    CREATE TABLE "public"."fields" (
+        "Id" uuid NOT NULL,
+        "Location" text NOT NULL,
+        "Capacity" integer NOT NULL,
+        "SurfaceType" smallint DEFAULT '0' NOT NULL,
+        "Name" text NOT NULL,
+        CONSTRAINT "Field_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
 
-    ALTER TABLE ONLY "public"."Judge" ADD CONSTRAINT "Judge_Member_fkey" FOREIGN KEY ("MemberId") REFERENCES "Member"("Id") ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE;
+    INSERT INTO "fields" ("Id", "Location", "Capacity", "SurfaceType", "Name") VALUES
+    ('9a16dcb4-8efc-4185-9171-dffe2b7f4027',	'Field 3',	30,	1,	'Field 3');
 
-    ALTER TABLE ONLY "public"."Match" ADD CONSTRAINT "Match_Field_fkey" FOREIGN KEY ("Field") REFERENCES "Field"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."Match" ADD CONSTRAINT "Match_Judge_fkey" FOREIGN KEY ("Judge") REFERENCES "Judge"("Id") ON DELETE CASCADE NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."Match" ADD CONSTRAINT "Match_RoundId_fkey" FOREIGN KEY ("RoundId") REFERENCES "Round"("Id") NOT DEFERRABLE;
+    CREATE TABLE "public"."judges" (
+        "MemberId" uuid NOT NULL,
+        "Description" text NOT NULL,
+        "JudgeType" smallint NOT NULL,
+        "Id" uuid DEFAULT gen_random_uuid() NOT NULL,
+        CONSTRAINT "Judge_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
 
-    ALTER TABLE ONLY "public"."MatchParticipants" ADD CONSTRAINT "MatchParticipants_MatchId_fkey" FOREIGN KEY ("MatchId") REFERENCES "Match"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."MatchParticipants" ADD CONSTRAINT "MatchParticipants_ParticipantId_fkey" FOREIGN KEY ("ParticipantId") REFERENCES "Participant"("Id") NOT DEFERRABLE;
+    INSERT INTO "judges" ("MemberId", "Description", "JudgeType", "Id") VALUES
+    ('873c08d4-a57e-42c7-95d1-62b16089185d',	'den bedste',	2,	'7e88fcce-4799-4da9-a27e-1009c14ff78d');
 
-    ALTER TABLE ONLY "public"."MatchScores" ADD CONSTRAINT "MatchScores_MatchId_fkey" FOREIGN KEY ("MatchId") REFERENCES "Match"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."MatchScores" ADD CONSTRAINT "MatchScores_ScoreId_fkey" FOREIGN KEY ("ScoreId") REFERENCES "Score"("Id") NOT DEFERRABLE;
+    CREATE TABLE "public"."locations" (
+        "Id" uuid NOT NULL,
+        "Address" text NOT NULL,
+        "Zip" text NOT NULL,
+        "City" text NOT NULL,
+        "Country" text NOT NULL,
+        "Name" text NOT NULL,
+        CONSTRAINT "Location_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
 
-    ALTER TABLE ONLY "public"."Participant" ADD CONSTRAINT "Ekvipage_Entity_fkey" FOREIGN KEY ("Entity") REFERENCES "Entity"("Id") NOT DEFERRABLE;
 
-    ALTER TABLE ONLY "public"."ParticipantMembers" ADD CONSTRAINT "ParticipantMembers_MemberId_fkey" FOREIGN KEY ("MemberId") REFERENCES "Member"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."ParticipantMembers" ADD CONSTRAINT "ParticipantMembers_ParticipantId_fkey" FOREIGN KEY ("ParticipantId") REFERENCES "Participant"("Id") NOT DEFERRABLE;
+    CREATE TABLE "public"."match_participants" (
+        "MatchId" uuid NOT NULL,
+        "ParticipantId" uuid NOT NULL
+    ) WITH (oids = false);
 
-    ALTER TABLE ONLY "public"."Registration" ADD CONSTRAINT "Registration_CometitionId_fkey" FOREIGN KEY ("CompetitionId") REFERENCES "Competition"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."Registration" ADD CONSTRAINT "Registration_MemberId_fkey" FOREIGN KEY ("MemberId") REFERENCES "Member"("Id") NOT DEFERRABLE;
+    CREATE INDEX "fk_Match_Participants_Match" ON "public"."match_participants" USING btree ("MatchId");
 
-    ALTER TABLE ONLY "public"."Round" ADD CONSTRAINT "Round_CompetitionId_fkey" FOREIGN KEY ("CompetitionId") REFERENCES "Competition"("Id") NOT DEFERRABLE;
+    INSERT INTO "match_participants" ("MatchId", "ParticipantId") VALUES
+    ('eab24cde-fa47-4ccc-8a0d-7c0d40bd8067',	'1f0485ff-2d4d-4190-8393-9742ab55af2f');
 
-    ALTER TABLE ONLY "public"."RoundMatches" ADD CONSTRAINT "RoundMatches_RoundId_fkey" FOREIGN KEY ("RoundId") REFERENCES "Round"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."RoundMatches" ADD CONSTRAINT "fk_Round_Matches_Match_fkey" FOREIGN KEY ("MatchId") REFERENCES "Match"("Id") NOT DEFERRABLE;
+    CREATE TABLE "public"."match_scores" (
+        "MatchId" uuid NOT NULL,
+        "ScoreId" uuid NOT NULL
+    ) WITH (oids = false);
 
-    ALTER TABLE ONLY "public"."RoundParticipants" ADD CONSTRAINT "RoundParticipants_ParticipantId_fkey" FOREIGN KEY ("ParticipantId") REFERENCES "Participant"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."RoundParticipants" ADD CONSTRAINT "RoundParticipants_RoundId_fkey" FOREIGN KEY ("RoundId") REFERENCES "Round"("Id") NOT DEFERRABLE;
+    INSERT INTO "match_scores" ("MatchId", "ScoreId") VALUES
+    ('eab24cde-fa47-4ccc-8a0d-7c0d40bd8067',	'65c2f3bb-583d-481d-8554-8dca0e13d70f');
 
-    ALTER TABLE ONLY "public"."Score" ADD CONSTRAINT "Score_ParticipantId_fkey" FOREIGN KEY ("ParticipantId") REFERENCES "Participant"("Id") NOT DEFERRABLE;
+    CREATE TABLE "public"."matches" (
+        "Id" uuid NOT NULL,
+        "RoundId" uuid NOT NULL,
+        "Status" smallint DEFAULT '0' NOT NULL,
+        "StartTime" timestamptz NOT NULL,
+        "EndTime" timestamptz NOT NULL,
+        "Field" uuid,
+        "Judge" uuid,
+        CONSTRAINT "Match_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
 
-    ALTER TABLE ONLY "public"."ScorePenalties" ADD CONSTRAINT "ScorePenalties_PenaltyId_fkey" FOREIGN KEY ("PenaltyId") REFERENCES "Penalty"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."ScorePenalties" ADD CONSTRAINT "ScorePenalties_ScoreId_fkey" FOREIGN KEY ("ScoreId") REFERENCES "Score"("Id") NOT DEFERRABLE;
+    INSERT INTO "matches" ("Id", "RoundId", "Status", "StartTime", "EndTime", "Field", "Judge") VALUES
+    ('eab24cde-fa47-4ccc-8a0d-7c0d40bd8067',	'b5f764d8-85c4-4a83-b323-5ede8db6c1c9',	1,	'1999-01-08 04:05:06+00',	'1999-01-08 04:05:07+00',	NULL,	NULL);
 
-    ALTER TABLE ONLY "public"."ScoringSystemPenalties" ADD CONSTRAINT "ScoringSystemPenalties_PanaltyId_fkey" FOREIGN KEY ("PanaltyId") REFERENCES "Penalty"("Id") NOT DEFERRABLE;
-    ALTER TABLE ONLY "public"."ScoringSystemPenalties" ADD CONSTRAINT "ScoringSystemPenalties_ScoringSystemId_fkey" FOREIGN KEY ("ScoringSystemId") REFERENCES "ScoringSystem"("Id") NOT DEFERRABLE;
+    CREATE TABLE "public"."members" (
+        "Id" uuid DEFAULT gen_random_uuid() NOT NULL,
+        "FirstName" text NOT NULL,
+        "LastName" text NOT NULL,
+        "Birthday" date NOT NULL,
+        "Email" text NOT NULL,
+        "Phone" text NOT NULL,
+        "Permissions" smallint NOT NULL,
+        CONSTRAINT "Member_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
 
-    ALTER TABLE ONLY "public"."data_CompetitionType_CompetitionAttributes" ADD CONSTRAINT "data_CompetitionType_CompetitionAttribut_CompetitionTypeId_fkey" FOREIGN KEY ("CompetitionTypeId") REFERENCES "CompetitionType"("Id") NOT DEFERRABLE;
+    INSERT INTO "members" ("Id", "FirstName", "LastName", "Birthday", "Email", "Phone", "Permissions") VALUES
+    ('58a01cc0-1a49-455b-998c-1500b3db0dca',	'Thomas',	'Nykjær',	'2000-07-19',	'thomas.nykjaer@live.dk',	'60602698',	2),
+    ('873c08d4-a57e-42c7-95d1-62b16089185d',	'Illum',	'Thomas',	'1923-04-15',	'email@email.email',	'+4563975839',	2),
+    ('290a2cfb-1af3-4b41-bf45-94935ecad69d',	'Lucas',	'Dexter',	'2024-11-27',	'lucas@gmail.om',	'1',	3),
+    ('4ad019ae-db24-4b6d-a5d0-720018b41ce5',	'string',	'string',	'2024-11-29',	'string',	'string',	3),
+    ('30b45915-29c4-4f76-9908-3aa4888793c0',	'string',	'string',	'2024-11-29',	'string',	'string',	3),
+    ('8b1f62e0-e89b-4891-9f96-33c8d9640d29',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
+    ('8e8f69fc-ba17-4aed-bda8-a877d51a7d43',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
+    ('dbcbbace-92a9-423f-82bf-5d4de11bd01a',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
+    ('67ed9d61-86e2-41da-9879-eadff2f2de35',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
+    ('73f8c41c-84fe-420a-8412-c14c4cdc1b0b',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
+    ('6bd3fdfe-575d-4279-9151-2c0c570aea43',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
+    ('277531d9-ade8-4611-a59d-f4e0985301b4',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
+    ('fb4b7290-fd59-4f0a-bbf3-8cca407711dd',	'string',	'string',	'2024-11-29',	'string',	'string',	1),
+    ('02f10df6-34ae-4adf-b64d-029e0929e53b',	'string',	'string',	'2024-11-29',	'asd',	'string',	3),
+    ('d8780171-f4c0-4964-87ee-47e51fa9339c',	'Pætur',	'help',	'2024-11-29',	'string',	'stdgdgdgdgring',	0);
 
-    ALTER TABLE ONLY "public"."data_Event_EventAttributes" ADD CONSTRAINT "data_Event_EventAttributes_EventId_fkey" FOREIGN KEY ("EventId") REFERENCES "Event"("Id") NOT DEFERRABLE;
+    CREATE TABLE "public"."participant_members" (
+        "ParticipantId" uuid NOT NULL,
+        "MemberId" uuid NOT NULL
+    ) WITH (oids = false);
 
-    ALTER TABLE ONLY "public"."data_SportType_EventAttributes" ADD CONSTRAINT "data_SportType_EventAttributes_SportType_fkey" FOREIGN KEY ("SportTypeId") REFERENCES "SportType"("Id") NOT DEFERRABLE;
+    INSERT INTO "participant_members" ("ParticipantId", "MemberId") VALUES
+    ('1f0485ff-2d4d-4190-8393-9742ab55af2f',	'290a2cfb-1af3-4b41-bf45-94935ecad69d'),
+    ('5b922331-3843-4e5f-9062-9a437ec8fbb1',	'58a01cc0-1a49-455b-998c-1500b3db0dca'),
+    ('3fa85f64-5717-4562-b3fc-2c963f66afa6',	'58a01cc0-1a49-455b-998c-1500b3db0dca');
+
+    CREATE TABLE "public"."participants" (
+        "Id" uuid DEFAULT gen_random_uuid() NOT NULL,
+        "EntityId" uuid,
+        "Name" text NOT NULL,
+        "ParticipantType" smallint NOT NULL,
+        "MemberId" uuid,
+        CONSTRAINT "Ekvipage_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
+
+    INSERT INTO "participants" ("Id", "EntityId", "Name", "ParticipantType", "MemberId") VALUES
+    ('1f0485ff-2d4d-4190-8393-9742ab55af2f',	'e73dca0c-0731-4593-8df7-3d5b76ff913d',	'Ekvipage 1',	3,	'277531d9-ade8-4611-a59d-f4e0985301b4'),
+    ('3fa85f64-5717-4562-b3fc-2c963f66afa6',	'e73dca0c-0731-4593-8df7-3d5b76ff913d',	'Ekvipage 2',	2,	'277531d9-ade8-4611-a59d-f4e0985301b4'),
+    ('5761e882-a6ba-4f3b-81ed-d4286f3c516d',	'e73dca0c-0731-4593-8df7-3d5b76ff913d',	'Ekvipage 3',	2,	'277531d9-ade8-4611-a59d-f4e0985301b4'),
+    ('5b922331-3843-4e5f-9062-9a437ec8fbb1',	'e73dca0c-0731-4593-8df7-3d5b76ff913d',	'Ekvipage 4',	2,	'277531d9-ade8-4611-a59d-f4e0985301b4');
+
+    CREATE TABLE "public"."penalties" (
+        "Id" uuid NOT NULL,
+        "PenaltyValue" text NOT NULL,
+        "PenaltyType" smallint NOT NULL,
+        CONSTRAINT "Penalty_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
+
+    INSERT INTO "penalties" ("Id", "PenaltyValue", "PenaltyType") VALUES
+    ('ab47aaa8-321e-4415-90dd-1f3dee99a05a',	'penaltyValue',	1);
+
+    CREATE TABLE "public"."registrations" (
+        "Id" uuid NOT NULL,
+        "MemberId" uuid NOT NULL,
+        "CompetitionId" uuid NOT NULL,
+        "RegistrationDate" timestamptz NOT NULL,
+        "Status" smallint DEFAULT '0' NOT NULL,
+        CONSTRAINT "Registration_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
+
+    INSERT INTO "registrations" ("Id", "MemberId", "CompetitionId", "RegistrationDate", "Status") VALUES
+    ('2d39ee8c-7a88-4641-96d9-3012ecdf7c18',	'58a01cc0-1a49-455b-998c-1500b3db0dca',	'a4bd46ad-aabe-4ec6-9b3f-55836b3f241e',	'1999-01-08 04:05:06+00',	1);
+
+    CREATE TABLE "public"."round_matches" (
+        "RoundId" uuid NOT NULL,
+        "MatchId" uuid NOT NULL
+    ) WITH (oids = false);
+
+    CREATE INDEX "fk_Round_Matches_Round" ON "public"."round_matches" USING btree ("RoundId");
+
+    INSERT INTO "round_matches" ("RoundId", "MatchId") VALUES
+    ('b5f764d8-85c4-4a83-b323-5ede8db6c1c9',	'eab24cde-fa47-4ccc-8a0d-7c0d40bd8067');
+
+    CREATE TABLE "public"."round_participants" (
+        "RoundId" uuid NOT NULL,
+        "ParticipantId" uuid NOT NULL
+    ) WITH (oids = false);
+
+    CREATE INDEX "fk_Round_Participants_Round" ON "public"."round_participants" USING btree ("RoundId");
+
+    INSERT INTO "round_participants" ("RoundId", "ParticipantId") VALUES
+    ('b5f764d8-85c4-4a83-b323-5ede8db6c1c9',	'1f0485ff-2d4d-4190-8393-9742ab55af2f');
+
+    CREATE TABLE "public"."rounds" (
+        "Id" uuid NOT NULL,
+        "SequenceNumber" integer NOT NULL,
+        "RoundType" smallint NOT NULL,
+        "CompetitionId" uuid NOT NULL,
+        "Status" smallint NOT NULL,
+        "StartTime" timestamp NOT NULL,
+        "EndTime" timestamp NOT NULL,
+        "Name" text NOT NULL,
+        CONSTRAINT "Round_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
+
+    INSERT INTO "rounds" ("Id", "SequenceNumber", "RoundType", "CompetitionId", "Status", "StartTime", "EndTime", "Name") VALUES
+    ('b5f764d8-85c4-4a83-b323-5ede8db6c1c9',	0,	0,	'a4bd46ad-aabe-4ec6-9b3f-55836b3f241e',	0,	'2023-04-15 14:30:00',	'2023-04-17 14:30:00',	'Handball Lund Cup 2023');
+
+    CREATE TABLE "public"."score_penalties" (
+        "ScoreId" uuid NOT NULL,
+        "PenaltyId" uuid NOT NULL
+    ) WITH (oids = false);
+
+    CREATE INDEX "fk_PointScore_Penalties_PointScore" ON "public"."score_penalties" USING btree ("ScoreId");
+
+    INSERT INTO "score_penalties" ("ScoreId", "PenaltyId") VALUES
+    ('65c2f3bb-583d-481d-8554-8dca0e13d70f',	'ab47aaa8-321e-4415-90dd-1f3dee99a05a');
+
+    CREATE TABLE "public"."scores" (
+        "Id" uuid NOT NULL,
+        "ParticipantId" uuid NOT NULL,
+        "TimeScore" interval,
+        "Points" integer,
+        "ScoreType" smallint NOT NULL,
+        CONSTRAINT "Score_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
+
+    INSERT INTO "scores" ("Id", "ParticipantId", "TimeScore", "Points", "ScoreType") VALUES
+    ('65c2f3bb-583d-481d-8554-8dca0e13d70f',	'1f0485ff-2d4d-4190-8393-9742ab55af2f',	NULL,	3,	1);
+
+    CREATE TABLE "public"."scoring_system_penalties" (
+        "ScoringSystemId" uuid NOT NULL,
+        "PanaltyId" uuid NOT NULL
+    ) WITH (oids = false);
+
+
+    CREATE TABLE "public"."scoring_systems" (
+        "Id" uuid NOT NULL,
+        "Description" text NOT NULL,
+        "ScoreType" smallint NOT NULL,
+        "ScoringRules" text NOT NULL,
+        "Penalties" integer NOT NULL,
+        "EvaluationMethod" text NOT NULL,
+        CONSTRAINT "ScoringSystem_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
+
+
+    CREATE TABLE "public"."sport_types" (
+        "Id" uuid NOT NULL,
+        "Name" text NOT NULL,
+        "EntityType" smallint,
+        CONSTRAINT "SportType_Id" PRIMARY KEY ("Id")
+    ) WITH (oids = false);
+
+    INSERT INTO "sport_types" ("Id", "Name", "EntityType") VALUES
+    ('72aa9288-be28-4e23-9f49-82f37f3948f4',	'Handball',	NULL);
+
+    ALTER TABLE ONLY "public"."admin_sporttypes" ADD CONSTRAINT "AdminSportType_AdminId_fkey" FOREIGN KEY ("AdminId") REFERENCES admins("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."admin_sporttypes" ADD CONSTRAINT "AdminSportType_SportTypeId_fkey" FOREIGN KEY ("SportTypeId") REFERENCES sport_types("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."club_memberships" ADD CONSTRAINT "ClubMembership_ClubId_fkey" FOREIGN KEY ("ClubId") REFERENCES clubs("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."club_memberships" ADD CONSTRAINT "ClubMembership_MemberId_fkey" FOREIGN KEY ("MemberId") REFERENCES members("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."competitions" ADD CONSTRAINT "Competition_CompetitionType_fkey" FOREIGN KEY ("CompetitionType") REFERENCES competition_types("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."competitions" ADD CONSTRAINT "Competition_EventId_fkey" FOREIGN KEY ("EventId") REFERENCES events("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."data_CompetitionType_CompetitionAttributes" ADD CONSTRAINT "data_CompetitionType_CompetitionAttribut_CompetitionTypeId_fkey" FOREIGN KEY ("CompetitionTypeId") REFERENCES competition_types("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."data_Event_EventAttributes" ADD CONSTRAINT "data_Event_EventAttributes_EventId_fkey" FOREIGN KEY ("EventId") REFERENCES events("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."data_SportType_EventAttributes" ADD CONSTRAINT "data_SportType_EventAttributes_SportType_fkey" FOREIGN KEY ("SportTypeId") REFERENCES sport_types("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."entities" ADD CONSTRAINT "Entity_Owner_fkey" FOREIGN KEY ("OwnerId") REFERENCES members("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."events" ADD CONSTRAINT "Event_Location_fkey" FOREIGN KEY ("Location") REFERENCES locations("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."events" ADD CONSTRAINT "Event_Organizer_fkey" FOREIGN KEY ("Organizer") REFERENCES members("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."events" ADD CONSTRAINT "Event_SportType_fkey" FOREIGN KEY ("SportType") REFERENCES sport_types("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."judges" ADD CONSTRAINT "Judge_Member_fkey" FOREIGN KEY ("MemberId") REFERENCES members("Id") ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."match_participants" ADD CONSTRAINT "MatchParticipants_MatchId_fkey" FOREIGN KEY ("MatchId") REFERENCES matches("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."match_participants" ADD CONSTRAINT "MatchParticipants_ParticipantId_fkey" FOREIGN KEY ("ParticipantId") REFERENCES participants("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."match_scores" ADD CONSTRAINT "MatchScores_MatchId_fkey" FOREIGN KEY ("MatchId") REFERENCES matches("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."match_scores" ADD CONSTRAINT "MatchScores_ScoreId_fkey" FOREIGN KEY ("ScoreId") REFERENCES scores("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."matches" ADD CONSTRAINT "Match_Field_fkey" FOREIGN KEY ("Field") REFERENCES fields("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."matches" ADD CONSTRAINT "Match_Judge_fkey" FOREIGN KEY ("Judge") REFERENCES judges("Id") ON DELETE CASCADE NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."matches" ADD CONSTRAINT "Match_RoundId_fkey" FOREIGN KEY ("RoundId") REFERENCES rounds("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."participant_members" ADD CONSTRAINT "ParticipantMembers_MemberId_fkey" FOREIGN KEY ("MemberId") REFERENCES members("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."participant_members" ADD CONSTRAINT "ParticipantMembers_ParticipantId_fkey" FOREIGN KEY ("ParticipantId") REFERENCES participants("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."participants" ADD CONSTRAINT "Ekvipage_Entity_fkey" FOREIGN KEY ("EntityId") REFERENCES entities("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."registrations" ADD CONSTRAINT "Registration_CometitionId_fkey" FOREIGN KEY ("CompetitionId") REFERENCES competitions("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."registrations" ADD CONSTRAINT "Registration_MemberId_fkey" FOREIGN KEY ("MemberId") REFERENCES members("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."round_matches" ADD CONSTRAINT "RoundMatches_RoundId_fkey" FOREIGN KEY ("RoundId") REFERENCES rounds("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."round_matches" ADD CONSTRAINT "fk_Round_Matches_Match_fkey" FOREIGN KEY ("MatchId") REFERENCES matches("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."round_participants" ADD CONSTRAINT "RoundParticipants_ParticipantId_fkey" FOREIGN KEY ("ParticipantId") REFERENCES participants("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."round_participants" ADD CONSTRAINT "RoundParticipants_RoundId_fkey" FOREIGN KEY ("RoundId") REFERENCES rounds("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."rounds" ADD CONSTRAINT "Round_CompetitionId_fkey" FOREIGN KEY ("CompetitionId") REFERENCES competitions("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."score_penalties" ADD CONSTRAINT "ScorePenalties_PenaltyId_fkey" FOREIGN KEY ("PenaltyId") REFERENCES penalties("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."score_penalties" ADD CONSTRAINT "ScorePenalties_ScoreId_fkey" FOREIGN KEY ("ScoreId") REFERENCES scores("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."scores" ADD CONSTRAINT "Score_ParticipantId_fkey" FOREIGN KEY ("ParticipantId") REFERENCES participants("Id") NOT DEFERRABLE;
+
+    ALTER TABLE ONLY "public"."scoring_system_penalties" ADD CONSTRAINT "ScoringSystemPenalties_PanaltyId_fkey" FOREIGN KEY ("PanaltyId") REFERENCES penalties("Id") NOT DEFERRABLE;
+    ALTER TABLE ONLY "public"."scoring_system_penalties" ADD CONSTRAINT "ScoringSystemPenalties_ScoringSystemId_fkey" FOREIGN KEY ("ScoringSystemId") REFERENCES scoring_systems("Id") NOT DEFERRABLE;

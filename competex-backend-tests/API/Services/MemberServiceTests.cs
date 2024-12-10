@@ -1,4 +1,5 @@
-﻿using competex_backend.DAL.Interfaces;
+﻿using Common.ResultPattern;
+using competex_backend.DAL.Interfaces;
 using competex_backend.DAL.Repositories.MockDataAccess;
 using competex_backend.Models;
 using competex_backend_tests.API.Services;
@@ -32,6 +33,14 @@ public class MockMemberRepositoryTests : GenericServiceTests
             Phone = "+1234567890",
             Permissions = "Admin" // Update with the appropriate type once determined.
         };
-        await GetById_ReturnsCorrectObject(_repository.Object, member);
+
+                
+
+        // Call the test method with the mock repository
+        await GetById_ReturnsCorrectObject(repository, member);
+
+        // Verify that methods were called
+        mockRepository.Verify(r => r.InsertAsync(It.IsAny<Member>()), Times.Once);  // Ensure InsertAsync was called once.
+        mockRepository.Verify(r => r.GetByIdAsync(It.IsAny<Guid>()), Times.Once);  // Ensure GetByIdAsync was called once.
     }
 }

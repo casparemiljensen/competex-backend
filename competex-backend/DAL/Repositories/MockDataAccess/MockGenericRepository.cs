@@ -183,7 +183,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
 
         // Delete an entity
-        public async Task<Result> DeleteAsync(Guid id, bool skipRecursion)
+        public async Task<Result> DeleteAsync(Guid id, bool skipRecursion, string? propertyName = null)
         {
             var entityToRemove = await Task.Run(() => _entities.FirstOrDefault(c => c.Id == id));
             if (entityToRemove is null)

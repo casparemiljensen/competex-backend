@@ -18,7 +18,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             _roundRepository = roundRepository;
         }
 
-        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion)
+        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion, string? propertyName = null)
         {
             
             

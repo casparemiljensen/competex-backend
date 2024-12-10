@@ -17,7 +17,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             _competitionRepository = competitionRepository;
         }
 
-        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion)
+        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion, string? propertyName = null)
         {
             var result = await _competitionRepository.DeleteByPropertyId("CompetitionType", id);
             if (!result.IsSuccess)

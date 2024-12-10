@@ -183,11 +183,12 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             return Result.Failure(Error.Failure("=", ""));
         }
 
-        public virtual async Task<Result> DeleteAsync(Guid id, bool skipRecursion)
+        public virtual async Task<Result> DeleteAsync(Guid id, bool skipRecursion, string? propertyName = null)
         {
             string tableName = PostgresConnection.GetTableName<T>();
+            var finalPropertyName = propertyName ?? "Id";
 
-            return await DeleteFromTable(tableName, "Id", id);
+            return await DeleteFromTable(tableName, finalPropertyName, id);
         }
         
         internal async Task<Result> DeleteFromTable(string tableName, string property, Guid id)
@@ -201,6 +202,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
                     new() { Value = id, NpgsqlDbType = NpgsqlDbType.Uuid},
                 }
             };
+            Console.WriteLine($"DELETE FROM \"{tableName}\" WHERE \"{property}\" = {id.ToString()}");
 
             if ((await cmd.ExecuteNonQueryAsync()) == -1)
             {
@@ -237,11 +239,11 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
         public async Task<Result> DeleteByPropertyId(string propertyName, Guid id, string? tableName = null, string? nextProperty = null)
         {
-            var isManyMany = nextProperty != null;
+            var isManyMany = tableName != null && nextProperty != null;
             tableName = tableName ?? PostgresConnection.GetTableName<T>();
             nextProperty = nextProperty ?? "Id";
 
-            Console.WriteLine(tableName + " " + isManyMany);
+            Console.WriteLine(tableName + " " + propertyName + nextProperty);
             var idsResult = await GetIdsFromTable(tableName, propertyName, id, nextProperty);
             if (!idsResult.IsSuccess)
             {
@@ -250,7 +252,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
 
             foreach (var localId in idsResult.Value)
             {
-                await DeleteAsync(localId, isManyMany);
+                await DeleteAsync(localId, isManyMany, nextProperty);
             }
 
             return Result.Success();

@@ -30,7 +30,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             throw new NotImplementedException();
         }
 
-        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion)
+        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion, string? propertyName = null)
         {
             var result = await _clubMembershipRepository.DeleteByPropertyId("MemberId", id);
             if (!result.IsSuccess)

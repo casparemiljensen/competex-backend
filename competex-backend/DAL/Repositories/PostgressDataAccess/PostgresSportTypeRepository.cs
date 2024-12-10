@@ -17,7 +17,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
             _eventRepository = eventRepository;
         }
 
-        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion)
+        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion, string? propertyName = null)
         {
             var result = await base.DeleteFromTable("AdminSportType", "SportTypeId", id);
             if (!result.IsSuccess)

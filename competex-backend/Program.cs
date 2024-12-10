@@ -7,6 +7,7 @@ using competex_backend.Models;
 using competex_backend.Common.ErrorHandling;
 using competex_backend.DAL.Repositories.PostgressDataAccess;
 using Microsoft.Extensions.DependencyInjection;
+using competex_backend.Models.ManyMany;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,7 +49,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 //builder.Services.AddSingleton<PostgresDatabaseManager>();
-
+builder.Services.AddScoped<PostgresMatchScoresRepository>();
 # region IGenericRepository
 //Registers IGenericRepository<T> with specific implementations (PostgresCompetitionRepository, PostgresCompetitionRepository, etc.) for each model type.
 builder.Services.AddScoped<IGenericRepository<Member>, PostgresMemberRepository>();
@@ -71,9 +72,9 @@ builder.Services.AddScoped<IGenericRepository<Participant>, PostgresParticipantR
 builder.Services.AddScoped<IGenericRepository<Judge>, PostgresJudgeRepository>();
 builder.Services.AddScoped<IGenericRepository<Match>, PostgresMatchRepository>();
 builder.Services.AddScoped<IGenericRepository<Score>, PostgresScoreRepository>();
+builder.Services.AddScoped<IGenericRepository<MatchScores>, PostgresMatchScoresRepository>();
 #endregion
 
-builder.Services.AddScoped<IMatchScoresRepository, PostgresMatchScoresRepository>();
 # region Services 
 // Registers services specific to each model's business logic (such as IMemberService for Member, IClubService for Club, etc.).
 builder.Services.AddScoped<IMemberService, MemberService>();
@@ -99,6 +100,7 @@ builder.Services.AddScoped<IScoreService, ScoreService>();
 
 #region Service DTO Mappings
 // Registers services with DTO mappings for each model type.
+builder.Services.AddScoped<IMatchScoresRepository, PostgresMatchScoresRepository>();
 builder.Services.AddScoped<IMemberRepository, PostgresMemberRepository>();
 builder.Services.AddScoped<ICompetitionRepository, PostgresCompetitionRepository>();
 builder.Services.AddScoped<IClubRepository, PostgresClubRepository>();

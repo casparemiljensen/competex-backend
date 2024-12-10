@@ -11,7 +11,7 @@ namespace competex_backend.DAL.Repositories.PostgressDataAccess
     {
         private static PostgresGenericRepository<Participant> _postgresGenericRepository = new PostgresGenericRepository<Participant>();
 
-        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion)
+        public async override Task<Result> DeleteAsync(Guid id, bool skipRecursion, string? propertyName = null)
         {
             var result = await base.DeleteFromTable("MatchParticipants", "ParticipantId", id);
             if (!result.IsSuccess)

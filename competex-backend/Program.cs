@@ -6,6 +6,7 @@ using competex_backend.BLL.Interfaces;
 using competex_backend.API.DTOs;
 using competex_backend.Models;
 using competex_backend.Common.ErrorHandling;
+using System.Reflection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +33,10 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+
     c.UseAllOfForInheritance();
     //c.UseAllOfToExtendReferenceSchemas(); // TESTING
 

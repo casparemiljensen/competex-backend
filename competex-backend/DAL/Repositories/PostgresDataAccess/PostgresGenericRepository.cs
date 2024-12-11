@@ -70,7 +70,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         }
 
         // Add a new entity
-        public async Task<ResultT<Guid>> InsertAsync(T obj)
+        public virtual async Task<ResultT<Guid>> InsertAsync(T obj)
         {
             //obj.Id = Guid.NewGuid(); // Generate a new Guid
             try
@@ -119,7 +119,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         }
 
         // Delete an entity
-        public async Task<Result> DeleteAsync(Guid id)
+        public virtual async Task<Result> DeleteAsync(Guid id)
         {
             var entityToRemove = await _dbSet.FirstOrDefaultAsync(c => c.Id == id);
             if (entityToRemove is null)

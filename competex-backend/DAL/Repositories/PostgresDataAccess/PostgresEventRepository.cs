@@ -1,4 +1,5 @@
-﻿using competex_backend.Common.Helpers;
+﻿using competex_backend.API.DTOs;
+using competex_backend.Common.Helpers;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,10 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         {
         }
 
-        public Task<Result> AddCompetition(Guid eventId, Guid competitionId) // TODO: Implement this method
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<Result> AddCompetition(Guid eventId, Guid competitionId) // TODO: Implement this method
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public override async Task<ResultT<Event>> GetByIdAsync(Guid id)
         {
@@ -71,8 +72,6 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
 
             return ResultT<Tuple<int, IEnumerable<Event>>>.Success(new Tuple<int, IEnumerable<Event>>(totalPages, entities));
         }
-
-
     }
 }
 

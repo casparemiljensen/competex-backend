@@ -180,7 +180,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
 
         // Delete an entity
-        public async Task<Result> DeleteAsync(Guid id)
+        public virtual async Task<Result> DeleteAsync(Guid id)
         {
             var entityToRemove = await Task.Run(() => _entities.FirstOrDefault(c => c.Id == id));
             if (entityToRemove is null)

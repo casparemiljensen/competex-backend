@@ -3,8 +3,10 @@ using Npgsql;
 using NpgsqlTypes;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-public static class SearchHelper
+namespace competex_backend.Common.Helpers
 {
+    public static class SearchHelper
+    {
     public static void AddTypeCorrectFilter(this List<NpgsqlParameter> list, object filter)
     {
         DateTime time;
@@ -50,7 +52,7 @@ public static class SearchHelper
                     return;
                 }
                 else
-                {
+        {
                     Console.WriteLine("Unknown number type used");
                     return;
                 }
@@ -60,26 +62,27 @@ public static class SearchHelper
                 list.Add(new NpgsqlParameter() { Value = stringElement, NpgsqlDbType = NpgsqlDbType.Text });
                 return;
             }
-        }
+            }
 
         //Native types
         if (filterValue is Guid)
-        {
+            {
             list.Add(new NpgsqlParameter() { Value = filterValue, NpgsqlDbType = NpgsqlDbType.Uuid });
-        }
+            }
         else if (filterValue.GetType().IsAssignableTo(typeof(string)))
-        {
+            {
             list.Add(new NpgsqlParameter() { Value = filterValue.ToString(), NpgsqlDbType = NpgsqlDbType.Text });
         }
         else if (DateTime.TryParse(filterValue.ToString(), out time))
-        {
+                {
             list.Add(new NpgsqlParameter() { Value = time, NpgsqlDbType = NpgsqlDbType.TimestampTz });
-        }
+                }
         else
         {
             Console.WriteLine("Unknown type: " + filterValue.GetType().Name + " value: " + filterValue);
+            }
+            return output;
         }
-    }
 
     public static void AddObjectFilter(this List<object> list, object filter)
     {

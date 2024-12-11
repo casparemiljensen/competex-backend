@@ -84,8 +84,8 @@ namespace competex_backend
                 .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
                 .ForMember(dest => dest.Entity, opt => opt.MapFrom(src => src.EntityId));
             CreateMap<Score, ScoreDTO>()
-                .ForMember(dest => dest.Match, opt => opt.MapFrom(src => src.MatchId))
-                .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
+                //.ForMember(dest => dest.Match, opt => opt.MapFrom(src => src.MatchId))
+                //.ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
                 .ForMember(dest => dest.ScoreValue, opt => opt.MapFrom(src => src.ScoreValue)) // Do not know how to handle this...
                 .ForMember(dest => dest.Penalties, opt => opt.MapFrom(src => src.PenaltyIds))
                 .Include<TimeScore, TimeScoreDTO>()

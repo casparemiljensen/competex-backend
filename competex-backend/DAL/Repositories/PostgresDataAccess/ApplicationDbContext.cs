@@ -27,13 +27,13 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         public DbSet<Field> Fields { get; set; }
         public DbSet<Location> Locations { get; set; }
         //public DbSet<Penalty> Penalties { get; set; }
-        //public DbSet<Registration> Registrations { get; set; }
+        public DbSet<Registration> Registrations { get; set; }
         //public DbSet<ScoringSystem> ScoringSystems { get; set; }
         public DbSet<Ekvipage> Participants { get; set; }
         public DbSet<Judge> Judges { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Score> Scores { get; set; }
-        //public DbSet<ScoreResult> ScoreResults { get; set; }
+        public DbSet<ScoreResult> ScoreResults { get; set; }
 
         public DbSet<T> GetEntities<T>() where T : class
         {
@@ -51,13 +51,13 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
             if (typeof(T) == typeof(Field)) return (Fields as DbSet<T>)!;
             if (typeof(T) == typeof(Location)) return (Locations as DbSet<T>)!;
             //if (typeof(T) == typeof(Penalty)) return (Penalties as DbSet<T>)!;
-            //if (typeof(T) == typeof(Registration)) return (Registrations as DbSet<T>)!;
+            if (typeof(T) == typeof(Registration)) return (Registrations as DbSet<T>)!;
             //if (typeof(T) == typeof(ScoringSystem)) return (ScoringSystems as DbSet<T>)!;
             if (typeof(T) == typeof(Ekvipage)) return (Participants as DbSet<T>)!;
             if (typeof(T) == typeof(Judge)) return (Judges as DbSet<T>)!;
             if (typeof(T) == typeof(Match)) return (Matches as DbSet<T>)!;
             if (typeof(T) == typeof(Score)) return (Scores as DbSet<T>)!;
-            //if (typeof(T) == typeof(ScoreResult)) return (ScoreResults as DbSet<T>)!;
+            if (typeof(T) == typeof(ScoreResult)) return (ScoreResults as DbSet<T>)!;
 
 
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
@@ -72,6 +72,12 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            //modelBuilder.Entity<Admin>().ToTable("admins");
+            //modelBuilder.Entity<Penalty>().ToTable("penalties");
+            //modelBuilder.Entity<ScoringSystem>().ToTable("scoring_systems");
+
+
             // Mapping entities to snake_case table names
             modelBuilder.Entity<Member>().ToTable("members");
             modelBuilder.Entity<Club>().ToTable("clubs");
@@ -137,34 +143,40 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                       );
             });
 
-
-            //// Define the join table explicitly for Event and Competition
-            //modelBuilder.Entity<>("")(entity =>
-            //{
-            //    entity.ToTable("event_competitions"); // Name of the join table
-
-            //    entity.HasKey(ec => new { ec.EventId, ec.CompetitionId }); // Composite key
-
-            //    entity.HasOne(ec => ec.Event)
-            //          .WithMany(e => e.EventCompetitions) // Navigation property in Event
-            //          .HasForeignKey(ec => ec.EventId)
-            //          .OnDelete(DeleteBehavior.Cascade);
-
-            //    entity.HasOne(ec => ec.Competition)
-            //          .WithMany(c => c.EventCompetitions) // Navigation property in Competition
-            //          .HasForeignKey(ec => ec.CompetitionId)
-            //          .OnDelete(DeleteBehavior.Cascade);
-            //});
-
-
             modelBuilder.Entity<SportType>().ToTable("sport_types");
 
-            //modelBuilder.Entity<Admin>().ToTable("admins");
             modelBuilder.Entity<Location>().ToTable("locations");
-            //modelBuilder.Entity<Penalty>().ToTable("penalties");
-            //modelBuilder.Entity<Registration>().ToTable("registrations");
-            //modelBuilder.Entity<ScoringSystem>().ToTable("scoring_systems");
-            //modelBuilder.Entity<ScoreResult>().ToTable("score_results");
+
+            modelBuilder.Entity<Registration>(entity =>
+            {
+                entity.ToTable("registrations")
+                  .HasOne<Ekvipage>()
+                  .WithMany()
+                  .HasForeignKey(r => r.ParticipantId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne<Competition>()
+                  .WithMany()
+                  .HasForeignKey(r => r.CompetitionId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            });
+
+
+            modelBuilder.Entity<ScoreResult>(entity =>
+            {
+
+                entity.ToTable("score_results")
+                .HasOne<Competition>()
+                .WithMany()
+                .HasForeignKey(e => e.CompetitionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne<Ekvipage>()
+                .WithMany()
+                .HasForeignKey(e => e.ParticipantId)
+                .OnDelete(DeleteBehavior.Cascade);
+            }
+            );
 
 
             modelBuilder.Entity<Judge>()

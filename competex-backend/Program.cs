@@ -67,13 +67,13 @@ builder.Services.AddScoped<IGenericRepository<Entity>, PostgresEntityRepository>
 builder.Services.AddScoped<IGenericRepository<Field>, PostgresFieldRepository>();
 builder.Services.AddScoped<IGenericRepository<Location>, PostgresLocationRepository>();
 builder.Services.AddScoped<IGenericRepository<Penalty>, MockPenaltyRepository>(); //
-builder.Services.AddScoped<IGenericRepository<Registration>, MockRegistrationRepository>(); //
+builder.Services.AddScoped<IGenericRepository<Registration>, PostgresRegistrationRepository>();
 builder.Services.AddScoped<IGenericRepository<ScoringSystem>, MockScoringSystemRepository>(); //
 builder.Services.AddScoped<IGenericRepository<Ekvipage>, PostgresParticipantRepository>();
 builder.Services.AddScoped<IGenericRepository<Judge>, PostgresJudgeRepository>();
 builder.Services.AddScoped<IGenericRepository<Match>, PostgresMatchRepository>();
 builder.Services.AddScoped<IGenericRepository<Score>, PostgresScoreRepository>();
-builder.Services.AddScoped<IGenericRepository<ScoreResult>, MockScoreResultRepository>(); //
+builder.Services.AddScoped<IGenericRepository<ScoreResult>, PostgresScoreResultRepository>(); //
 
 //builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
@@ -119,13 +119,13 @@ builder.Services.AddScoped<IEntityRepository, PostgresEntityRepository>();
 builder.Services.AddScoped<IFieldRepository, PostgresFieldRepository>();
 builder.Services.AddScoped<ILocationRepository, PostgresLocationRepository>();
 builder.Services.AddScoped<IPenaltyRepository, MockPenaltyRepository>(); //
-builder.Services.AddScoped<IRegistrationRepository, MockRegistrationRepository>(); //
+builder.Services.AddScoped<IRegistrationRepository, PostgresRegistrationRepository>();
 builder.Services.AddScoped<IScoringSystemRepository, MockScoringSystemRepository>(); //
 builder.Services.AddScoped<IParticipantRepository, PostgresParticipantRepository>();
 builder.Services.AddScoped<IJudgeRepository, PostgresJudgeRepository>();
 builder.Services.AddScoped<IMatchRepository, PostgresMatchRepository>();
 builder.Services.AddScoped<IScoreRepository, PostgresScoreRepository>();
-builder.Services.AddScoped<IScoreResultRepository, MockScoreResultRepository>(); //
+builder.Services.AddScoped<IScoreResultRepository, PostgresScoreResultRepository>(); //
 
 
 #endregion

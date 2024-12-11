@@ -27,19 +27,8 @@ namespace competex_backend_tests.API.Services
         public void GetItem_ValidId_ReturnsExpectedItem()
         {
             _mockCompetitionTypeService.Setup(service => service.CreateAsync(new CompetitionTypeDTO() { }));
-            /*
-            // Act
-            var result = _mockCompetitionTypeService.();
-            // Arrange
-            var expectedItem = new Competition {  };
-            _mockService.Setup(service => service.GetItem(1)).Returns(expectedItem);
+            
 
-            // Act
-            var result = _controller.GetItem(1);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(expectedItem.Name, result.Name);*/
         }
     }
 }

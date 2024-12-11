@@ -10,7 +10,8 @@ namespace competex_backend_tests.API.Services
 {
     internal class dbManager
     {
-        public ICompetitionTypeRepository CompetitionTypeRepository { get; set; }
-        public ICompetitionRepository CompetitionRepository { get; set; } = new MockCompetitionRepository()
+        public static MockDatabaseManager db = new MockDatabaseManager();
+        public ICompetitionTypeRepository CompetitionTypeRepository { get; set; } = new MockCompetitionTypeRepository(db);
+        public ICompetitionRepository CompetitionRepository { get; set; }
     }
 }

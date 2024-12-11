@@ -2,6 +2,7 @@
 using Common.ResultPattern;
 using competex_backend.API.DTOs;
 using competex_backend.BLL.Interfaces;
+using competex_backend.Common.Helpers;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace competex_backend.BLL.Services
             // See if i can optimize by making specific queries to the database instead of getting all objects...
             // Right now the round has to be made beforehand
 
-
+            //var registrationsResult = PaginationHelper.
             var registrationsResult = await _registrationRepository.GetAllAsync(null, null);
             if (!registrationsResult.IsSuccess)
             {
@@ -84,7 +85,7 @@ namespace competex_backend.BLL.Services
                 var idOfPrevRound = Guid.Empty;
 
                 // Select the roundId given the roundSequenceNumber
-                if (roundSequenceNumber > 0)
+                if (roundSequenceNumber > 0) // Epic fail? > 1
                 {
                     idOfPrevRound = roundsResult.Value.Item2
                     .Where(round => round.SequenceNumber == roundSequenceNumber - 1) // get previous round

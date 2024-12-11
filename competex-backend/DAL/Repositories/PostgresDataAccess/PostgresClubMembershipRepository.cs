@@ -67,11 +67,6 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
             // If there was an error or the result was null, return a failure result with an error message
             return ResultT<Tuple<int, IEnumerable<Member>>>.Failure(membersResult.Error ?? Error.NotFound("NoMembersFound", $"No members found for the club with ID {clubId}."));
         }
-
-        public Task<Result> CreateEventAsync()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
 

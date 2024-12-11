@@ -13,10 +13,6 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         {
         }
 
-        //public Task<Result> AddCompetition(Guid eventId, Guid competitionId) // TODO: Implement this method
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public override async Task<ResultT<Event>> GetByIdAsync(Guid id)
         {

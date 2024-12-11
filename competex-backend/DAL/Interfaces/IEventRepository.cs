@@ -4,6 +4,6 @@ namespace competex_backend.DAL.Interfaces
 {
     public interface IEventRepository : IGenericRepository<Event>
     {
-        Task<Result> AddCompetition(Guid eventId, Guid competitionId);
+        //Task<Result> AddCompetition(Guid eventId, Guid competitionId);
     }
 }

@@ -4,7 +4,7 @@ namespace competex_backend.API.DTOs
 {
     public class RegistrationDTO : Identifiable
     {
-        public ParticipantDTO? Participant { get; set; }
+        public EkvipageDTO? Participant { get; set; }
         public Guid? ParticipantId { get; set; }
         public CompetitionDTO? Competition { get; set; }
         public Guid? CompetitionId { get; set; }

@@ -1,11 +1,8 @@
-﻿using AutoMapper.Internal;
-using competex_backend.Common.ErrorHandling;
+﻿using competex_backend.Common.ErrorHandling;
 using competex_backend.Common.Helpers;
-using competex_backend.DAL.Filters;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json;
 
@@ -183,7 +180,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
 
 
         // Delete an entity
-        public async Task<Result> DeleteAsync(Guid id)
+        public virtual async Task<Result> DeleteAsync(Guid id)
         {
             var entityToRemove = await Task.Run(() => _entities.FirstOrDefault(c => c.Id == id));
             if (entityToRemove is null)

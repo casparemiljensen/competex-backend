@@ -1,4 +1,5 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
 namespace competex_backend.Models
 {
     public class Event : Identifiable
@@ -13,6 +14,7 @@ namespace competex_backend.Models
         public Status Status { get; set; } = Status.Pending;
         public required Guid OrganizerId { get; set; } // ClubId
         public required Guid SportTypeId { get; set; }
+        [NotMapped]
         public List<Guid> CompetitionIds { get; set; } = [];
         public int EntryFee { get; set; } = 0;
         public Result AddCompetition(Guid competitionId)

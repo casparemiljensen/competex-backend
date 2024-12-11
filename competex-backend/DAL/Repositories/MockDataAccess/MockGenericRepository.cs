@@ -80,10 +80,18 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                     {
                         orList.AddRange(GetAllMatching(filter.Key, filter.Value, filtertedEntities));
                     }
+                    else if (filter.Value is Enum)
+                    {
+                        orList.AddRange(GetAllMatching(filter.Key, filter.Value, filtertedEntities));
+                    }
+                    else if (filter.Value is int)
+                    {
+                        orList.AddRange(GetAllMatching(filter.Key, filter.Value, filtertedEntities));
+                    }
                     else
                     {
                         //Unrecognised type gets handed to the void
-                        throw new ApiException(500, $"Type not found {filter.Value}");
+                        throw new ApiException(500, $"Type not found {filter.Value.GetType().Name}");
                     }
                     //Set orList to filteredEntities for potentially more "and" properties
                     filtertedEntities = orList;
@@ -109,6 +117,14 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
             if (DateTime.TryParse(filterValue.ToString(), out time))
             {
                 filterValue = time.ToString();
+            }
+            if (filterValue is TimeSpan)
+            {
+                filterValue = filterValue.ToString()!;
+            }
+            if (filterValue is Enum)
+            {
+                filterValue = Convert.ToInt16(filterValue as Enum);
             }
 
             var serializedFilterValue = JsonSerializer.Serialize(filterValue);

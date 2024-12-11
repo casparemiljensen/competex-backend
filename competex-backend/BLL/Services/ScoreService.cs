@@ -105,8 +105,11 @@ namespace competex_backend.BLL.Services
 
             var dtoResult = result.Select(x => _mapper.Map<ScoreResultDTO>(x));
 
+            var sortedResultDTO = dtoResult.ToList(); //Does not mutate
+            sortedResultDTO.Sort(); //Mutates
+
             return ResultT<PaginationWrapperDTO<IEnumerable<ScoreResultDTO>>>.Success(new PaginationWrapperDTO<IEnumerable<ScoreResultDTO>>(
-                dtoResult,
+                sortedResultDTO,
                 pageSize ?? Defaults.PageSize,
                 pageNumber ?? Defaults.PageNumber,
                 PaginationHelper.GetTotalPages(pageSize, pageNumber, numberOfLines)

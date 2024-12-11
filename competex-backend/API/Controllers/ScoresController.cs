@@ -23,7 +23,7 @@ namespace competex_backend.API.Controllers
             _roundService = roundService;
         }
         /// <summary>
-        /// Gets all results for a competition. Tip: Use search on participant domain, to get a lot of participants
+        /// Gets all results for a competition in a sorted list. Tip: Use search on participant domain, to get a lot of participants
         /// </summary>
         /// <param name="CompetitionId">The ID of the competition which results will be gotten calculated.</param>
         /// <returns>An IActionResult indicating the operation result.</returns>

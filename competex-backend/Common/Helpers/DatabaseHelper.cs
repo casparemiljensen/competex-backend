@@ -12,14 +12,26 @@ namespace competex_backend.Common.Helpers
                 {
                     case Entity:
                         return "entities";
+                    case SportType:
+                        return "sport_types";
+                    case CompetitionType:
+                        return "competition_types";
+                    case ClubMembership:
+                        return "club_memberships";
+                    case Ekvipage:
+                        return "participants";
+                    case Match:
+                        return "matches";
+                    case ScoreResult:
+                        return "score_results";
                     default:
-                        Console.WriteLine("Unknown type: " + typeof(T).Name);
-                        throw new TypeAccessException();
+                        var i = typeof(T).Name.ToLower() + "s";
+                        return i;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return typeof(T).Name.ToLower() + "s";
+                throw new Exception($"Table name not found {ex.Message}");
             }
 
         }

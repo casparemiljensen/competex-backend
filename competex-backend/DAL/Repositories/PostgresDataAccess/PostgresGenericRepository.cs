@@ -81,7 +81,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
             }
             catch (Exception ex)
             {
-                return ResultT<Guid>.Failure(Error.Failure("InsertionError", $"Failed to insert {typeof(T).Name.ToLower()}: {ex.Message}"));
+                return ResultT<Guid>.Failure(Error.Failure("InsertionError", $"Failed to insert {typeof(T).Name.ToLower()}: {ex.Message} - {ex.InnerException.Message}"));
             }
         }
 

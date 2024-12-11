@@ -6,7 +6,6 @@ namespace competex_backend.API.DTOs
     public class SportTypeDTO : Identifiable
     {
         public string Name { get; set; } = string.Empty;
-        //public List<string> EventAttributes { get; set; } = new List<string>();
         public EntityType EntityType { get; set; }
     }
 }

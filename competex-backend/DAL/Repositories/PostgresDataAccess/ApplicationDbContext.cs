@@ -2,8 +2,6 @@
 using competex_backend.Models;
 using Single = competex_backend.Models.Single;
 using competex_backend.Common.Helpers;
-using System.Reflection.Metadata;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace competex_backend.DAL.Repositories.PostgresDataAccess
 {
@@ -11,7 +9,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
-        {
+        { 
         }
 
         public DbSet<Member> Members { get; set; }
@@ -63,10 +61,10 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
             throw new InvalidOperationException($"No collection found for type {typeof(T)}");
         }
 
-        //public async Task InitializeDatabaseAsync()
-        //{
-        //    await Database.EnsureCreatedAsync(); // Ensures that the schema matches the models
-        //}
+        public async Task InitializeDatabaseAsync()
+        {
+            await Database.EnsureCreatedAsync(); // Ensures that the schema matches the models
+        }
 
         //https://learn.microsoft.com/en-us/ef/core/managing-schemas/ensure-created
 
@@ -77,55 +75,85 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
             //modelBuilder.Entity<Penalty>().ToTable("penalties");
             //modelBuilder.Entity<ScoringSystem>().ToTable("scoring_systems");
 
+            modelBuilder.Entity<Member>(entity =>
+            {
+                entity.ToTable(DatabaseHelper.GetTableName<Member>());
+                    //.Property(r => r.Birthday)
+                    //.HasColumnType("timestamp");
+            });
 
-            // Mapping entities to snake_case table names
-            modelBuilder.Entity<Member>().ToTable("members");
-            modelBuilder.Entity<Club>().ToTable("clubs");
+            modelBuilder.Entity<Club>().ToTable(DatabaseHelper.GetTableName<Club>());
 
 
             modelBuilder.Entity<Round>(entity =>
             {
-                entity.ToTable("rounds")
+                entity.ToTable(DatabaseHelper.GetTableName<Round>())
                 .HasOne<Competition>()
                 .WithMany()
-                .HasForeignKey(e => e.CompetitionId);
+                .HasForeignKey(e => e.CompetitionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                //entity.Property(r => r.StartTime)
+                //.HasColumnType("timestamp");
+
+                //entity.Property(r => r.EndTime)
+                // .HasColumnType("timestamp");
             });
 
-            modelBuilder.Entity<CompetitionType>().ToTable("competition_types");
-
+            modelBuilder.Entity<CompetitionType>().ToTable(DatabaseHelper.GetTableName<CompetitionType>());
 
             modelBuilder.Entity<Competition>(entity =>
             {
-                entity.ToTable("competitions")
+                entity.ToTable(DatabaseHelper.GetTableName<Competition>())
                 .HasOne<CompetitionType>()
                 .WithMany()
-                .HasForeignKey(e => e.CompetitionTypeId);
+                .HasForeignKey(e => e.CompetitionTypeId)
+                .OnDelete(DeleteBehavior.SetNull);
 
                 entity
                 .HasOne<Event>()
                 .WithMany()
-                .HasForeignKey(e => e.EventId);
+                .HasForeignKey(e => e.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
 
+                //entity.Property(r => r.StartDate)
+                // .HasColumnType("timestamp");
+
+                //entity.Property(r => r.EndDate)
+                // .HasColumnType("timestamp");
             });
-
-
 
             modelBuilder.Entity<Event>(entity =>
             {
-                entity.ToTable("events")
+                //entity.Property(r => r.StartDate)
+                // .HasColumnType("timestamp");
+
+                //entity.Property(r => r.EndDate)
+                // .HasColumnType("timestamp");
+
+                //entity.Property(r => r.RegistrationStartDate)
+                // .HasColumnType("timestamp");
+
+                //entity.Property(r => r.RegistrationEndDate)
+                // .HasColumnType("timestamp");
+
+                entity.ToTable(DatabaseHelper.GetTableName<Event>())
                 .HasOne<Location>()
                 .WithMany()
-                .HasForeignKey(e => e.LocationId);
+                .HasForeignKey(e => e.LocationId)
+                .OnDelete(DeleteBehavior.SetNull);
 
                 entity
                 .HasOne<Club>()
                 .WithMany()
-                .HasForeignKey(e => e.OrganizerId);
+                .HasForeignKey(e => e.OrganizerId)
+                .OnDelete(DeleteBehavior.Cascade);
 
                 entity
                 .HasOne<SportType>()
                 .WithMany()
-                .HasForeignKey(e => e.SportTypeId);
+                .HasForeignKey(e => e.SportTypeId)
+                .OnDelete(DeleteBehavior.SetNull);
 
                 // Configure the many-to-many relationship with Competition using a join table
                 entity.HasMany<Competition>()
@@ -143,13 +171,13 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                       );
             });
 
-            modelBuilder.Entity<SportType>().ToTable("sport_types");
+            modelBuilder.Entity<SportType>().ToTable(DatabaseHelper.GetTableName<SportType>());
 
-            modelBuilder.Entity<Location>().ToTable("locations");
+            modelBuilder.Entity<Location>().ToTable(DatabaseHelper.GetTableName<Location>());
 
             modelBuilder.Entity<Registration>(entity =>
             {
-                entity.ToTable("registrations")
+                entity.ToTable(DatabaseHelper.GetTableName<Registration>())
                   .HasOne<Ekvipage>()
                   .WithMany()
                   .HasForeignKey(r => r.ParticipantId)
@@ -159,13 +187,15 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                   .WithMany()
                   .HasForeignKey(r => r.CompetitionId)
                   .OnDelete(DeleteBehavior.Cascade);
-            });
 
+                //entity.Property(r => r.RegistrationDate)
+                //    .HasColumnType("timestamp");
+            });
 
             modelBuilder.Entity<ScoreResult>(entity =>
             {
 
-                entity.ToTable("score_results")
+                entity.ToTable(DatabaseHelper.GetTableName<ScoreResult>())
                 .HasOne<Competition>()
                 .WithMany()
                 .HasForeignKey(e => e.CompetitionId)
@@ -178,34 +208,43 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
             }
             );
 
-
-            modelBuilder.Entity<Judge>()
-                .ToTable(DatabaseHelper.GetTableName<Judge>())
+            modelBuilder.Entity<Judge>(entity =>
+            {
+                entity.ToTable(DatabaseHelper.GetTableName<Judge>())
                 .HasKey(j => j.Id);
 
-            modelBuilder.Entity<Judge>()
+                entity
                 .HasOne<Member>()
                 .WithMany()
                 .HasForeignKey(i => i.MemberId);
+            });
 
-            modelBuilder.Entity<Entity>()
-                .ToTable(DatabaseHelper.GetTableName<Entity>())
+            modelBuilder.Entity<Entity>(entity =>
+            {
+                entity.ToTable(DatabaseHelper.GetTableName<Entity>())
                 .HasOne<Member>()
                 .WithMany()
                 .HasForeignKey(s => s.OwnerId);
 
-            modelBuilder.Entity<Ekvipage>()
-                .ToTable(DatabaseHelper.GetTableName<Participant>());
+                //entity.Property(r => r.Birthdate)
+                //    .HasColumnType("timestamp");
 
-            modelBuilder.Entity<Ekvipage>()
-                .HasOne<Member>()
-                .WithMany()
-                .HasForeignKey(e => e.MemberId);
+            });
 
-            modelBuilder.Entity<Ekvipage>()
-                .HasOne<Entity>()
-                .WithMany()
-                .HasForeignKey(e => e.EntityId);
+
+            modelBuilder.Entity<Ekvipage>(entity =>
+            {
+                entity.ToTable("participants")
+                    .HasOne<Member>()
+                    .WithMany()
+                    .HasForeignKey(e => e.MemberId);
+
+                entity.HasOne<Entity>()
+                    .WithMany()
+                    .HasForeignKey(e => e.EntityId);
+
+            });
+
 
             modelBuilder.Entity<Score>(entity =>
             {
@@ -256,7 +295,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
 
             modelBuilder.Entity<Match>(entity =>
             {
-                entity.ToTable("matches")
+                entity.ToTable(DatabaseHelper.GetTableName<Match>())
                    .HasOne<Round>()
                    .WithMany()
                    .HasForeignKey(e => e.RoundId);
@@ -281,12 +320,19 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                     .WithMany()
                     .HasForeignKey(e => e.JudgeId);
 
+
+                //entity.Property(r => r.StartTime)
+                //.HasColumnType("timestamp");
+
+                //entity.Property(r => r.EndTime)
+                //.HasColumnType("timestamp");
+
                 entity.Ignore(s => s.ParticipantIds);
             });
 
             modelBuilder.Entity<ClubMembership>(entity =>
             {
-                entity.ToTable("club_memberships")
+                entity.ToTable(DatabaseHelper.GetTableName<ClubMembership>())
                 .HasOne<Club>()
                 .WithMany()
                 .HasForeignKey(e => e.ClubId);
@@ -294,12 +340,30 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                 entity.HasOne<Member>()
                 .WithMany()
                 .HasForeignKey(e => e.MemberId);
+
+                //entity.Property(r => r.JoinDate)
+                //.HasColumnType("timestamp");
             });
 
-            modelBuilder.Entity<Field>(entity => entity.ToTable("fields"));
+            modelBuilder.Entity<Field>(entity => entity.ToTable(DatabaseHelper.GetTableName<Field>()));
 
             base.OnModelCreating(modelBuilder);
-        }
 
+            // Generate UUIDs for primary keys in db
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var primaryKey = entityType.FindPrimaryKey();
+                if (primaryKey != null)
+                {
+                    foreach (var property in primaryKey.Properties)
+                    {
+                        if (property.ClrType == typeof(Guid))
+                        {
+                            property.SetDefaultValueSql("gen_random_uuid()");
+                        }
+                    }
+                }
+            }
+        }
     }
 }

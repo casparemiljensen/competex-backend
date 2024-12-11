@@ -78,8 +78,8 @@ namespace competex_backend
                 .ForMember(dest => dest.Member, opt => opt.MapFrom(src => src.MemberId))
                 .ForMember(dest => dest.Entity, opt => opt.MapFrom(src => src.EntityId));
             CreateMap<Score, ScoreDTO>()
-                .ForMember(dest => dest.Match, opt => opt.MapFrom(src => src.MatchId))
-                .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
+                //.ForMember(dest => dest.Match, opt => opt.MapFrom(src => src.MatchId))
+                //.ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId))
                 .ForMember(dest => dest.ScoreValue, opt => opt.MapFrom(src => src.ScoreValue)) // Do not know how to handle this...
                 .ForMember(dest => dest.Penalties, opt => opt.MapFrom(src => src.PenaltyIds))
                 .Include<TimeScore, TimeScoreDTO>()
@@ -93,11 +93,11 @@ namespace competex_backend
             CreateMap<PointScore, PointScoreDTO>()
                 .ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.ScoreValue));
             CreateMap<TimeFaultScore, TimeFaultScoreDTO>();
-                //.ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.Time))
-                //.ForMember(dest => dest.Faults, opt => opt.MapFrom(src => src.Faults));
-            CreateMap<ScoreResult, ScoreResultDTO>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => src.CompetitionId))
-                .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId));
+            //.ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.Time))
+            //.ForMember(dest => dest.Faults, opt => opt.MapFrom(src => src.Faults));
+            CreateMap<ScoreResult, ScoreResultDTO>();
+                //.ForMember(dest => dest.Competition, opt => opt.MapFrom(src => src.CompetitionId))
+                //.ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.ParticipantId));
 
 
             // Reverse mappings

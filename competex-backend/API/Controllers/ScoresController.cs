@@ -22,97 +22,31 @@ namespace competex_backend.API.Controllers
             _matchService = matchService;
             _roundService = roundService;
         }
-
-        public async List<T> GetAllSearch<T, SType>(SType service, Dictionary<string, object> filter) where SType : IGenericService<T> where T : class
+        /// <summary>
+        /// Gets all results for a competition. Tip: Use search on participant domain, to get a lot of participants
+        /// </summary>
+        /// <param name="CompetitionId">The ID of the competition which results will be gotten calculated.</param>
+        /// <returns>An IActionResult indicating the operation result.</returns>
+        [HttpGet("/getResults/{CompetitionId}")]
+        public async Task<IActionResult> GetResultsByCompetitionId(Guid CompetitionId, int? pageSize, int? pageNumber)
         {
-            var batchSize = 10;
-            var localPageNumber = 1;
-            var totalPageNumber = 0;
-            List<T> output = [];
-            var competitionResult = await service.SearchAllAsync(batchSize, localPageNumber, filter);
-            localPageNumber++;
-            if (!competitionResult.IsSuccess)
+            var result = await _scoreService.GetResultsByCompetitionId(CompetitionId, pageSize, pageNumber);
+            if (!result.IsSuccess)
             {
-                return NotFound(competitionResult.Error);
+                return NotFound(result.Error!);
             }
-
-            output.AddRange(competitionResult.Value.Item2);
-
-            totalPageNumber = PaginationHelper.GetTotalPages(batchSize, localPageNumber, competitionResult.Value.Item1);
-            List<Task<ResultT<Tuple<int, IEnumerable<T>>>>> tasks = [];
-            while (localPageNumber <= totalPageNumber)
-            {
-                tasks.Add(service.SearchAllAsync(batchSize, localPageNumber, filter));
-                localPageNumber++;
-            }
-
-            await Task.WhenAll(tasks);
-
-            foreach (var task in tasks)
-            {
-                foreach (var a in task.Result.Value.Item2)
-                {
-                    output.Add(a);
-                }
-            }
-            return output;
+            return Ok(result.Value);
         }
-
-        [HttpGet("/getResults/{competitionId}")]
-        public async Task<IActionResult> GetResultsOfMatch(Guid competitionId, int? pageSize, int? pageNumber)
+        /// <summary>
+        /// Adds a penalty to the specified score.
+        /// </summary>
+        /// <param name="ScoreId">The ID of the score to which the penalty will be added.</param>
+        /// <param name="PenaltyId">The ID of the penalty to be added.</param>
+        /// <returns>An IActionResult indicating the operation result.</returns>
+        [HttpPost("{ScoreId}/addPenaltyById/{PenaltyId}")]
+        public async Task<IActionResult> AddPenaltyById(Guid ScoreId, Guid PenaltyId)
         {
-           
-            
-
-            if (!competitionResult.IsSuccess)
-            {
-                return NotFound(competitionResult.Error);
-            }
-
-            var matchIds = competitionResult.Value
-
-
-            var matchResult = await _matchService.GetByIdAsync(MatchId);
-
-            if (!matchResult.IsSuccess)
-            {
-                return NotFound(matchResult.Error);
-            }
-
-            var matchId = matchResult.Value.RoundId;
-            var participantIds = matchResult.Value.ParticipantIds;
-
-            List<Task> results = new List<Task>();
-
-            
-
-            foreach (Guid id in participantIds)
-            {
-                Dictionary<string, object> filter = new Dictionary<string, object>
-                {
-                    { "ParticipantId", id }
-                };
-                results.Add(_scoreService.SearchAllAsync(10, 0, filter));
-            }
-
-            await Task.WhenAll(results);
-            
-            var resultScore = new ScoreResult()
-            {
-                resu
-            }
-
-            var resultValues = results.Aggregate( => )
-            if (result.IsSuccess)
-            {
-                var obj = new PaginationWrapperDTO<IEnumerable<ClubDTO>>(
-                    result.Value.Item2,
-                    pageSize ?? Defaults.PageSize,
-                    pageNumber ?? Defaults.PageNumber,
-                    result.Value.Item1);
-                return Ok(obj);
-            }
-            return NotFound(result.Error); // Return NotFound with error details if no clubs found
+            return Ok(await _scoreService.AddPenaltyById(ScoreId ,PenaltyId));
         }
     }
 }

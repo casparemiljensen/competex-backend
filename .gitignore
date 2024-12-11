@@ -408,3 +408,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/competex-backend/Migrations/20241211203300_InitialCreate.cs
+/competex-backend/Migrations

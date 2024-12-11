@@ -8,6 +8,8 @@ using competex_backend.Models;
 using competex_backend.Common.ErrorHandling;
 using competex_backend.DAL.Repositories.PostgresDataAccess;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using competex_backend.DAL.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -169,22 +171,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 var app = builder.Build();
 
-// Apply migrations and seed the database
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        // Apply pending migrations
-        await context.Database.MigrateAsync();
-    }
-    catch (Exception ex)
-    {
-        // Log migration errors
-        Console.WriteLine($"An error occurred during migration: {ex.Message}");
-    }
-}
 
 // Configure the HTTP request pipeline.
 // Right now we want to show Swagger UI in production. Remove this clause when that changes
@@ -201,20 +187,17 @@ if (app.Environment.IsDevelopment() || true)
 {
     using (var scope = app.Services.CreateScope())
     {
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var mockDatabaseManager = scope.ServiceProvider.GetRequiredService<MockDatabaseManager>();
-        //DatabaseSeeder.SeedDatabase(context, mockDatabaseManager);
-    }
-
-    // Apply migrations and seed the database
-    using (var scope = app.Services.CreateScope())
-    {
         var services = scope.ServiceProvider;
         try
         {
             var context = services.GetRequiredService<ApplicationDbContext>();
-            // Apply pending migrations Only do in dev.
+            // Apply pending migrations
             await context.Database.MigrateAsync();
+
+            // Incomment to seed database
+            //var mockDatabaseManager = scope.ServiceProvider.GetRequiredService<MockDatabaseManager>();
+            //DatabaseSeeder.SeedDatabase(context, mockDatabaseManager);
+
         }
         catch (Exception ex)
         {

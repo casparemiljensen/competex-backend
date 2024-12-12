@@ -28,7 +28,7 @@ namespace competex_backend.BLL.Services
             var result = await _repository.InsertAsync(entity);
             if (result.IsSuccess)
             {
-                await _eventRepository.AddCompetition(entity.EventId, entity.Id);
+                //await _eventRepository.AddCompetition(entity.EventId, entity.Id);
                 return ResultT<Guid>.Success(result.Value);
             }
 

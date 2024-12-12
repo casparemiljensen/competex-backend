@@ -1,5 +1,3 @@
-using System;
-
 namespace competex_backend.Models;
 
 public class Round : Identifiable

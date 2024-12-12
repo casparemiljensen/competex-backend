@@ -65,6 +65,7 @@ namespace competex_backend.Models
 
         public Ekvipage(string name, Guid memberId, Guid entityId)
         {
+            Name = name;
             MemberId = memberId;
             EntityId = entityId;
         }

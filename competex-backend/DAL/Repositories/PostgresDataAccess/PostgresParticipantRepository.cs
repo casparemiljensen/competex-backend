@@ -1,11 +1,7 @@
-﻿using Common.ResultPattern;
-using competex_backend.Common.Helpers;
-using competex_backend.DAL.Interfaces;
-using competex_backend.DAL.Repositories.PostgresDataAccess;
+﻿using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace competex_backend.DAL.Repositories.PostgressDataAccess
+namespace competex_backend.DAL.Repositories.PostgresDataAccess
 {
     public class PostgresParticipantRepository : PostgresGenericRepository<Ekvipage>, IParticipantRepository
     {

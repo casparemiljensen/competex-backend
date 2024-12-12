@@ -2,21 +2,29 @@
 using Common.ResultPattern;
 using competex_backend.API.DTOs;
 using competex_backend.BLL.Interfaces;
+using competex_backend.Common.Helpers;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace competex_backend.BLL.Services
 {
     public class ScoreService : GenericService<Score, ScoreDTO>, IScoreService
     {
-        private readonly IScoreRepository _scoreRepository;
         private readonly IMapper _mapper;
+        private readonly IScoreRepository _scoreRepository;
+        private readonly IRoundRepository _roundRepository;
+        private readonly IMatchRepository _matchRepository;
+        private readonly IPenaltyRepository _penaltyRepository;
 
-        public ScoreService(IGenericRepository<Score> repository, IMapper mapper)
+        public ScoreService(IGenericRepository<Score> repository, IMapper mapper, IRoundRepository roundRepository, IMatchRepository matchRepository, IPenaltyRepository penaltyRepository)
     : base(repository, mapper)
         {
             _scoreRepository = (IScoreRepository)repository;
             _mapper = mapper;
+            _roundRepository = roundRepository;
+            _matchRepository = matchRepository;
+            _penaltyRepository = penaltyRepository;
         }
 
         public async Task<ResultT<Tuple<int, IEnumerable<ScoreDTO>>>> GetScoresForParticipant(Guid participantId, int? pageSize, int? pageNumber)
@@ -40,6 +48,95 @@ namespace competex_backend.BLL.Services
 
             //return ResultT<Tuple<int, IEnumerable<TDto>>>.Success(new Tuple<int, IEnumerable<TDto>>(result.Value.Item1, entities));
 
+        }
+
+        public async Task<ResultT<PaginationWrapperDTO<IEnumerable<ScoreResultDTO>>>> GetResultsByCompetitionId(Guid competitionId, int? pageSize, int? pageNumber)
+        {
+            var matchFilter = new Dictionary<string, object>()
+            {
+                { "competitionId", competitionId }
+            };
+            var roundsIds = (await SearchHelper.GetAllSearch<Round, IRoundRepository>(_roundRepository, matchFilter)).Select(x => x.Id);
+
+            var participantIds = new List<Guid>();
+
+            var roundFilter = new Dictionary<string, object>()
+            {
+                { "roundId", roundsIds }
+            };
+            participantIds.AddRange((await SearchHelper.GetAllSearch<Match, IMatchRepository>(_matchRepository, roundFilter))
+                .SelectMany(x => x.ParticipantIds ?? []));
+
+            var scoreFilter = new Dictionary<string, object>()
+            {
+                { "participantId", participantIds }
+            };
+
+
+            //var penaltyIds = scoreGroups.SelectMany(x => x.SelectMany(y => y.PenaltyIds));
+
+            //var penaltyFilter = new Dictionary<string, object>()
+            //{
+            //    { "Id", penaltyIds }
+            //};
+
+            //var penaltyResult = (await SearchHelper.GetAllSearch<Penalty, IPenaltyRepository>(_penaltyRepository, penaltyFilter));
+            var scoreGroups = (await SearchHelper.GetAllSearch<Score, IScoreRepository>(_scoreRepository, scoreFilter)).GroupBy(x => x.ParticipantId);
+            var emptyResult = new ScoreResult
+            {
+                Time = new TimeSpan(),
+                Faults = 0,
+                ParticipantId = Guid.Empty,
+                CompetitionId = Guid.Empty
+            };
+
+            var result = scoreGroups.Select(x => x.Aggregate(emptyResult, (acc, item) => {
+               /* if ()*/
+                var timeScoreResult = item as TimeFaultScore; //This only works for timeFaultScore
+                return new ScoreResult
+                {
+                    CompetitionId = competitionId,
+                    ParticipantId = timeScoreResult.ParticipantId,
+                    Faults = acc.Faults += timeScoreResult.Faults,
+                    Time = acc.Time += timeScoreResult.Time
+                };
+            }));
+            var numberOfLines = result.Count();
+
+            var dtoResult = result.Select(x => _mapper.Map<ScoreResultDTO>(x));
+
+            var sortedResultDTO = dtoResult.ToList(); //Does not mutate
+            sortedResultDTO.Sort(); //Mutates
+
+            return ResultT<PaginationWrapperDTO<IEnumerable<ScoreResultDTO>>>.Success(new PaginationWrapperDTO<IEnumerable<ScoreResultDTO>>(
+                sortedResultDTO,
+                pageSize ?? Defaults.PageSize,
+                pageNumber ?? Defaults.PageNumber,
+                PaginationHelper.GetTotalPages(pageSize, pageNumber, numberOfLines)
+                ));
+        }
+
+        
+
+        public async Task<ResultT<IActionResult>> AddPenaltyById(Guid ScoreId, Guid PenaltyId)
+        {
+            var scoreTask = _scoreRepository.GetByIdAsync(ScoreId);
+            var penaltyTask = _penaltyRepository.GetByIdAsync(PenaltyId);
+
+            await Task.WhenAll(scoreTask, penaltyTask);
+            if (!scoreTask.Result.IsSuccess)
+            {
+                return ResultT<IActionResult>.Failure(Error.NotFound("404", "No score with that ID"));
+            }
+            if (!penaltyTask.Result.IsSuccess)
+            {
+                return ResultT<IActionResult>.Failure(Error.NotFound("404", "No penalty with that ID"));
+            }
+
+            scoreTask.Result.Value.PenaltyIds.Add(ScoreId);
+
+            var result = await _scoreRepository.UpdateAsync(scoreTask.Result.Value.Id, scoreTask.Result.Value);
+            return !result.IsSuccess ? new OkResult() : ResultT<IActionResult>.Failure(result.Error!);
         }
     }
 }

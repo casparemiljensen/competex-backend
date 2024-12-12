@@ -45,6 +45,9 @@ namespace competex_backend.BLL.Services
             // Right now the round has to be made beforehand
 
 
+            // TODO: While loop for pagination in roundsService
+
+
             var registrationsResult = await _registrationRepository.GetAllAsync(null, null);
             if (!registrationsResult.IsSuccess)
             {

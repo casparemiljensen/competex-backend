@@ -1,8 +1,5 @@
-﻿using competex_backend.Common.ErrorHandling;
-using competex_backend.Common.Helpers;
-using competex_backend.DAL.Filters;
+﻿using competex_backend.Common.Helpers;
 using competex_backend.DAL.Interfaces;
-using competex_backend.DAL.Repositories.PostgressDataAccess;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.Collections;
@@ -22,7 +19,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         }
         // TODO: Remove all newGuids for PG
         // Get entity by ID
-        public async Task<ResultT<T>> GetByIdAsync(Guid id)
+        public virtual async Task<ResultT<T>> GetByIdAsync(Guid id)
         {
             var entity = await _dbSet.FirstOrDefaultAsync(c => c.Id == id);
             return entity is not null
@@ -73,7 +70,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         }
 
         // Add a new entity
-        public async Task<ResultT<Guid>> InsertAsync(T obj)
+        public virtual async Task<ResultT<Guid>> InsertAsync(T obj)
         {
             //obj.Id = Guid.NewGuid(); // Generate a new Guid
             try
@@ -84,7 +81,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
             }
             catch (Exception ex)
             {
-                return ResultT<Guid>.Failure(Error.Failure("InsertionError", $"Failed to insert {typeof(T).Name.ToLower()}: {ex.Message}"));
+                return ResultT<Guid>.Failure(Error.Failure("InsertionError", $"Failed to insert {typeof(T).Name.ToLower()}: {ex.Message} - {ex.InnerException.Message}"));
             }
         }
 
@@ -122,7 +119,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         }
 
         // Delete an entity
-        public async Task<Result> DeleteAsync(Guid id)
+        public virtual async Task<Result> DeleteAsync(Guid id)
         {
             var entityToRemove = await _dbSet.FirstOrDefaultAsync(c => c.Id == id);
             if (entityToRemove is null)

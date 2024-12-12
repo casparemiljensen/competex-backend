@@ -9,21 +9,21 @@ data:
     CREATE DATABASE "competexdb";
     \connect "competexdb";
     CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
-      "MigrationId" character varying(150) NOT NULL,
-      "ProductVersion" character varying(32) NOT NULL,
-      CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
     );
 
     START TRANSACTION;
     CREATE TABLE clubs (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "Name" text NOT NULL,
         "AssociatedSport" text NOT NULL,
         CONSTRAINT "PK_clubs" PRIMARY KEY ("Id")
     );
 
     CREATE TABLE competition_types (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "Name" text NOT NULL,
         "ScoreType" integer NOT NULL,
         "ScoreMethod" integer NOT NULL,
@@ -31,7 +31,7 @@ data:
     );
 
     CREATE TABLE fields (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "Name" text NOT NULL,
         "Location" text NOT NULL,
         "Capacity" integer NOT NULL,
@@ -40,7 +40,7 @@ data:
     );
 
     CREATE TABLE locations (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "Name" text NOT NULL,
         "Address" text NOT NULL,
         "Zip" text NOT NULL,
@@ -50,7 +50,7 @@ data:
     );
 
     CREATE TABLE members (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "FirstName" text NOT NULL,
         "LastName" text NOT NULL,
         "Birthday" timestamp with time zone NOT NULL,
@@ -61,14 +61,14 @@ data:
     );
 
     CREATE TABLE sport_types (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "Name" text NOT NULL,
         "EntityType" integer NOT NULL,
         CONSTRAINT "PK_sport_types" PRIMARY KEY ("Id")
     );
 
     CREATE TABLE club_memberships (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "ClubId" uuid NOT NULL,
         "MemberId" uuid NOT NULL,
         "JoinDate" timestamp with time zone NOT NULL,
@@ -79,7 +79,7 @@ data:
     );
 
     CREATE TABLE entities (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "Type" integer NOT NULL,
         "Name" text NOT NULL,
         "Birthdate" timestamp with time zone NOT NULL,
@@ -90,7 +90,7 @@ data:
     );
 
     CREATE TABLE judges (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "JudgeType" integer NOT NULL,
         "MemberId" uuid NOT NULL,
         "Description" text NOT NULL,
@@ -99,7 +99,7 @@ data:
     );
 
     CREATE TABLE events (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "Title" text NOT NULL,
         "Description" text NOT NULL,
         "StartDate" timestamp with time zone NOT NULL,
@@ -118,7 +118,7 @@ data:
     );
 
     CREATE TABLE participants (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "Name" text NOT NULL,
         "MemberId" uuid,
         "EntityId" uuid,
@@ -128,7 +128,7 @@ data:
     );
 
     CREATE TABLE competitions (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "CompetitionTypeId" uuid NOT NULL,
         "EventId" uuid NOT NULL,
         "Name" text NOT NULL,
@@ -145,15 +145,15 @@ data:
     );
 
     CREATE TABLE event_competitions (
-        "CompetitionId" uuid NOT NULL,
-        "EventId" uuid NOT NULL,
+        "CompetitionId" uuid NOT NULL DEFAULT (gen_random_uuid()),
+        "EventId" uuid NOT NULL DEFAULT (gen_random_uuid()),
         CONSTRAINT "PK_event_competitions" PRIMARY KEY ("CompetitionId", "EventId"),
         CONSTRAINT "FK_event_competitions_competitions_CompetitionId" FOREIGN KEY ("CompetitionId") REFERENCES competitions ("Id") ON DELETE CASCADE,
         CONSTRAINT "FK_event_competitions_events_EventId" FOREIGN KEY ("EventId") REFERENCES events ("Id") ON DELETE CASCADE
     );
 
     CREATE TABLE registrations (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "ParticipantId" uuid NOT NULL,
         "CompetitionId" uuid NOT NULL,
         "RegistrationDate" timestamp with time zone NOT NULL,
@@ -164,7 +164,7 @@ data:
     );
 
     CREATE TABLE rounds (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "Name" text NOT NULL,
         "SequenceNumber" bigint NOT NULL,
         "RoundType" integer NOT NULL,
@@ -177,7 +177,7 @@ data:
     );
 
     CREATE TABLE score_results (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "CompetitionId" uuid NOT NULL,
         "ParticipantId" uuid NOT NULL,
         "Faults" integer NOT NULL,
@@ -188,7 +188,7 @@ data:
     );
 
     CREATE TABLE matches (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "RoundId" uuid NOT NULL,
         "Status" integer NOT NULL,
         "StartTime" timestamp with time zone NOT NULL,
@@ -202,15 +202,15 @@ data:
     );
 
     CREATE TABLE match_participants (
-        "MatchId" uuid NOT NULL,
-        "ParticipantId" uuid NOT NULL,
+        "MatchId" uuid NOT NULL DEFAULT (gen_random_uuid()),
+        "ParticipantId" uuid NOT NULL DEFAULT (gen_random_uuid()),
         CONSTRAINT "PK_match_participants" PRIMARY KEY ("MatchId", "ParticipantId"),
         CONSTRAINT "FK_match_participants_matches_MatchId" FOREIGN KEY ("MatchId") REFERENCES matches ("Id") ON DELETE CASCADE,
         CONSTRAINT "FK_match_participants_participants_ParticipantId" FOREIGN KEY ("ParticipantId") REFERENCES participants ("Id") ON DELETE CASCADE
     );
 
     CREATE TABLE scores (
-        "Id" uuid NOT NULL,
+        "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "MatchId" uuid NOT NULL,
         "ParticipantId" uuid NOT NULL,
         "ScoreType" smallint NOT NULL,
@@ -269,8 +269,7 @@ data:
     CREATE INDEX "IX_scores_ParticipantId" ON scores ("ParticipantId");
 
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20241211132947_InitialCreate', '9.0.0');
+    VALUES ('20241211203300_InitialCreate', '9.0.0');
 
     COMMIT;
-
 

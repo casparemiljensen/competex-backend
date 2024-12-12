@@ -6,9 +6,9 @@ metadata:
 data:
   init.sql: |
     \c postgres
-    DROP DATABASE IF EXISTS competexdb WITH (FORCE);
-    CREATE DATABASE "competexdb";
-    \connect "competexdb";
+    DROP DATABASE IF EXISTS "competexdb-ef" WITH (FORCE);
+    CREATE DATABASE "competexdb-ef";
+    \connect "competexdb-ef";
     CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
     "MigrationId" character varying(150) NOT NULL,
     "ProductVersion" character varying(32) NOT NULL,

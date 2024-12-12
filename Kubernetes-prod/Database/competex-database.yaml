@@ -41,7 +41,7 @@ spec:
       volumes:
       - name: init-scripts
         configMap:
-          name: competex-db-config
+          name: migrations-config # Can be exchanged with competex-db-config
   volumeClaimTemplates:
   - metadata:
       name: db-storage

@@ -18,5 +18,16 @@ namespace competex_backend.BLL.Services
             _matchRepository = (IMatchRepository)repository;
             _mapper = mapper;
         }
+
+        public async Task<ResultT<Tuple<int, IEnumerable<MatchDTO>>>> GetMatchesByRoundIdAsync(Guid id, int? pageSize, int? pageNumber)
+        {
+            var result = await _matchRepository.GetMatchesByRoundId(id, pageSize, pageNumber);
+           
+            if (result.IsSuccess && result.Value != null)
+            {
+                return ResultT<Tuple<int, IEnumerable<MatchDTO>>>.Success(new Tuple<int, IEnumerable<MatchDTO>>(result.Value.Item1, result.Value.Item2.Select(match => _mapper.Map<MatchDTO>(match))));
+            }
+            return ResultT<Tuple<int, IEnumerable<MatchDTO>>>.Failure(result.Error ?? Error.Failure("UnknownError", "An unknown error occurred."));
+        }
     }
 }

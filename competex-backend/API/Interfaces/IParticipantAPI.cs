@@ -2,7 +2,7 @@
 
 namespace competex_backend.API.Interfaces
 {
-    public interface IParticipantAPI : IGenericAPI<ParticipantDTO>
+    public interface IParticipantAPI : IGenericAPI<EkvipageDTO>
     {
     }
 }

@@ -25,15 +25,15 @@ namespace competex_backend.API.Controllers
             return NotFound(result.Error); // Return NotFound with error details if no members found
         }
 
-        [HttpPost("{eventId}addCompetition/{competitionId}")]
-        public async Task<IActionResult> AddCompetition(Guid eventId, Guid competitionId)
-        {
-            var result = await _eventService.AddCompetition(eventId, competitionId);
-            if (result.IsSuccess)
-            {
-                return Ok();
-            }
-            return NotFound(result.Error); // Return NotFound with error details if no members found
-        }
+        //[HttpPost("{eventId}addCompetition/{competitionId}")]
+        //public async Task<IActionResult> AddCompetition(Guid eventId, Guid competitionId)
+        //{
+        //    var result = await _eventService.AddCompetition(eventId, competitionId);
+        //    if (result.IsSuccess)
+        //    {
+        //        return Ok();
+        //    }
+        //    return NotFound(result.Error); // Return NotFound with error details if no members found
+        //}
     }
 }

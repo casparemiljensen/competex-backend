@@ -5,6 +5,7 @@ metadata:
   namespace: competex-db
 data:
   init.sql: |
+    \c postgres
     DROP DATABASE IF EXISTS competexdb WITH (FORCE);
     CREATE DATABASE "competexdb";
     \connect "competexdb";

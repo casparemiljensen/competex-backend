@@ -31,7 +31,7 @@ public class MockMemberRepositoryTests : GenericServiceTests
             Birthday = new DateTime(1990, 5, 14),
             Email = "alice.smith@example.com",
             Phone = "+1234567890",
-            Permissions = "Admin" // Update with the appropriate type once determined.
+            Permissions = 2,
         };
 
                 

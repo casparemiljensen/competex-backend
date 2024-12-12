@@ -11,7 +11,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously - Will need to be later
-        public async Task<Result> AddCompetition(Guid eventId, Competition competition)
+        public async Task<Result> AddCompetition(Guid eventId, Guid competitionId)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             var _event = _entities.Find(_event => _event.Id == eventId);
@@ -21,7 +21,7 @@ namespace competex_backend.DAL.Repositories.MockDataAccess
                 return Result.Failure(Error.NotFound("NotFound", $"Could not find event with Id: {eventId}"));
             }
 
-            _event.AddCompetition(competition.Id);
+            _event.AddCompetition(competitionId);
             return Result.Success();
         }
     }

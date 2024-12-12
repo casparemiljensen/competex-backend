@@ -1,9 +1,12 @@
-﻿namespace competex_backend.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace competex_backend.Models
 {
     public abstract class Score : Identifiable
     {
         public Guid MatchId { get; set; }
         public Guid ParticipantId { get; set; }
+        [NotMapped] // TODO: Ignoring for now, but we need it!
         public abstract object ScoreValue { get; set; }
         public List<Guid> PenaltyIds { get; set; } = new List<Guid>();
 

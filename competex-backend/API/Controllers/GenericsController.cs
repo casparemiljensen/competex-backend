@@ -62,7 +62,7 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(T obj)
+        public async virtual Task<IActionResult> CreateAsync(T obj)
         {
             var result = await _genericService.CreateAsync(obj);
             if (result.IsSuccess)

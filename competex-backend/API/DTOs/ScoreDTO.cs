@@ -22,7 +22,7 @@ namespace competex_backend.API.DTOs
     {
         public MatchDTO? Match { get; set; }
         public Guid? MatchId { get; set; }
-        public ParticipantDTO? Participant { get; set; }
+        public EkvipageDTO? Participant { get; set; }
         public Guid? ParticipantId { get; set; }
         //public ScoreType ScoreType { get; set; } // Do we really need this?
         public List<PenaltyDTO>? Penalties { get; set; } = new List<PenaltyDTO>();

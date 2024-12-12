@@ -1,6 +1,4 @@
-﻿using competex_backend.API.DTOs;
-
-namespace competex_backend.Models
+﻿namespace competex_backend.Models
 {
     public class ScoreResult : Identifiable
     {

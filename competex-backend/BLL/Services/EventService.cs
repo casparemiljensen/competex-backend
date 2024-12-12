@@ -27,21 +27,21 @@ namespace competex_backend.BLL.Services
             _competitionRepository = competitionRepository;
         }
 
-        public async Task<Result> AddCompetition(Guid eventId, Guid competitionId)
-        {
-            var competitionResult = await _competitionRepository.GetByIdAsync(competitionId);
-            if (!competitionResult.IsSuccess)
-            {
-                return Result.Failure(competitionResult.Error!);
-            }
+        //public async Task<Result> AddCompetition(Guid eventId, Guid competitionId)
+        //{
+        //    var competitionResult = await _competitionRepository.GetByIdAsync(competitionId);
+        //    if (!competitionResult.IsSuccess)
+        //    {
+        //        return Result.Failure(competitionResult.Error!);
+        //    }
 
-            var result = await _eventRepository.AddCompetition(eventId, competitionResult.Value);
-            if (!result.IsSuccess)
-            {
-                return Result.Failure(result.Error!);
-            }
-            return result;
-        }
+        //    var result = await _eventRepository.AddCompetition(eventId, competitionResult.Value.Id);
+        //    if (!result.IsSuccess)
+        //    {
+        //        return Result.Failure(result.Error!);
+        //    }
+        //    return result;
+        //}
 
         public async Task<ResultT<int>> GetMembersOwedAmount(Guid memberId, Guid eventId)
         {

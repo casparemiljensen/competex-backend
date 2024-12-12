@@ -272,5 +272,55 @@ data:
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
     VALUES ('20241211203300_InitialCreate', '9.0.0');
 
+    -- Test data for clubs
+    INSERT INTO clubs ("Id", "Name", "AssociatedSport") VALUES
+        (gen_random_uuid(), 'Vejle Kaninhop', 'Rabbit Hopping'),
+        (gen_random_uuid(), 'Lystrup Kaninhop', 'Rabbit Hopping'),
+        (gen_random_uuid(), 'Aabybro Kaninhop', 'Rabbit Hopping');
+
+    -- Test data for members
+    INSERT INTO members ("Id", "FirstName", "LastName", "Birthday", "Email", "Phone", "Permissions") VALUES
+        (gen_random_uuid(), 'Janni', 'Karlsson', '1990-05-15', 'janni@example.com', '+4512345678', 1),
+        (gen_random_uuid(), 'Søren', 'Pind', '1985-11-23', 'soren@example.com', '+4523456789', 2),
+        (gen_random_uuid(), 'Caspar Emil', 'Jensen', '1992-07-11', 'caspar@example.com', '+4534567890', 1);
+
+    -- Test data for fields
+    INSERT INTO fields ("Id", "Name", "Location", "Capacity", "SurfaceType") VALUES
+        (gen_random_uuid(), 'Field A', 'Vejle', 100, 2),
+        (gen_random_uuid(), 'Field B', 'Lystrup', 150, 1),
+        (gen_random_uuid(), 'Field C', 'Aabybro', 200, 3);
+
+    -- Test data for locations
+    INSERT INTO locations ("Id", "Name", "Address", "Zip", "City", "Country") VALUES
+        (gen_random_uuid(), 'Vejle Hall', '123 Rabbit Street', '7100', 'Vejle', 'Denmark'),
+        (gen_random_uuid(), 'Lystrup Arena', '456 Hop Lane', '8520', 'Lystrup', 'Denmark'),
+        (gen_random_uuid(), 'Aabybro Park', '789 Leap Avenue', '9440', 'Aabybro', 'Denmark');
+
+    -- Test data for sport types
+    INSERT INTO sport_types ("Id", "Name", "EntityType") VALUES
+        (gen_random_uuid(), 'Rabbit Hopping', 1),
+        (gen_random_uuid(), 'Dog Agility', 2);
+
+    -- Test data for club memberships
+    INSERT INTO club_memberships ("Id", "ClubId", "MemberId", "JoinDate", "Role")
+    SELECT gen_random_uuid(), c."Id", m."Id", '2024-01-01', 1
+    FROM (SELECT "Id" FROM clubs LIMIT 1) c, (SELECT "Id" FROM members LIMIT 1) m;
+
+    -- Test data for events
+    INSERT INTO events ("Id", "Title", "Description", "StartDate", "EndDate", "LocationId", "RegistrationStartDate", "RegistrationEndDate", "Status", "OrganizerId", "SportTypeId", "EntryFee")
+    SELECT gen_random_uuid(), 'Spring Rabbit Jump', 'Annual Rabbit Hopping Event', '2024-03-01', '2024-03-02', l."Id", '2024-01-01', '2024-02-15', 1, c."Id", st."Id", 50
+    FROM (SELECT "Id" FROM locations LIMIT 1) l, (SELECT "Id" FROM clubs LIMIT 1) c, (SELECT "Id" FROM sport_types LIMIT 1) st;
+
+    -- Test data for participants
+    INSERT INTO participants ("Id", "Name", "MemberId", "EntityId")
+    SELECT gen_random_uuid(), 'Team Rabbit Speedsters', m."Id", NULL
+    FROM (SELECT "Id" FROM members LIMIT 1) m;
+
+    -- Test data for competitions
+    INSERT INTO competitions ("Id", "CompetitionTypeId", "EventId", "Name", "StartDate", "EndDate", "Level", "Status", "MinParticipants", "MaxParticipants", "RegistrationPrice")
+    SELECT gen_random_uuid(), ct."Id", e."Id", 'Rabbit Jumping Finals', '2024-03-01', '2024-03-02', 2, 1, 5, 20, 100
+    FROM (SELECT "Id" FROM competition_types LIMIT 1) ct, (SELECT "Id" FROM events LIMIT 1) e;
+
+
     COMMIT;
 

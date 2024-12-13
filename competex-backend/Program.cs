@@ -215,7 +215,7 @@ app.UseCors(MyAllowSpecificOrigins);
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseMiddleware<ErrorHandlingMiddleware>();
+    // app.UseMiddleware<ErrorHandlingMiddleware>();
 }
 
 app.MapControllers();

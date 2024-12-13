@@ -19,11 +19,6 @@ namespace competex_backend.BLL.Services
             _memberRepository = memberRepository;
         }
 
-        public Task<Result> CreateEventAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ResultT<Tuple<int, IEnumerable<ClubDTO>>>> GetClubsOfMemberAsync(Guid memberId, int? pageSize, int? pageNumber)
         {
             // Call the repository method to retrieve clubs for a given memberId

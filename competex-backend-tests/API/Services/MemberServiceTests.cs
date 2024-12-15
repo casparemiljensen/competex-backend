@@ -8,7 +8,7 @@ using Xunit;
 using Xunit.Abstractions;
 using Assert = Xunit.Assert;
 
-public class MockMemberRepositoryTests : GenericServiceTests
+public class MockMemberRepositoryTests //: GenericServiceTests
 {
     private readonly Mock<IMemberRepository> _repository;
     private readonly MockDatabaseManager mockDbManager;

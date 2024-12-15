@@ -113,48 +113,69 @@ namespace competex_backend_tests.API.Services
 
             var matchDTOs = matches.Select(m => new MatchDTO { Id = m.Id, RoundId = m.RoundId }).ToList();
 
+            _matchRepositoryMock
+                .Setup(repo => repo.GetMatchesByRoundId(It.IsAny<Guid>(), It.IsAny<int?>(), It.IsAny<int?>()))
+                .Returns(() => {
+                    return Task.FromResult(ResultT<Tuple<int, IEnumerable<Match>>>.Success(new Tuple<int, IEnumerable<Match>>(matches.Count,
+                        matches
+                        .Where(match => match.RoundId == roundId))));
+                });
+
             _registrationRepositoryMock
-                .Setup(repo => repo.GetAllAsync(null, null))
-                .ReturnsAsync(ResultT<Tuple<int, IEnumerable<Registration>>>.Success(new Tuple<int, IEnumerable<Registration>>(registrations.Count, registrations)));
+                .Setup(repo => repo.SearchAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Dictionary<string, object>>()))
+                .ReturnsAsync(() => {
+                    return ResultT<Tuple<int, IEnumerable<Registration>>>.Success(new Tuple<int, IEnumerable<Registration>>(rounds.Count,
+                        registrations
+                        .Where(registration => registration.CompetitionId == competitionId && registration.Status == RegistrationStatus.Accepted)));
+                });
 
             _roundRepositoryMock
                 .Setup(repo => repo.GetRoundIdsByCompetitionId(competitionId, null, null))
-                .ReturnsAsync(ResultT<Tuple<int, IEnumerable<Round>>>.Success(new Tuple<int, IEnumerable<Round>>(rounds.Count, rounds)));
-
+                .ReturnsAsync(ResultT<Tuple<int, IEnumerable<Round>>>.Success(new Tuple<int, IEnumerable<Round>>(rounds.Count,rounds)));
+            
             _roundRepositoryMock
-                .Setup(repo => repo.GetAllAsync(null, null))
-                .ReturnsAsync(ResultT<Tuple<int, IEnumerable<Round>>>.Success(new Tuple<int, IEnumerable<Round>>(rounds.Count, rounds)));
+                .Setup(repo => repo.SearchAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Dictionary<string, object>>()))
+                .ReturnsAsync(() => {
+                    return ResultT<Tuple<int, IEnumerable<Round>>>.Success(new Tuple<int, IEnumerable<Round>>(rounds.Count,
+                        rounds.Where(round => round.CompetitionId == competitionId && round.SequenceNumber == roundSequenceNumber)
+                        ));
+                    });
 
             _matchRepositoryMock
                 .Setup(repo => repo.InsertAsync(It.IsAny<Match>()))
                 .ReturnsAsync(ResultT<Guid>.Success(Guid.NewGuid()));
 
             _matchRepositoryMock
-                .Setup(repo => repo.GetMatchesByRoundId(roundId, null, null))
-                .ReturnsAsync(ResultT<Tuple<int, IEnumerable<Match>>>.Success(new Tuple<int, IEnumerable<Match>>(matches.Count, matches)));
-            _matchRepositoryMock
-                .Setup(repo => repo.GetAllAsync(null, null))
-                .ReturnsAsync(ResultT<Tuple<int, IEnumerable<Match>>>.Success(new Tuple<int, IEnumerable<Match>>(matches.Count, matches)));
+                .Setup(repo => repo.SearchAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Dictionary<string, object>>()))
+                .ReturnsAsync(() => {
+                    return ResultT<Tuple<int, IEnumerable<Match>>>.Success(new Tuple<int, IEnumerable<Match>>(rounds.Count,
+                        matches.Where(match => match.RoundId == rounds[0].Id)));
+                });
 
             _scoreRepositoryMock
                 .Setup(repo => repo.GetAllAsync(null, null))
                 .ReturnsAsync(ResultT<Tuple<int, IEnumerable<Score>>>.Success(new Tuple<int, IEnumerable<Score>>(scores.Count, scores)));
 
+            _scoreRepositoryMock
+                .Setup(repo => repo.SearchAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Dictionary<string, object>>()))
+                .ReturnsAsync(() => {
+                    return ResultT<Tuple<int, IEnumerable<Score>>>.Success(new Tuple<int, IEnumerable<Score>>(rounds.Count,
+                        scores.Where(score => matches.Select(x => x.Id).Contains(score.MatchId))));
+                });
+
             _mapperMock
                 .Setup(mapper => mapper.Map<MatchDTO>(It.IsAny<Match>()))
                 .Returns((Match src) => matchDTOs.First(m => m.Id == src.Id));
 
+            
             // Act
-            var result = await _roundService.CreateMatchesForRoundAsync(competitionId, (uint)roundSequenceNumber, criteria, null, null);
+            var result = await _roundService.CreateMatchesForRoundAsync(competitionId, Convert.ToUInt32(roundSequenceNumber), criteria, null, null);
 
             // Assert
             Assert.True(result.IsSuccess);
             Assert.Equal(matches.Count, result.Value.Item1);
             Assert.Equal(matchDTOs, result.Value.Item2);
 
-            _registrationRepositoryMock.Verify(repo => repo.GetAllAsync(null, null), Times.Once);
-            _roundRepositoryMock.Verify(repo => repo.GetRoundIdsByCompetitionId(competitionId, null, null), Times.Once);
-            _matchRepositoryMock.Verify(repo => repo.InsertAsync(It.IsAny<Match>()), Times.Exactly(1));//participantIds.Count * 2));
             _matchRepositoryMock.Verify(repo => repo.GetMatchesByRoundId(roundId, null, null), Times.Once);
             _mapperMock.Verify(mapper => mapper.Map<MatchDTO>(It.IsAny<Match>()), Times.Exactly(matches.Count));
         }

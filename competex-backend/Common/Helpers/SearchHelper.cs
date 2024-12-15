@@ -7,7 +7,7 @@ namespace competex_backend.Common.Helpers
 {
     public static class SearchHelper
     {
-        public static async Task<List<T>> GetAllSearch<T, SType>(SType repository, Dictionary<string, object> filter) where SType : IGenericRepository<T> where T : class
+        public static async Task<List<T>> GetAllSearch<T, RType>(RType repository, Dictionary<string, object> filter) where RType : IGenericRepository<T> where T : class
         {
             var batchSize = 10;
             var localPageNumber = 1;
@@ -52,6 +52,8 @@ namespace competex_backend.Common.Helpers
 
             var filterValue = filter;
             string stringElement;
+
+            Console.WriteLine("Type: " + filterValue.GetType().Name);
 
             //Json Types
             if (filterValue is JsonElement jsonElement)
@@ -110,7 +112,12 @@ namespace competex_backend.Common.Helpers
             }
             else if (DateTime.TryParse(filterValue.ToString(), out time))
             {
-                list.Add(new NpgsqlParameter() { Value = time, NpgsqlDbType = NpgsqlDbType.TimestampTz });
+                list.Add(new NpgsqlParameter() { Value = time, NpgsqlDbType = NpgsqlDbType.Timestamp });
+            }
+            else if (filterValue is int)
+            {
+                Console.WriteLine("Adding Int");
+                list.Add(new NpgsqlParameter() { Value = filterValue, NpgsqlDbType = NpgsqlDbType.Integer });
             }
             else
             {

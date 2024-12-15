@@ -49,6 +49,7 @@ namespace competex_backend.BLL.Services
                 { "CompetitionId", competitionId },
                 { "Status", RegistrationStatus.Accepted }
             };
+            
 
             var regs = await SearchHelper.GetAllSearch<Registration, IRegistrationRepository>(_registrationRepository, regFilter);
 

@@ -72,15 +72,6 @@ namespace competex_backend.BLL.Services
                 { "participantId", participantIds }
             };
 
-
-            //var penaltyIds = scoreGroups.SelectMany(x => x.SelectMany(y => y.PenaltyIds));
-
-            //var penaltyFilter = new Dictionary<string, object>()
-            //{
-            //    { "Id", penaltyIds }
-            //};
-
-            //var penaltyResult = (await SearchHelper.GetAllSearch<Penalty, IPenaltyRepository>(_penaltyRepository, penaltyFilter));
             var scoreGroups = (await SearchHelper.GetAllSearch<Score, IScoreRepository>(_scoreRepository, scoreFilter)).GroupBy(x => x.ParticipantId);
             var emptyResult = new ScoreResult
             {
@@ -90,17 +81,22 @@ namespace competex_backend.BLL.Services
                 CompetitionId = Guid.Empty
             };
 
-            var result = scoreGroups.Select(x => x.Aggregate(emptyResult, (acc, item) => {
-               /* if ()*/
-                var timeScoreResult = item as TimeFaultScore; //This only works for timeFaultScore
-                return new ScoreResult
+            var result = scoreGroups.Select(x => {
+                return x.Aggregate(emptyResult, (acc, item) =>
                 {
-                    CompetitionId = competitionId,
-                    ParticipantId = timeScoreResult.ParticipantId,
-                    Faults = acc.Faults += timeScoreResult.Faults,
-                    Time = acc.Time += timeScoreResult.Time
-                };
-            }));
+                    if (item is TimeFaultScore score)
+                    {
+                        return new ScoreResult
+                        {
+                            CompetitionId = competitionId,
+                            ParticipantId = score.ParticipantId,
+                            Faults = acc.Faults + score.Faults,
+                            Time = acc.Time + score.Time
+                        };
+                    }
+                    return acc;
+                });
+            }).ToList();
             var numberOfLines = result.Count();
 
             var dtoResult = result.Select(x => _mapper.Map<ScoreResultDTO>(x));

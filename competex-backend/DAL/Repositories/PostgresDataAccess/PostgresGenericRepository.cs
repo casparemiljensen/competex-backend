@@ -140,7 +140,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         }
 
 
-        public (string query, List<NpgsqlParameter> parameters) BuildSearchQuery(string tableName, Dictionary<string, object> filters)
+        public static (string query, List<NpgsqlParameter> parameters) BuildSearchQuery(string tableName, Dictionary<string, object> filters)
         {
             var orConditions = new List<string>();
             int queryIndex = 0;
@@ -152,7 +152,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                 if (!IsValidSQLString(filterKey))
                 {
                     Console.WriteLine("Banned character used");
-                    break;
+                    throw new InvalidOperationException("Banned character used");
                 }
                 if (filter.Value is JsonElement jsonElement)
                 {
@@ -176,7 +176,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                         queryIndex++;
                     }
                 }
-                else if (filter.Value is IEnumerable enumerable)
+                else if (filter.Value is IEnumerable enumerable && filter.Value is not string)
                 {
                     int arrayLength = enumerable.Cast<object>().Count();
                     List<string> or = [];

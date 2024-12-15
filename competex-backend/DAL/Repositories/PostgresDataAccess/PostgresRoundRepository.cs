@@ -12,7 +12,10 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
 
         public Task<ResultT<Tuple<int, IEnumerable<Round>>>> GetRoundIdsByCompetitionId(Guid CompetitionId, int? pageSize, int? pageNumber)
         {
-            throw new NotImplementedException();
+            var filter = new Dictionary<string, object>() {
+                { "CompetitionId", CompetitionId }
+            };
+            return SearchAllAsync(pageSize, pageNumber, filter);
         }
     }
 }

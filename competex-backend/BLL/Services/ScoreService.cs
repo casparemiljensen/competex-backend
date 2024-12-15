@@ -64,6 +64,7 @@ namespace competex_backend.BLL.Services
             {
                 { "roundId", roundsIds }
             };
+            var test = (await SearchHelper.GetAllSearch<Match, IMatchRepository>(_matchRepository, roundFilter));
             participantIds.AddRange((await SearchHelper.GetAllSearch<Match, IMatchRepository>(_matchRepository, roundFilter))
                 .SelectMany(x => x.ParticipantIds ?? []));
 
@@ -81,7 +82,8 @@ namespace competex_backend.BLL.Services
                 CompetitionId = Guid.Empty
             };
 
-            var result = scoreGroups.Select(x => {
+            var result = scoreGroups.Select(x =>
+            {
                 return x.Aggregate(emptyResult, (acc, item) =>
                 {
                     if (item is TimeFaultScore score)
@@ -112,7 +114,7 @@ namespace competex_backend.BLL.Services
                 ));
         }
 
-        
+
 
         public async Task<ResultT<IActionResult>> AddPenaltyById(Guid ScoreId, Guid PenaltyId)
         {

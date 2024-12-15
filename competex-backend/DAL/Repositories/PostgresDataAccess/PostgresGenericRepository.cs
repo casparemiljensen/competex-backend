@@ -50,7 +50,8 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
 
             // Execute the raw SQL query
             var resultSet = _dbSet.FromSqlRaw(query, parameters.ToArray());
-
+            Console.WriteLine(filters.Count());
+            Console.WriteLine(query);
             // Count total records
             var totalRecords = await resultSet.CountAsync();
 
@@ -195,7 +196,11 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                     queryIndex++;
                 }
             }
-
+            orConditions = orConditions.RemoveAll((i, x) => paramList[i].)
+            if (orConditions.Count() < 1)
+            {
+                return ($"SELECT * FROM \"{tableName}\"", paramList);
+            }
             // Combine conditions with AND
             string whereClause = orConditions.Count > 0 ? $"WHERE ({string.Join(") AND (", orConditions)})" : "";
             string query = $"SELECT * FROM \"{tableName}\" {whereClause}";

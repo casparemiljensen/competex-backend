@@ -197,7 +197,6 @@ if (app.Environment.IsDevelopment() || true)
             // Incomment to seed database
             //var mockDatabaseManager = scope.ServiceProvider.GetRequiredService<MockDatabaseManager>();
             //DatabaseSeeder.SeedDatabase(context, mockDatabaseManager);
-
         }
         catch (Exception ex)
         {

@@ -50,7 +50,8 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
 
             // Execute the raw SQL query
             var resultSet = _dbSet.FromSqlRaw(query, parameters.ToArray());
-
+            Console.WriteLine(filters.Count());
+            Console.WriteLine(query);
             // Count total records
             var totalRecords = await resultSet.CountAsync();
 
@@ -140,7 +141,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         }
 
 
-        public (string query, List<NpgsqlParameter> parameters) BuildSearchQuery(string tableName, Dictionary<string, object> filters)
+        public static (string query, List<NpgsqlParameter> parameters) BuildSearchQuery(string tableName, Dictionary<string, object> filters)
         {
             var orConditions = new List<string>();
             int queryIndex = 0;
@@ -152,7 +153,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                 if (!IsValidSQLString(filterKey))
                 {
                     Console.WriteLine("Banned character used");
-                    break;
+                    throw new InvalidOperationException("Banned character used");
                 }
                 if (filter.Value is JsonElement jsonElement)
                 {
@@ -162,8 +163,8 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                         List<string> or = [];
                         foreach (var filterEntity in jsonElement.EnumerateArray())
                         {
+                            if (!paramList.AddTypeCorrectFilter(filterEntity)) continue;
                             or.Add($"\"{filterKey}\" = {{{queryIndex}}}");
-                            paramList.AddTypeCorrectFilter(filterEntity);
                             queryIndex++;
                         }
                         orConditions.Add(string.Join(" OR ", or));
@@ -171,34 +172,35 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                     }
                     else
                     {
+                        if (!paramList.AddTypeCorrectFilter(filter.Value)) continue;
                         orConditions.Add($"\"{filterKey}\" = {{{queryIndex}}}");
-                        paramList.AddTypeCorrectFilter(filter.Value);
                         queryIndex++;
                     }
                 }
-                else if (filter.Value is IEnumerable enumerable)
+                else if (filter.Value is IEnumerable enumerable && filter.Value is not string)
                 {
                     int arrayLength = enumerable.Cast<object>().Count();
                     List<string> or = [];
                     foreach (var filterEntity in enumerable)
                     {
+                        if (!paramList.AddTypeCorrectFilter(filterEntity)) continue;
                         or.Add($"\"{filterKey}\" = {{{queryIndex}}}");
-                        paramList.AddTypeCorrectFilter(filterEntity);
                         queryIndex++;
                     }
                     orConditions.Add(string.Join(" OR ", or));
                 }
                 else
                 {
+                    if (!paramList.AddTypeCorrectFilter(filter.Value)) continue;
                     orConditions.Add($"\"{filterKey}\" = {{{queryIndex}}}");
-                    paramList.AddTypeCorrectFilter(filter.Value);
                     queryIndex++;
                 }
             }
+            orConditions.RemoveAll(x => x.Equals(string.Empty));
 
             // Combine conditions with AND
             string whereClause = orConditions.Count > 0 ? $"WHERE ({string.Join(") AND (", orConditions)})" : "";
-            string query = $"SELECT * FROM \"{tableName}\" {whereClause}";
+            string query = $"SELECT * FROM \"{tableName}\" {whereClause}".Trim();
             return (query, paramList);
         }
 

@@ -27,7 +27,7 @@ namespace competex_backend.API.Controllers
         /// </summary>
         /// <param name="CompetitionId">The ID of the competition which results will be gotten calculated.</param>
         /// <returns>An IActionResult indicating the operation result.</returns>
-        [HttpGet("/getResults/{CompetitionId}")]
+        [HttpGet("getResults/{CompetitionId}")]
         public async Task<IActionResult> GetResultsByCompetitionId(Guid CompetitionId, int? pageSize, int? pageNumber)
         {
             var result = await _scoreService.GetResultsByCompetitionId(CompetitionId, pageSize, pageNumber);

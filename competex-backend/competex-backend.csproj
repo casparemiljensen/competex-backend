@@ -24,6 +24,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.TestPlatform" Version="17.11.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="MSTest.TestFramework" Version="3.6.1" />
     <PackageReference Include="Npgsql" Version="9.0.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />

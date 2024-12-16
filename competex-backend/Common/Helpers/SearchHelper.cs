@@ -53,8 +53,8 @@ namespace competex_backend.Common.Helpers
             var filterValue = filter;
             string stringElement;
 
-            Console.WriteLine("Type: " + filterValue.GetType().Name);
             if (filter == null) return false;
+            Console.WriteLine("Type: " + filterValue.GetType().Name);
             //Json Types
             if (filterValue is JsonElement jsonElement)
             {

@@ -163,7 +163,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                         List<string> or = [];
                         foreach (var filterEntity in jsonElement.EnumerateArray())
                         {
-                            if (!paramList.AddTypeCorrectFilter(filter.Value)) continue;
+                            if (!paramList.AddTypeCorrectFilter(filterEntity)) continue;
                             or.Add($"\"{filterKey}\" = {{{queryIndex}}}");
                             queryIndex++;
                         }
@@ -183,7 +183,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                     List<string> or = [];
                     foreach (var filterEntity in enumerable)
                     {
-                        if (!paramList.AddTypeCorrectFilter(filter.Value)) continue;
+                        if (!paramList.AddTypeCorrectFilter(filterEntity)) continue;
                         or.Add($"\"{filterKey}\" = {{{queryIndex}}}");
                         queryIndex++;
                     }
@@ -200,7 +200,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
 
             // Combine conditions with AND
             string whereClause = orConditions.Count > 0 ? $"WHERE ({string.Join(") AND (", orConditions)})" : "";
-            string query = $"SELECT * FROM \"{tableName}\" {whereClause}";
+            string query = $"SELECT * FROM \"{tableName}\" {whereClause}".Trim();
             return (query, paramList);
         }
 

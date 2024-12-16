@@ -7,7 +7,7 @@ namespace competex_backend.API.DTOs
     {
         public RoundDTO? Round { get; set; }
         public Guid? RoundId { get; set; }
-        public List<ParticipantDTO>? Participants { get; set; }
+        public List<EkvipageDTO>? Participants { get; set; }
         public List<Guid>? ParticipantIds { get; set; }
         public MatchStatus Status { get; set; } = MatchStatus.Pending;
         public DateTime StartTime { get; set; }

@@ -6,7 +6,7 @@ using competex_backend.Models;
 
 namespace competex_backend.BLL.Services
 {
-    public class ParticipantService : GenericService<Ekvipage, ParticipantDTO>, IParticipantService
+    public class ParticipantService : GenericService<Ekvipage, EkvipageDTO>, IParticipantService
     {
         private readonly IParticipantRepository _participantRepository;
         private readonly IMapper _mapper;

@@ -6,6 +6,11 @@ namespace competex_backend.Common.Helpers
     {
         internal static string GetTableName<T>()
         {
+            switch (typeof(T).Name)
+            {
+                case "Score":
+                    return "scores";
+            }
             try
             {
                 switch (Activator.CreateInstance<T>())

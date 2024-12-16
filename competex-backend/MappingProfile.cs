@@ -41,6 +41,7 @@ namespace competex_backend
             CreateMap<Competition, CompetitionDTO>()
                 .ForMember(dest => dest.CompetitionType, opt => opt.MapFrom(src => src.CompetitionTypeId));
             CreateMap<Event, EventDTO>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.LocationId))
                 .ForMember(dest => dest.Organizer, opt => opt.MapFrom(src => src.OrganizerId))
                 .ForMember(dest => dest.SportType, opt => opt.MapFrom(src => src.SportTypeId))

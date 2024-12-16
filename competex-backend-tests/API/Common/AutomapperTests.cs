@@ -505,7 +505,7 @@ namespace competex_backend_tests.API.Common
 
             // Assert: Verify the mapping result
             Assert.NotNull(eventEntity);
-            Assert.NotEqual(eventEntity.Id, eventDTO.Id);
+            Assert.Equal(eventEntity.Id, Guid.Empty);
             Assert.Equal(eventEntity.Title, eventDTO.Title);
             Assert.Equal(eventEntity.Status, eventDTO.Status);
             Assert.Equal(eventEntity.CompetitionIds, eventDTO.CompetitionIds);

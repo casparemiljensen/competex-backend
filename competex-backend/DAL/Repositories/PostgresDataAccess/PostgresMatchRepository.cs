@@ -22,19 +22,15 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                 return ResultT<Match>.Failure(Error.NotFound($"{typeof(Match).Name.ToLower()} not found.", $"{typeof(Match).Name.ToLower()} with ID {id} does not exist."));
             }
 
-            // Check if the entity is an Event and populate CompetitionIds
+            // Check if the entity is a Match and populate ParticipantIds
             if (entity is Match @match)
             {
-                var participantIds = await _dbContext.Set<Dictionary<string, object>>("match_participants")
-                    .Where(ec => EF.Property<Guid>(ec, "MatchId") == id)
-                    .Select(ec => EF.Property<Guid>(ec, "ParticipantId"))
-                    .ToListAsync();
-
-                @match.ParticipantIds = participantIds;
+                await PopulateParticipantIdsAsync(@match, id);
             }
 
             return ResultT<Match>.Success(entity);
         }
+
 
         public override async Task<ResultT<Tuple<int, IEnumerable<Match>>>> GetAllAsync(int? pageSize, int? pageNumber)
         {
@@ -53,14 +49,10 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
             // Populate CompetitionIds for Event entities
             foreach (var entity in entities)
             {
+                // Check if the entity is a Match and populate ParticipantIds
                 if (entity is Match @match)
                 {
-                    var participantIds = await _dbContext.Set<Dictionary<string, object>>("match_participants")
-                        .Where(ec => EF.Property<Guid>(ec, "MatchId") == match.Id)
-                        .Select(ec => EF.Property<Guid>(ec, "ParticipantId"))
-                        .ToListAsync();
-
-                    @match.ParticipantIds = participantIds;
+                    await PopulateParticipantIdsAsync(@match, entity.Id);
                 }
             }
 
@@ -155,12 +147,29 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                 .Take(pageSize ?? Defaults.PageSize)
                 .ToListAsync();
 
+            // Populate ParticipantIds for each Match
+            foreach (var match in paginatedMatches)
+            {
+                await PopulateParticipantIdsAsync(match, match.Id);
+            }
+
             // Calculate total pages
             var totalPages = PaginationHelper.GetTotalPages(pageSize, pageNumber, totalCount);
 
             // Return result
             return ResultT<Tuple<int, IEnumerable<Match>>>.Success(
                 new Tuple<int, IEnumerable<Match>>(totalPages, paginatedMatches));
+        }
+
+
+        private async Task PopulateParticipantIdsAsync(Match match, Guid matchId)
+        {
+            var participantIds = await _dbContext.Set<Dictionary<string, object>>("match_participants")
+                .Where(ec => EF.Property<Guid>(ec, "MatchId") == matchId)
+                .Select(ec => EF.Property<Guid>(ec, "ParticipantId"))
+                .ToListAsync();
+
+            match.ParticipantIds = participantIds;
         }
 
     }

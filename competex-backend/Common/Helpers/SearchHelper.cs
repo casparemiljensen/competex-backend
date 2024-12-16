@@ -42,7 +42,7 @@ namespace competex_backend.Common.Helpers
             return output;
         }
 
-        public static void AddTypeCorrectFilter(this List<NpgsqlParameter> list, object filter)
+        public static bool AddTypeCorrectFilter(this List<NpgsqlParameter> list, object filter)
         {
             DateTime time;
             Guid guid;
@@ -63,41 +63,41 @@ namespace competex_backend.Common.Helpers
                 if (Guid.TryParse(stringElement, out guid))
                 {
                     list.Add(new NpgsqlParameter() { Value = guid, NpgsqlDbType = NpgsqlDbType.Uuid });
-                    return;
+                    return true;
                 }
                 if (DateTime.TryParse(stringElement, out time))
                 {
                     Console.WriteLine("DATETIME");
                     list.Add(new NpgsqlParameter() { Value = time, NpgsqlDbType = NpgsqlDbType.Timestamp });
-                    return;
+                    return true;
                 }
                 if (jsonElement.ValueKind == JsonValueKind.Number)
                 {
                     if (short.TryParse(stringElement, out _short))
                     {
                         list.Add(new NpgsqlParameter() { Value = _short, NpgsqlDbType = NpgsqlDbType.Smallint });
-                        return;
+                        return true;
                     }
                     else if (int.TryParse(stringElement, out integer))
                     {
                         list.Add(new NpgsqlParameter() { Value = integer, NpgsqlDbType = NpgsqlDbType.Integer });
-                        return;
+                        return true;
                     }
                     else if (double.TryParse(stringElement, out _double))
                     {
                         list.Add(new NpgsqlParameter() { Value = _double, NpgsqlDbType = NpgsqlDbType.Double });
-                        return;
+                        return true;
                     }
                     else
                     {
                         Console.WriteLine("Unknown number type used");
-                        return;
+                        return false;
                     }
                 }
                 if (jsonElement.ValueKind == JsonValueKind.String)//Must after parsers
                 {
                     list.Add(new NpgsqlParameter() { Value = stringElement, NpgsqlDbType = NpgsqlDbType.Text });
-                    return;
+                    return true;
                 }
             }
 
@@ -105,23 +105,28 @@ namespace competex_backend.Common.Helpers
             if (filterValue is Guid)
             {
                 list.Add(new NpgsqlParameter() { Value = filterValue, NpgsqlDbType = NpgsqlDbType.Uuid });
+                return true;
             }
             else if (filterValue.GetType().IsAssignableTo(typeof(string)))
             {
                 list.Add(new NpgsqlParameter() { Value = filterValue.ToString(), NpgsqlDbType = NpgsqlDbType.Text });
+                return true;
             }
             else if (DateTime.TryParse(filterValue.ToString(), out time))
             {
                 list.Add(new NpgsqlParameter() { Value = time, NpgsqlDbType = NpgsqlDbType.Timestamp });
+                return true;
             }
             else if (filterValue is int)
             {
                 Console.WriteLine("Adding Int");
                 list.Add(new NpgsqlParameter() { Value = filterValue, NpgsqlDbType = NpgsqlDbType.Integer });
+                return true;
             }
             else
             {
                 Console.WriteLine("Unknown type: " + filterValue.GetType().Name + " value: " + filterValue);
+                return false;
             }
         }
 

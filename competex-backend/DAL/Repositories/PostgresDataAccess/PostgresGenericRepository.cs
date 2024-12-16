@@ -163,8 +163,8 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                         List<string> or = [];
                         foreach (var filterEntity in jsonElement.EnumerateArray())
                         {
+                            if (!paramList.AddTypeCorrectFilter(filter.Value)) continue;
                             or.Add($"\"{filterKey}\" = {{{queryIndex}}}");
-                            paramList.AddTypeCorrectFilter(filterEntity);
                             queryIndex++;
                         }
                         orConditions.Add(string.Join(" OR ", or));
@@ -172,8 +172,8 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                     }
                     else
                     {
+                        if (!paramList.AddTypeCorrectFilter(filter.Value)) continue;
                         orConditions.Add($"\"{filterKey}\" = {{{queryIndex}}}");
-                        paramList.AddTypeCorrectFilter(filter.Value);
                         queryIndex++;
                     }
                 }
@@ -183,20 +183,19 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                     List<string> or = [];
                     foreach (var filterEntity in enumerable)
                     {
+                        if (!paramList.AddTypeCorrectFilter(filter.Value)) continue;
                         or.Add($"\"{filterKey}\" = {{{queryIndex}}}");
-                        paramList.AddTypeCorrectFilter(filterEntity);
                         queryIndex++;
                     }
                     orConditions.Add(string.Join(" OR ", or));
                 }
                 else
                 {
+                    if (!paramList.AddTypeCorrectFilter(filter.Value)) continue;
                     orConditions.Add($"\"{filterKey}\" = {{{queryIndex}}}");
-                    paramList.AddTypeCorrectFilter(filter.Value);
                     queryIndex++;
                 }
             }
-            orConditions = orConditions.RemoveAll((i, x) => paramList[i].)
             if (orConditions.Count() < 1)
             {
                 return ($"SELECT * FROM \"{tableName}\"", paramList);

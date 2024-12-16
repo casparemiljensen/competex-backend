@@ -196,10 +196,8 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                     queryIndex++;
                 }
             }
-            if (orConditions.Count() < 1)
-            {
-                return ($"SELECT * FROM \"{tableName}\"", paramList);
-            }
+            orConditions.RemoveAll(x => x.Equals(string.Empty));
+
             // Combine conditions with AND
             string whereClause = orConditions.Count > 0 ? $"WHERE ({string.Join(") AND (", orConditions)})" : "";
             string query = $"SELECT * FROM \"{tableName}\" {whereClause}";

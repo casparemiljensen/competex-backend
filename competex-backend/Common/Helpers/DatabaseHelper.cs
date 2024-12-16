@@ -9,7 +9,7 @@ namespace competex_backend.Common.Helpers
             switch (typeof(T).Name)
             {
                 case "Score":
-                    return "Score";
+                    return "scores";
             }
             try
             {

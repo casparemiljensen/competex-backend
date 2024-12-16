@@ -54,7 +54,7 @@ namespace competex_backend.Common.Helpers
             string stringElement;
 
             Console.WriteLine("Type: " + filterValue.GetType().Name);
-
+            if (filter == null) return false;
             //Json Types
             if (filterValue is JsonElement jsonElement)
             {

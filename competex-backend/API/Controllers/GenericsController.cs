@@ -8,11 +8,11 @@ namespace competex_backend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenericsController<T> : ControllerBase, IGenericAPI<T> where T : class
+    public class GenericsController<TDto> : ControllerBase, IGenericAPI<TDto> where TDto : class
     {
-        private IGenericService<T> _genericService;
+        private IGenericService<TDto> _genericService;
 
-        public GenericsController(IGenericService<T> service)
+        public GenericsController(IGenericService<TDto> service)
         {
             _genericService = service;
         }
@@ -34,7 +34,7 @@ namespace competex_backend.API.Controllers
             var result = await _genericService.GetAllAsync(pageSize, pageNumber);
             if (result.IsSuccess)
             {
-                var obj = new PaginationWrapperDTO<IEnumerable<T>>(
+                var obj = new PaginationWrapperDTO<IEnumerable<TDto>>(
                     result.Value.Item2,
                     pageSize ?? Defaults.PageSize,
                     pageNumber ?? Defaults.PageNumber,
@@ -51,7 +51,7 @@ namespace competex_backend.API.Controllers
             if (result.IsSuccess)
             {
                 //var obj = result.Value.Item2;
-                var obj = new PaginationWrapperDTO<IEnumerable<T>>(
+                var obj = new PaginationWrapperDTO<IEnumerable<TDto>>(
                     result.Value.Item2,
                     pageSize ?? Defaults.PageSize,
                     pageNumber ?? Defaults.PageNumber,
@@ -62,7 +62,7 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPost]
-        public async virtual Task<IActionResult> CreateAsync(T obj)
+        public async virtual Task<IActionResult> CreateAsync(TDto obj)
         {
             var result = await _genericService.CreateAsync(obj);
             if (result.IsSuccess)
@@ -73,7 +73,7 @@ namespace competex_backend.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, T obj)
+        public async Task<IActionResult> UpdateAsync(Guid id, TDto obj)
         {
             var result = await _genericService.UpdateAsync(id, obj);
             if (result.IsSuccess)

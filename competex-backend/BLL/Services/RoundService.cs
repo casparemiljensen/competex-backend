@@ -66,7 +66,7 @@ namespace competex_backend.BLL.Services
             var roundTwoFilter = new Dictionary<string, object>()
             {
                 { "CompetitionId", competitionId },
-                { "SequenceNumber", (int)roundSequenceNumber }
+                { "SequenceNumber", (int)roundSequenceNumber - 1 }
             };
             // Get all rounds for the competition
             var roundTwoResult = await SearchHelper.GetAllSearch<Round, IRoundRepository>(_roundRepository, roundTwoFilter);
@@ -100,7 +100,7 @@ namespace competex_backend.BLL.Services
                 }
                 else
                 {
-                    idOfPrevRound = roundTwoResult
+                    idOfPrevRound = roundsResult
                     .Select(round => round.Id)
                     .FirstOrDefault();
                 }

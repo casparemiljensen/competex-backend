@@ -145,14 +145,6 @@ data:
         CONSTRAINT "FK_competitions_events_EventId" FOREIGN KEY ("EventId") REFERENCES events ("Id") ON DELETE CASCADE
     );
 
-    CREATE TABLE event_competitions (
-        "CompetitionId" uuid NOT NULL DEFAULT (gen_random_uuid()),
-        "EventId" uuid NOT NULL DEFAULT (gen_random_uuid()),
-        CONSTRAINT "PK_event_competitions" PRIMARY KEY ("CompetitionId", "EventId"),
-        CONSTRAINT "FK_event_competitions_competitions_CompetitionId" FOREIGN KEY ("CompetitionId") REFERENCES competitions ("Id") ON DELETE CASCADE,
-        CONSTRAINT "FK_event_competitions_events_EventId" FOREIGN KEY ("EventId") REFERENCES events ("Id") ON DELETE CASCADE
-    );
-
     CREATE TABLE registrations (
         "Id" uuid NOT NULL DEFAULT (gen_random_uuid()),
         "ParticipantId" uuid NOT NULL,
@@ -233,8 +225,6 @@ data:
 
     CREATE INDEX "IX_entities_OwnerId" ON entities ("OwnerId");
 
-    CREATE INDEX "IX_event_competitions_EventId" ON event_competitions ("EventId");
-
     CREATE INDEX "IX_events_LocationId" ON events ("LocationId");
 
     CREATE INDEX "IX_events_OrganizerId" ON events ("OrganizerId");
@@ -270,7 +260,7 @@ data:
     CREATE INDEX "IX_scores_ParticipantId" ON scores ("ParticipantId");
 
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20241211203300_InitialCreate', '9.0.0');
+    VALUES ('20241216084927_InitialCreate', '9.0.0');
 
     -- Test data for clubs
     INSERT INTO clubs ("Id", "Name", "AssociatedSport") VALUES
@@ -323,4 +313,3 @@ data:
 
 
     COMMIT;
-

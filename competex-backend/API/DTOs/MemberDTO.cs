@@ -1,6 +1,5 @@
 ﻿namespace competex_backend.API.DTOs
 {
-    //@APIModel
     public class MemberDTO : Identifiable
     {
         public string FirstName { get; set; } = string.Empty;

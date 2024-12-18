@@ -18,3 +18,4 @@ spec:
             name: competex-backend-service
             port:
               number: 8080
+  

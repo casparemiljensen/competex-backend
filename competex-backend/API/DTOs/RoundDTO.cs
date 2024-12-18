@@ -2,7 +2,6 @@ using competex_backend.Models;
 
 namespace competex_backend.API.DTOs
 {
-    //@APIModel
     public class RoundDTO : Identifiable
     {
         public required string Name { get; set; }
@@ -13,8 +12,6 @@ namespace competex_backend.API.DTOs
         public RoundStatus Status { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        //public IEnumerable<MatchDTO>? Matches { get; set; }
-        //public IEnumerable<Guid>? MatchIds { get; set; }
     }
 }
 

@@ -113,7 +113,5 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
                 return Result.Failure(Error.Failure("DeletionError", $"Failed to delete competition: {ex.Message}"));
             }
         }
-
-
     }
 }

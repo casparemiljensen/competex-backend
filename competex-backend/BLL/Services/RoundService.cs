@@ -2,6 +2,7 @@
 using Common.ResultPattern;
 using competex_backend.API.DTOs;
 using competex_backend.BLL.Interfaces;
+using competex_backend.Common.Helpers;
 using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
 using System.Collections.Generic;
@@ -37,36 +38,40 @@ namespace competex_backend.BLL.Services
         }
 
 
+
         public async Task<ResultT<Tuple<int, IEnumerable<MatchDTO>>>> CreateMatchesForRoundAsync(Guid competitionId, uint roundSequenceNumber, CriteriaDTO? criteria, int? pageSize, int? pageNumber)
         {
 
             // We might set match state here
             // See if i can optimize by making specific queries to the database instead of getting all objects...
             // Right now the round has to be made beforehand
-
-
-            // TODO: While loop for pagination in roundsService
-
-
-            var registrationsResult = await _registrationRepository.GetAllAsync(null, null);
-            if (!registrationsResult.IsSuccess)
+            var regFilter = new Dictionary<string, object>()
             {
-                return ResultT<Tuple<int, IEnumerable<MatchDTO>>>.Failure(registrationsResult.Error!);
-            }
+                { "CompetitionId", competitionId },
+                { "Status", RegistrationStatus.Accepted }
+            };
+            
 
-            // Get all registrations for the competition
-            var regs = registrationsResult.Value.Item2.Where(i => i.CompetitionId == competitionId && i.Status == RegistrationStatus.Accepted).ToList();
+            var regs = await SearchHelper.GetAllSearch<Registration, IRegistrationRepository>(_registrationRepository, regFilter);
 
+
+            var roundFilter = new Dictionary<string, object>()
+            {
+                { "CompetitionId", competitionId },
+                { "SequenceNumber", (int)roundSequenceNumber }
+            };
             // Get all rounds for the competition
-            var roundsResult = await _roundRepository.GetRoundIdsByCompetitionId(competitionId, null, null);
+            var roundsResult = await SearchHelper.GetAllSearch<Round, IRoundRepository>(_roundRepository, roundFilter);
 
-            if (!roundsResult.IsSuccess)
+            var roundTwoFilter = new Dictionary<string, object>()
             {
-                return ResultT<Tuple<int, IEnumerable<MatchDTO>>>.Failure(roundsResult.Error!);
-            }
+                { "CompetitionId", competitionId },
+                { "SequenceNumber", (int)roundSequenceNumber }
+            };
+            // Get all rounds for the competition
+            var roundTwoResult = await SearchHelper.GetAllSearch<Round, IRoundRepository>(_roundRepository, roundTwoFilter);
 
-            var idOfNewRound = roundsResult.Value.Item2
-            .Where(round => round.SequenceNumber == roundSequenceNumber)
+            var idOfNewRound = roundsResult
             .Select(round => round.Id)
             .FirstOrDefault();
 
@@ -87,17 +92,15 @@ namespace competex_backend.BLL.Services
                 var idOfPrevRound = Guid.Empty;
 
                 // Select the roundId given the roundSequenceNumber
-                if (roundSequenceNumber > 0)
+                if (roundSequenceNumber > 0) // Epic fail? > 1
                 {
-                    idOfPrevRound = roundsResult.Value.Item2
-                    .Where(round => round.SequenceNumber == roundSequenceNumber - 1) // get previous round
+                    idOfPrevRound = roundTwoResult
                     .Select(round => round.Id)
                     .FirstOrDefault();
                 }
                 else
                 {
-                    idOfPrevRound = roundsResult.Value.Item2
-                    .Where(round => round.SequenceNumber == roundSequenceNumber)
+                    idOfPrevRound = roundTwoResult
                     .Select(round => round.Id)
                     .FirstOrDefault();
                 }
@@ -109,39 +112,43 @@ namespace competex_backend.BLL.Services
 
 
                 // Get the matches from the previous round
-                var prevRoundMatchesResult = await _matchRepository.GetAllAsync(null, null);
 
-                if (!prevRoundMatchesResult.IsSuccess)
+                var matchFilter = new Dictionary<string, object>()
                 {
-                    return ResultT<Tuple<int, IEnumerable<MatchDTO>>>.Failure(prevRoundMatchesResult.Error!);
-                }
+                    { "RoundId", idOfPrevRound },
+                };
+                var prevRoundMatches = await SearchHelper.GetAllSearch<Match, IMatchRepository>(_matchRepository, matchFilter);
 
-                // Get the matches from the previous round
-                var prevRoundMatches = prevRoundMatchesResult.Value.Item2
-                    .Where(match => match.RoundId == idOfPrevRound)
-                    .Select(i => i).ToList();
-
-                var scoresResult = await _scoreRepository.GetAllAsync(null, null);
-
-                if (!scoresResult.IsSuccess)
-                {
-                    return ResultT<Tuple<int, IEnumerable<MatchDTO>>>.Failure(scoresResult.Error!);
-                }
-
-                // Select match ids from the previous round
                 var prevRoundMatchIds = prevRoundMatches.Select(match => match.Id).ToList();
 
+                var scoreFilter = new Dictionary<string, object>()
+                {
+                    { "ScoreType", "TimeFault" },
+                    { "MatchId", prevRoundMatchIds }
+                };
+                var scoresFromPreviousMatches = await SearchHelper.GetAllSearch<Score, IScoreRepository>(_scoreRepository, scoreFilter);
+                var timeFaultScores = scoresFromPreviousMatches.Cast<TimeFaultScore>().ToList();
+                //var scoresResult = await _scoreRepository.GetAllAsync(null, null);
+
+                //if (!scoresResult.IsSuccess)
+                //{
+                //    return ResultT<Tuple<int, IEnumerable<MatchDTO>>>.Failure(scoresResult.Error!);
+                //}
+
+                // Select match ids from the previous round
+
                 // Filter scores where MatchId is in prevRoundMatchIds
-                var scoresFromPreviousMatches = scoresResult.Value.Item2
-                    .Where(score => prevRoundMatchIds.Contains((Guid)score.MatchId)) // Check if MatchId is in the list
-                    .Select(score => score) // Extract the Score property
-                    .ToList(); // Convert the result to a list
+                //var scoresFromPreviousMatches = scoresResult.Value.Item2
+                //    .Where(score => prevRoundMatchIds.Contains((Guid)score.MatchId)) // Check if MatchId is in the list
+                //    .Select(score => score) // Extract the Score property
+                //    .ToList(); // Convert the result to a list
+
 
                 // Select all relevant types of scores, here timeFaultScores are selected - since they are used in rabbit jumping.
-                var timeFaultScores = scoresFromPreviousMatches
-                .Where(score => score is TimeFaultScore)
-                .Cast<TimeFaultScore>()
-                .ToList();
+                //var timeFaultScores = scoresFromPreviousMatches
+                //.Where(score => score is TimeFaultScore)
+                //.Cast<TimeFaultScore>()
+                //.ToList();
 
                 // Select all relevant participants, based on the criteria
                 relevantParticipantIds = timeFaultScores

@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  database:
+    image: 'postgres:latest'
+    ports:
+      - 15432:5432
+    env_file:
+      - .env
+    networks:
+      - postgres-network
+    volumes:
+      - ./db-data/:/var/lib/postgresql/data/
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - 82:80
+    env_file:
+      - .env
+    depends_on:
+      - database
+    networks:
+      - postgres-network
+    volumes:
+      - ./pgadmin-data/:/var/lib/pgadmin/
+      - ./servers.json:/pgadmin4/servers.json
+
+  adminer:
+    image: ghcr.io/shyim/adminerevo:latest
+    restart: always
+    depends_on:
+      - database
+    ports:
+      - 81:8080
+    networks:
+      - postgres-network
+
+networks:
+  postgres-network:
+    driver: bridge

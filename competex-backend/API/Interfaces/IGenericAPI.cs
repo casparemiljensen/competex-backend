@@ -2,13 +2,13 @@
 
 namespace competex_backend.API.Interfaces
 {
-    public interface IGenericAPI<T> where T : class
+    public interface IGenericAPI<TDto> where TDto : class
     {
         Task<IActionResult> GetByIdAsync(Guid id);
         Task<IActionResult> GetAllAsync(int? pageSize, int? pageNumber);
         Task<IActionResult> SearchAllAsync(int? pageSize, int? pageNumber, Dictionary<string, object>? filters);
-        Task<IActionResult> CreateAsync(T obj);
-        Task<IActionResult> UpdateAsync(Guid id, T obj);
+        Task<IActionResult> CreateAsync(TDto obj);
+        Task<IActionResult> UpdateAsync(Guid id, TDto obj);
         Task<IActionResult> DeleteAsync(Guid id);
     }
 }

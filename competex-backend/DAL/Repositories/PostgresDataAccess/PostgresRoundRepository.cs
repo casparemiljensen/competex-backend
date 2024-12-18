@@ -1,5 +1,7 @@
-﻿using competex_backend.DAL.Interfaces;
+﻿using competex_backend.Common.Helpers;
+using competex_backend.DAL.Interfaces;
 using competex_backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace competex_backend.DAL.Repositories.PostgresDataAccess
 {
@@ -10,9 +12,12 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         {
         }
 
-        public Task<ResultT<Tuple<int, IEnumerable<Round>>>> GetRoundIdsByCompetitionId(Guid CompetitionId, int? pageSize, int? pageNumber)
+        public async Task<ResultT<Tuple<int, IEnumerable<Round>>>> GetRoundIdsByCompetitionId(Guid CompetitionId, int? pageSize, int? pageNumber)
         {
-            throw new NotImplementedException();
+            var filter = new Dictionary<string, object>() {
+                { "CompetitionId", CompetitionId }
+            };
+            return await SearchAllAsync(pageSize, pageNumber, filter);
         }
     }
 }

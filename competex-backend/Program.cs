@@ -191,13 +191,13 @@ if (app.Environment.IsDevelopment() || true)
         try
         {
             var context = services.GetRequiredService<ApplicationDbContext>();
-            // Apply pending migrations
-            await context.Database.MigrateAsync();
-
+     
             // Incomment to seed database
             //var mockDatabaseManager = scope.ServiceProvider.GetRequiredService<MockDatabaseManager>();
             //DatabaseSeeder.SeedDatabase(context, mockDatabaseManager);
 
+            // Apply pending migrations
+            await context.Database.MigrateAsync();
         }
         catch (Exception ex)
         {
@@ -215,7 +215,7 @@ app.UseCors(MyAllowSpecificOrigins);
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseMiddleware<ErrorHandlingMiddleware>();
+    // app.UseMiddleware<ErrorHandlingMiddleware>();
 }
 
 app.MapControllers();

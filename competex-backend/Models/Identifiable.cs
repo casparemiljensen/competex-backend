@@ -1,8 +1,7 @@
 using competex_backend.Models;
-using System.ComponentModel.DataAnnotations;
 
 public class Identifiable : IIdentifiable
-        {
+{
     public Guid Id { get; set; }
 
     public override bool Equals(object? obj)

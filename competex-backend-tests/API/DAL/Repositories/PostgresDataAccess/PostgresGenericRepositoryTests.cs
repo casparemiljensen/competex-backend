@@ -18,7 +18,8 @@ namespace competex_backend_tests.API.DAL.Repositories.PostgresDataAccess
     {
         private readonly Mock<PostgresMemberRepository> _repository;
 
-        public PostgresGenericRepositoryTests() {
+        public PostgresGenericRepositoryTests()
+        {
             _repository = new Mock<PostgresMemberRepository>();
         }
 

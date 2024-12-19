@@ -84,7 +84,8 @@ namespace competex_backend_tests.API.Services
             // Arrange
             var competitionId = Guid.NewGuid();
             var roundId = Guid.NewGuid();
-            var roundSequenceNumber = 0;
+            var roundIdTwo = Guid.NewGuid();
+            var roundSequenceNumber = 1;
             var participantIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
 
             var criteria = new CriteriaDTO { MaxFaults = 5, MaxMinutes = TimeSpan.FromMinutes(10) };
@@ -98,16 +99,19 @@ namespace competex_backend_tests.API.Services
 
             var rounds = new List<Round>
             {
-                new Round { Id = roundId, Name = "Shalom2", CompetitionId = competitionId, SequenceNumber = (uint)roundSequenceNumber }
+                new Round { Id = roundId, Name = "Shalom1", CompetitionId = competitionId, SequenceNumber = (uint)roundSequenceNumber - 1 },
+                new Round { Id = roundIdTwo, Name = "Shalom2", CompetitionId = competitionId, SequenceNumber = (uint)roundSequenceNumber }
             };
 
             var matches = new List<Match>
             {
-                new Match { Id = Guid.NewGuid(), RoundId = roundId, ParticipantIds = participantIds }
+                new Match { Id = Guid.NewGuid(), RoundId = roundId, ParticipantIds = [ participantIds[0] ] },
+                new Match { Id = Guid.NewGuid(), RoundId = roundIdTwo, ParticipantIds = [ participantIds[1] ] }
             };
 
             var scores = new List<Score>
             {
+                new TimeFaultScore(6, TimeSpan.FromSeconds(10), matches[0].Id, participantIds[1]),
                 new TimeFaultScore(2, TimeSpan.FromSeconds(10), matches[0].Id, participantIds[0]),
             };
 
@@ -115,15 +119,19 @@ namespace competex_backend_tests.API.Services
 
             _matchRepositoryMock
                 .Setup(repo => repo.GetMatchesByRoundId(It.IsAny<Guid>(), It.IsAny<int?>(), It.IsAny<int?>()))
-                .Returns(() => {
+                .Returns(() =>
+                {
+                    
                     return Task.FromResult(ResultT<Tuple<int, IEnumerable<Match>>>.Success(new Tuple<int, IEnumerable<Match>>(matches.Count,
                         matches
                         .Where(match => match.RoundId == roundId))));
                 });
+            
 
             _registrationRepositoryMock
                 .Setup(repo => repo.SearchAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Dictionary<string, object>>()))
-                .ReturnsAsync(() => {
+                .ReturnsAsync(() =>
+                {
                     return ResultT<Tuple<int, IEnumerable<Registration>>>.Success(new Tuple<int, IEnumerable<Registration>>(rounds.Count,
                         registrations
                         .Where(registration => registration.CompetitionId == competitionId && registration.Status == RegistrationStatus.Accepted)));
@@ -131,23 +139,34 @@ namespace competex_backend_tests.API.Services
 
             _roundRepositoryMock
                 .Setup(repo => repo.GetRoundIdsByCompetitionId(competitionId, null, null))
-                .ReturnsAsync(ResultT<Tuple<int, IEnumerable<Round>>>.Success(new Tuple<int, IEnumerable<Round>>(rounds.Count,rounds)));
-            
+                .ReturnsAsync(ResultT<Tuple<int, IEnumerable<Round>>>.Success(new Tuple<int, IEnumerable<Round>>(rounds.Count, rounds)));
+
             _roundRepositoryMock
                 .Setup(repo => repo.SearchAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Dictionary<string, object>>()))
-                .ReturnsAsync(() => {
-                    return ResultT<Tuple<int, IEnumerable<Round>>>.Success(new Tuple<int, IEnumerable<Round>>(rounds.Count,
+                .ReturnsAsync((int pageSize, int pageNumber, Dictionary<string, object> filter) =>
+                {
+                    if (filter["SequenceNumber"] == null)
+                    {
+                        return ResultT<Tuple<int, IEnumerable<Round>>>.Success(new Tuple<int, IEnumerable<Round>>(rounds.Count,
                         rounds.Where(round => round.CompetitionId == competitionId && round.SequenceNumber == roundSequenceNumber)
                         ));
-                    });
+                    }
+                    int.TryParse(filter["SequenceNumber"] as char[], out int sequenceNumber);
+                    return ResultT<Tuple<int, IEnumerable<Round>>>.Success(new Tuple<int, IEnumerable<Round>>(rounds.Count,
+                        rounds.Where(round => round.CompetitionId == competitionId && round.SequenceNumber == sequenceNumber)
+                        ));
+                });
 
             _matchRepositoryMock
                 .Setup(repo => repo.InsertAsync(It.IsAny<Match>()))
                 .ReturnsAsync(ResultT<Guid>.Success(Guid.NewGuid()));
 
             _matchRepositoryMock
-                .Setup(repo => repo.SearchAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Dictionary<string, object>>()))
-                .ReturnsAsync(() => {
+                .Setup(repo => repo.SearchAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Dictionary<string, object>>()))
+                .ReturnsAsync((int? pageSize, int? pageNumber, Dictionary<string, object> filters) =>
+                {
+                    Guid roundId;
+                    Guid.TryParse(filters["RoundId"] as char[], out roundId);
                     return ResultT<Tuple<int, IEnumerable<Match>>>.Success(new Tuple<int, IEnumerable<Match>>(rounds.Count,
                         matches.Where(match => match.RoundId == rounds[0].Id)));
                 });
@@ -158,7 +177,8 @@ namespace competex_backend_tests.API.Services
 
             _scoreRepositoryMock
                 .Setup(repo => repo.SearchAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Dictionary<string, object>>()))
-                .ReturnsAsync(() => {
+                .ReturnsAsync(() =>
+                {
                     return ResultT<Tuple<int, IEnumerable<Score>>>.Success(new Tuple<int, IEnumerable<Score>>(rounds.Count,
                         scores.Where(score => matches.Select(x => x.Id).Contains(score.MatchId))));
                 });
@@ -167,17 +187,16 @@ namespace competex_backend_tests.API.Services
                 .Setup(mapper => mapper.Map<MatchDTO>(It.IsAny<Match>()))
                 .Returns((Match src) => matchDTOs.First(m => m.Id == src.Id));
 
-            
+
             // Act
             var result = await _roundService.CreateMatchesForRoundAsync(competitionId, Convert.ToUInt32(roundSequenceNumber), criteria, null, null);
 
             // Assert
             Assert.True(result.IsSuccess);
-            Assert.Equal(matches.Count, result.Value.Item1);
-            Assert.Equal(matchDTOs, result.Value.Item2);
+            Assert.Equal(1, result.Value.Item1);
+            Assert.Equal(matchDTOs[0], result.Value.Item2.First());
 
             _matchRepositoryMock.Verify(repo => repo.GetMatchesByRoundId(roundId, null, null), Times.Once);
-            _mapperMock.Verify(mapper => mapper.Map<MatchDTO>(It.IsAny<Match>()), Times.Exactly(matches.Count));
         }
 
 

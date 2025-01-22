@@ -57,8 +57,8 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddSingleton<MockDatabaseManager>();
 
-# region IGenericRepository
-//Registers IGenericRepository<T> with specific implementations (MockMemberRepository, MockClubRepository, etc.) for each model type.
+# region Repository Registrations
+// Registers IGenericRepository<T> with specific implementations (Postgres and Mock repositories) for each model type.
 builder.Services.AddScoped<IGenericRepository<Member>, PostgresMemberRepository>();
 builder.Services.AddScoped<IGenericRepository<Club>, PostgresClubRepository>();
 builder.Services.AddScoped<IGenericRepository<Round>, PostgresRoundRepository>();
@@ -83,8 +83,8 @@ builder.Services.AddScoped<IGenericRepository<ScoreResult>, PostgresScoreResultR
 
 #endregion
 
-# region Services 
-// Registers services specific to each model's business logic (such as IMemberService for Member, IClubService for Club, etc.).
+# region Service Registrations
+// Registers services specific to each model's business logic (e.g., IMemberService, IClubService, etc.).
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IClubService, ClubService>();
 builder.Services.AddScoped<IRoundService, RoundService>();
@@ -108,8 +108,8 @@ builder.Services.AddScoped<IScoreResultService, ScoreResultService>();
 
 # endregion
 
-#region Service DTO Mappings
-// Registers services with DTO mappings for each model type.
+#region Repository Interface Registrations
+// Registers non-generic repository interfaces (e.g., IMemberRepository) with their specific implementations.
 builder.Services.AddScoped<IMemberRepository, PostgresMemberRepository>();
 builder.Services.AddScoped<IClubRepository, PostgresClubRepository>();
 builder.Services.AddScoped<IRoundRepository, PostgresRoundRepository>();
@@ -135,9 +135,8 @@ builder.Services.AddScoped<IScoreResultRepository, PostgresScoreResultRepository
 
 #endregion
 
-# region IGenericService
-// Register services with DTO mappings for IGenericService<TDto>
-// Registers a GenericService to handle operations on DTOs (Data Transfer Objects) for each model type.
+# region Generic Service Registrations
+// Registers generic services for operations on DTOs (e.g., MemberDTO, ClubDTO).
 builder.Services.AddScoped<IGenericService<MemberDTO>, GenericService<Member, MemberDTO>>();
 builder.Services.AddScoped<IGenericService<ClubDTO>, GenericService<Club, ClubDTO>>();
 builder.Services.AddScoped<IGenericService<RoundDTO>, GenericService<Round, RoundDTO>>();

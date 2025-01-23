@@ -39,7 +39,12 @@ namespace competex_backend.BLL.Services
 
 
 
-        public async Task<ResultT<Tuple<int, IEnumerable<MatchDTO>>>> CreateMatchesForRoundAsync(Guid competitionId, uint roundSequenceNumber, CriteriaDTO? criteria, int? pageSize, int? pageNumber)
+        public async Task<ResultT<Tuple<int, IEnumerable<MatchDTO>>>> CreateMatchesForRoundAsync(
+            Guid competitionId,
+            uint roundSequenceNumber,
+            CriteriaDTO? criteria,
+            int? pageSize,
+            int? pageNumber)
         {
 
             // We might set match state here
@@ -50,7 +55,7 @@ namespace competex_backend.BLL.Services
                 { "CompetitionId", competitionId },
                 { "Status", RegistrationStatus.Accepted }
             };
-            
+
 
             var regs = await SearchHelper.GetAllSearch<Registration, IRegistrationRepository>(_registrationRepository, regFilter);
 
@@ -63,13 +68,14 @@ namespace competex_backend.BLL.Services
             // Get all rounds for the competition
             var roundsResult = await SearchHelper.GetAllSearch<Round, IRoundRepository>(_roundRepository, roundFilter);
 
+
             var roundTwoFilter = new Dictionary<string, object>()
             {
                 { "CompetitionId", competitionId },
                 { "SequenceNumber", (int)roundSequenceNumber - 1 }
             };
             // Get all rounds for the competition
-            var roundTwoResult = await SearchHelper.GetAllSearch<Round, IRoundRepository>(_roundRepository, roundTwoFilter);
+            var roundTwoResult = roundSequenceNumber == 0 ? [] : await SearchHelper.GetAllSearch<Round, IRoundRepository>(_roundRepository, roundTwoFilter);
 
             var idOfNewRound = roundsResult
             .Select(round => round.Id)
@@ -88,7 +94,7 @@ namespace competex_backend.BLL.Services
             {
                 Func<(int Fault, TimeSpan Time), bool> timeFaultCriteria = tuple =>
                     tuple.Fault <= criteria.MaxFaults && tuple.Time <= criteria.MaxMinutes;
-
+                
                 var idOfPrevRound = Guid.Empty;
 
                 // Select the roundId given the roundSequenceNumber
@@ -123,32 +129,12 @@ namespace competex_backend.BLL.Services
 
                 var scoreFilter = new Dictionary<string, object>()
                 {
-                    { "ScoreType", "TimeFault" },
+                    { "ScoreType", 4 },
                     { "MatchId", prevRoundMatchIds }
                 };
                 var scoresFromPreviousMatches = await SearchHelper.GetAllSearch<Score, IScoreRepository>(_scoreRepository, scoreFilter);
                 var timeFaultScores = scoresFromPreviousMatches.Cast<TimeFaultScore>().ToList();
-                //var scoresResult = await _scoreRepository.GetAllAsync(null, null);
 
-                //if (!scoresResult.IsSuccess)
-                //{
-                //    return ResultT<Tuple<int, IEnumerable<MatchDTO>>>.Failure(scoresResult.Error!);
-                //}
-
-                // Select match ids from the previous round
-
-                // Filter scores where MatchId is in prevRoundMatchIds
-                //var scoresFromPreviousMatches = scoresResult.Value.Item2
-                //    .Where(score => prevRoundMatchIds.Contains((Guid)score.MatchId)) // Check if MatchId is in the list
-                //    .Select(score => score) // Extract the Score property
-                //    .ToList(); // Convert the result to a list
-
-
-                // Select all relevant types of scores, here timeFaultScores are selected - since they are used in rabbit jumping.
-                //var timeFaultScores = scoresFromPreviousMatches
-                //.Where(score => score is TimeFaultScore)
-                //.Cast<TimeFaultScore>()
-                //.ToList();
 
                 // Select all relevant participants, based on the criteria
                 relevantParticipantIds = timeFaultScores

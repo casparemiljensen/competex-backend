@@ -52,6 +52,8 @@ namespace competex_backend.BLL.Services
 
         public async Task<ResultT<PaginationWrapperDTO<IEnumerable<ScoreResultDTO>>>> GetResultsByCompetitionId(Guid competitionId, int? pageSize, int? pageNumber)
         {
+            
+
             var matchFilter = new Dictionary<string, object>()
             {
                 { "competitionId", competitionId }
@@ -64,13 +66,13 @@ namespace competex_backend.BLL.Services
             {
                 { "roundId", roundsIds }
             };
-            var test = (await SearchHelper.GetAllSearch<Match, IMatchRepository>(_matchRepository, roundFilter));
-            participantIds.AddRange((await SearchHelper.GetAllSearch<Match, IMatchRepository>(_matchRepository, roundFilter))
-                .SelectMany(x => x.ParticipantIds ?? []));
 
+            var test = (await SearchHelper.GetAllSearch<Match, IMatchRepository>(_matchRepository, roundFilter));
+            //participantIds.AddRange(test.SelectMany(x => x.ParticipantIds ?? []));
+            
             var scoreFilter = new Dictionary<string, object>()
             {
-                { "participantId", participantIds }
+                { "matchId", test.Select(x => x.Id) }
             };
 
             var scoreGroups = (await SearchHelper.GetAllSearch<Score, IScoreRepository>(_scoreRepository, scoreFilter)).GroupBy(x => x.ParticipantId);
@@ -105,6 +107,7 @@ namespace competex_backend.BLL.Services
 
             var sortedResultDTO = dtoResult.ToList(); //Does not mutate
             sortedResultDTO.Sort(); //Mutates
+            
 
             return ResultT<PaginationWrapperDTO<IEnumerable<ScoreResultDTO>>>.Success(new PaginationWrapperDTO<IEnumerable<ScoreResultDTO>>(
                 sortedResultDTO,

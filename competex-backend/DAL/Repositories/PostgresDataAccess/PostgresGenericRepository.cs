@@ -47,7 +47,6 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         {
             // Generate the SQL query and parameters
             var (query, parameters) = BuildSearchQuery(DatabaseHelper.GetTableName<T>(), filters ?? new Dictionary<string, object>());
-
             // Execute the raw SQL query
             var resultSet = _dbSet.FromSqlRaw(query, parameters.ToArray());
             Console.WriteLine(filters.Count());

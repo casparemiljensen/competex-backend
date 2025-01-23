@@ -30,12 +30,14 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
         // Get all entities with pagination
         public virtual async Task<ResultT<Tuple<int, IEnumerable<T>>>> GetAllAsync(int? pageSize, int? pageNumber)
         {
-            var query = _dbSet.AsNoTracking(); // TODO: Remove globally
-
-            var totalPages = PaginationHelper.GetTotalPages(pageSize, pageNumber, await query.CountAsync());
-            var result = await query
+            var totalRows = _dbSet.Count();
+            var query = _dbSet
                 .Skip(PaginationHelper.GetSkip(pageSize, pageNumber))
                 .Take(pageSize ?? Defaults.PageSize)
+                .AsNoTracking(); // TODO: Remove globally
+
+            var totalPages = PaginationHelper.GetTotalPages(pageSize, pageNumber, totalRows);
+            var result = await query
                 .ToListAsync();
 
             return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));

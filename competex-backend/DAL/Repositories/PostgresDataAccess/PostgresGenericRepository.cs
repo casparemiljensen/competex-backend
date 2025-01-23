@@ -40,7 +40,7 @@ namespace competex_backend.DAL.Repositories.PostgresDataAccess
             var result = await query
                 .ToListAsync();
 
-            return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalPages, result));
+            return ResultT<Tuple<int, IEnumerable<T>>>.Success(new Tuple<int, IEnumerable<T>>(totalRows, result));
         }
 
 
